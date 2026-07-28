@@ -1452,6 +1452,12 @@ legend {
   font-weight: 700;
   font-size: 1.08rem;
 }
+/* Discontinued or replaced at the retailer: reads as an absence, not a figure. */
+.price-unavailable {
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
 .product-link {
   color: var(--forest);
   font-size: 0.84rem;

@@ -202,6 +202,56 @@ function price(value) {
   return Number.isFinite(number) ? `£${number.toFixed(2)}` : 'Price unavailable';
 }
 
+// ---------------------------------------------------------------------------
+// Retailer price corrections
+// ---------------------------------------------------------------------------
+
+// The graph carries a fixed Kaggle snapshot of the retailer's catalogue and the
+// shop has repriced since, so most stored prices no longer match the page the
+// "View product" link opens. data/prices.json holds figures verified against
+// the retailer's own structured data, matched on the SKU in each product URL,
+// and overrides the snapshot at render time. Products the retailer has
+// discontinued or replaced are marked unavailable rather than shown at a price
+// nobody can actually pay.
+const PRICE_DATA_URL = './data/prices.json?v=1';
+let priceDataPromise = null;
+
+function loadPriceCorrections() {
+  if (!priceDataPromise) {
+    // Corrections are an enhancement, never a hard dependency: if the file is
+    // missing the catalogue still renders on the graph's own figures.
+    priceDataPromise = fetch(PRICE_DATA_URL)
+      .then(response => (response.ok ? response.json() : null))
+      .catch(() => null);
+  }
+  return priceDataPromise;
+}
+
+// Rewrites prices in place, then re-sorts: the SPARQL ORDER BY ran on the stale
+// figures, so "lowest first" would otherwise be in the wrong order.
+function applyPriceCorrections(bindings, corrections) {
+  if (!corrections) return bindings;
+  const prices = corrections.prices || {};
+  const unavailable = corrections.unavailable || {};
+
+  bindings.forEach(binding => {
+    const url = binding.url?.value;
+    if (!url) return;
+    if (unavailable[url]) {
+      binding.priceUnavailable = unavailable[url].reason || true;
+      return;
+    }
+    const corrected = prices[url];
+    if (corrected && binding.price) binding.price.value = String(corrected.price);
+  });
+
+  // Unavailable products sort last; they have no price to rank on.
+  const rank = binding => (binding.priceUnavailable
+    ? Number.POSITIVE_INFINITY
+    : Number.parseFloat(binding.price?.value) || Number.POSITIVE_INFINITY);
+  return bindings.sort((a, b) => rank(a) - rank(b));
+}
+
 function filterText(value) {
   return value === 'Fragrance' ? 'Fragrance excluded'
     : value === 'Alcohol' ? 'Alcohol excluded'
@@ -595,7 +645,15 @@ function addProductInfo(parent, binding, condition, allergenValue, headingClass 
   footer.className = 'product-footer';
   const priceEl = document.createElement('span');
   priceEl.className = 'price';
-  priceEl.textContent = price(valueOf(binding, 'price'));
+  if (binding.priceUnavailable) {
+    // The retailer has discontinued or replaced this product, so the stored
+    // figure is not a price anyone can pay. Say so instead of showing it.
+    priceEl.classList.add('price-unavailable');
+    priceEl.textContent = 'Price unavailable';
+    if (typeof binding.priceUnavailable === 'string') priceEl.title = binding.priceUnavailable;
+  } else {
+    priceEl.textContent = price(valueOf(binding, 'price'));
+  }
   footer.append(priceEl);
 
   const url = valueOf(binding, 'url');
@@ -952,9 +1010,7 @@ async function findProducts() {
   productGrid.replaceChildren();
   moreTitle.classList.remove('visible');
   resultsCount.textContent = 'Loading…';
-  // "Recorded price" rather than "price": the ordering is by the dataset
-  // snapshot, which is not necessarily the retailer's order today.
-  resultsMeta.textContent = `${concernsLabel} · ${filterText(allergenValue)} · Lowest recorded price first`;
+  resultsMeta.textContent = `${concernsLabel} · ${filterText(allergenValue)} · Lowest price first`;
   startLoading();
 
   try {
@@ -970,6 +1026,13 @@ async function findProducts() {
     // Deduplicate by product URL (falling back to name) while keeping order.
     const bindings = Array.isArray(data?.results?.bindings) ? data.results.bindings : [];
     const uniqueBindings = [...new Map(bindings.map(item => [item.url?.value || item.productName?.value, item])).values()];
+
+    // Overlay verified retailer prices before anything is measured or drawn,
+    // so the count, the ordering and the cards all agree on one set of figures.
+    const corrections = await loadPriceCorrections();
+    if (requestId !== searchRequestId) return;
+    applyPriceCorrections(uniqueBindings, corrections);
+
     clearInterval(loadingInterval);
     hide(loading);
 
