@@ -1,3 +1,9 @@
 .DS_Store
 Thumbs.db
 *.log
+
+# Python (skin-analysis-api)
+.venv/
+__pycache__/
+*.pyc
+evaluation/__pycache__/

@@ -1,0 +1,1013 @@
+/* ============================================================
+   Visual skin-screening prototype — modal and entry point
+   (matches the COSMO SELECT premium green/champagne design)
+   ============================================================ */
+
+/* — Entry point inside the consultation panel —
+   Deliberately quiet: this is an optional side path, and as a bordered,
+   tinted box it competed with the primary "Show my matches" action. */
+.scan-entry {
+  margin: 2px 0 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.scan-open-btn {
+  width: 100%;
+  justify-content: center;
+  min-height: 40px;
+  padding: 8px 16px;
+  border: 1px solid rgba(201, 163, 92, 0.4);
+  border-radius: 12px;
+  color: #14382d;
+  font-size: 0.8rem;
+  background: rgba(253, 246, 231, 0.6);
+  box-shadow: none;
+}
+.scan-open-btn:hover {
+  background: #fdf6e7;
+  border-color: rgba(201, 163, 92, 0.7);
+  box-shadow: 0 6px 16px rgba(160, 122, 52, 0.14);
+}
+.scan-open-btn span {
+  color: #a5834a;
+}
+.scan-entry-note {
+  margin: 6px 0 0;
+  color: #6d746f;
+  font-size: 0.66rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+/* — Overlay and modal shell — */
+/* An author `display` rule beats the UA `[hidden] { display: none }`, so the
+   hidden state must be declared explicitly or the modal never closes. */
+.scan-overlay[hidden] {
+  display: none;
+}
+.scan-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: rgba(15, 30, 24, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.scan-overlay:not([hidden]) {
+  animation: scanOverlayIn 0.3s ease both;
+}
+.scan-overlay:not([hidden]) .scan-modal {
+  animation: scanModalIn 0.42s cubic-bezier(0.22, 0.7, 0.2, 1) both;
+}
+@keyframes scanOverlayIn {
+  from { opacity: 0; }
+}
+@keyframes scanModalIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.985); }
+}
+.scan-modal {
+  width: min(680px, 100%);
+  max-height: calc(100svh - 24px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  border: 1px solid rgba(24, 33, 29, 0.1);
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(168deg, #fffdf8, #f6f1e6);
+  box-shadow: 0 50px 120px rgba(15, 30, 24, 0.4);
+}
+
+/* "More below" affordance: a soft fade over the bottom of the scroll area,
+   shown only while there is still content to scroll to. Without it a card
+   sliced by the scroll boundary looks like a rendering bug. */
+.scan-body-wrap {
+  position: relative;
+  min-height: 0;
+  display: grid;
+}
+.scan-body-wrap::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 46px;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(180deg, rgba(250, 246, 238, 0), rgba(250, 246, 238, 0.96));
+  transition: opacity 0.25s ease;
+}
+.scan-body-wrap.has-more::after {
+  opacity: 1;
+}
+
+/* Header */
+.scan-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px 14px;
+  border-bottom: 1px solid rgba(24, 33, 29, 0.08);
+}
+.scan-header h2 {
+  margin: 0 0 2px;
+  font-size: 1.5rem;
+  color: #14382d;
+}
+.scan-subtitle {
+  margin: 0;
+  color: #a5834a;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.scan-close {
+  border: 1px solid rgba(24, 33, 29, 0.14);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  background: #fff;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.scan-close:hover {
+  background: #f1ebe1;
+  transform: rotate(90deg);
+}
+
+/* Scrollable body.
+   The generous bottom padding lets the last card scroll completely clear of
+   the footer; without it the final element stops half-hidden behind the
+   action bar and reads as though the dialog has been cut off. */
+.scan-body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 18px 24px 34px;
+}
+.scan-view[hidden] {
+  display: none;
+}
+.scan-intro {
+  margin: 0 0 16px;
+  color: #465f53;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.scan-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.scan-choice {
+  padding: 18px 16px;
+  border: 1px solid rgba(24, 33, 29, 0.12);
+  border-radius: 16px;
+  background: #fff;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+.scan-choice:hover {
+  border-color: rgba(201, 163, 92, 0.6);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(24, 45, 35, 0.1);
+}
+.scan-choice strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #14382d;
+}
+.scan-choice span {
+  color: #6d746f;
+  font-size: 0.76rem;
+}
+.scan-privacy {
+  margin: 16px 0 0;
+  color: #6d746f;
+  font-size: 0.72rem;
+  line-height: 1.55;
+}
+
+/* — Stage (camera / image) — */
+.scan-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 46svh;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #101b16;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.scan-stage video,
+.scan-stage canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* mirror preview like a mirror */
+}
+.scan-stage canvas {
+  transform: none; /* frozen frame is already mirrored at capture */
+}
+.scan-image-stage {
+  cursor: grab;
+  touch-action: none;
+}
+.scan-image-stage.dragging {
+  cursor: grabbing;
+}
+/* contain, matching the analysis canvas, so the preview is exactly what
+   gets measured and a portrait face is never cropped out of frame */
+.scan-image-stage img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform:
+    translate(-50%, -50%)
+    translate3d(var(--image-x, 0px), var(--image-y, 0px), 0)
+    scale(var(--image-scale, 1));
+  transform-origin: center;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Face guide */
+.scan-guide {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(52%, 240px);
+  aspect-ratio: 100 / 132;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.scan-guide-oval,
+.scan-guide-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.scan-guide-oval ellipse {
+  fill: none;
+  stroke: rgba(255, 253, 247, 0.85);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 4;
+  animation: guidePulse 2.2s ease-in-out infinite;
+}
+.scan-guide.aligned .scan-guide-oval ellipse {
+  stroke: #c9e2c4;
+  stroke-dasharray: none;
+  filter: drop-shadow(0 0 8px rgba(158, 183, 155, 0.9));
+  animation: none;
+}
+.scan-guide-line {
+  position: absolute;
+  left: 50%;
+  top: 12%;
+  bottom: 12%;
+  width: 1px;
+  background: rgba(255, 253, 247, 0.28);
+}
+.scan-guide-ring ellipse {
+  fill: none;
+  stroke: #d8bc82;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-dasharray: 340;
+  stroke-dashoffset: 340;
+  transition: stroke-dashoffset 0.2s linear;
+  filter: drop-shadow(0 0 6px rgba(216, 188, 130, 0.8));
+}
+.scan-countdown {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: #fffdf8;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 4rem;
+  font-weight: 600;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.55);
+}
+@keyframes guidePulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.scan-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+.scan-flash.flashing {
+  animation: scanFlash 0.45s ease-out;
+}
+@keyframes scanFlash {
+  0% { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+.scan-hint {
+  margin: 12px 0 0;
+  color: #465f53;
+  font-size: 0.86rem;
+  text-align: center;
+  min-height: 1.4em;
+}
+
+/* Pose header: says which photo this is and what to do, in that order,
+   above the preview where it is read before the camera draws the eye. */
+.scan-pose {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+.scan-pose-count {
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: #1c5a47;
+  color: #f4e9d0;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.scan-pose-text {
+  color: #14382d;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+/* Multi-angle capture progress */
+.scan-capture-progress {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.scan-capture-progress span {
+  width: 26px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(24, 45, 35, 0.14);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.scan-capture-progress span.is-current {
+  background: #cfa055;
+  transform: scaleY(1.6);
+}
+.scan-capture-progress span.is-done {
+  background: #1c5a47;
+}
+
+/* Zoom row */
+.scan-zoom-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+.scan-zoom-row label {
+  color: #465f53;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.scan-zoom-row input[type="range"] {
+  flex: 1;
+  accent-color: #1c5a47;
+}
+
+/* — Scanning state — */
+.scan-progress {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+}
+/* Bright, luminous scan: light porcelain frame with champagne and mint light,
+   so the analysis reads as a premium beauty ritual rather than a dark scanner. */
+.scan-progress-frame {
+  --scan-gold: #cfa055;
+  --scan-mint: #58c9a3;
+  position: relative;
+  width: min(340px, 78%);
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(160deg, #fffdf8, #f4efe3);
+  box-shadow:
+    0 24px 56px rgba(24, 45, 35, 0.18),
+    0 0 0 1px rgba(207, 160, 85, 0.3),
+    0 0 46px rgba(207, 160, 85, 0.22);
+  animation: frameGlow 2.8s ease-in-out infinite;
+}
+@keyframes frameGlow {
+  0%, 100% {
+    box-shadow:
+      0 24px 56px rgba(24, 45, 35, 0.18),
+      0 0 0 1px rgba(207, 160, 85, 0.3),
+      0 0 34px rgba(207, 160, 85, 0.18);
+  }
+  50% {
+    box-shadow:
+      0 24px 56px rgba(24, 45, 35, 0.18),
+      0 0 0 1px rgba(207, 160, 85, 0.55),
+      0 0 62px rgba(207, 160, 85, 0.36);
+  }
+}
+.scan-progress-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Kept bright and clear rather than dimmed */
+  filter: saturate(1.04) contrast(1.02) brightness(1.06);
+}
+
+/* Luminous veil so the overlays read against any photograph */
+.scan-mesh {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 255, 255, 0.42) 0 34%, transparent 68%),
+    linear-gradient(180deg, rgba(255, 252, 244, 0.28), rgba(255, 250, 238, 0.12));
+  animation: veilBreathe 3.4s ease-in-out infinite;
+}
+@keyframes veilBreathe {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.9; }
+}
+
+/* Soft champagne bloom travelling with the scan line */
+.scan-sweep {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(255, 255, 255, 0.5) 62%,
+    rgba(232, 205, 154, 0.62)
+  );
+  filter: blur(1px);
+  animation: scanSweepBand 2.8s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+}
+@keyframes scanSweepBand {
+  0%, 100% { top: -40%; }
+  50% { top: 100%; }
+}
+
+/* Bright leading edge with a warm bloom */
+.scan-line {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg,
+    transparent,
+    var(--scan-mint) 18%,
+    #ffffff 50%,
+    var(--scan-gold) 82%,
+    transparent);
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.95),
+    0 0 24px rgba(207, 160, 85, 0.8),
+    0 0 44px rgba(88, 201, 163, 0.45);
+  animation: scanSweep 2.8s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+}
+@keyframes scanSweep {
+  0%, 100% { top: 3%; }
+  50% { top: 97%; }
+}
+
+/* Delicate gold corner brackets */
+.scan-bracket {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--scan-gold);
+  opacity: 0.9;
+  filter: drop-shadow(0 0 4px rgba(207, 160, 85, 0.6));
+  animation: bracketPulse 2.8s ease-in-out infinite;
+}
+.scan-bracket.tl { top: 12px; left: 12px; border-right: 0; border-bottom: 0; border-radius: 7px 0 0 0; }
+.scan-bracket.tr { top: 12px; right: 12px; border-left: 0; border-bottom: 0; border-radius: 0 7px 0 0; }
+.scan-bracket.bl { bottom: 12px; left: 12px; border-right: 0; border-top: 0; border-radius: 0 0 0 7px; }
+.scan-bracket.br { bottom: 12px; right: 12px; border-left: 0; border-top: 0; border-radius: 0 0 7px 0; }
+@keyframes bracketPulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.97); }
+  50% { opacity: 1; transform: scale(1); }
+}
+
+/* Concentric halo expanding from the centre */
+.scan-reticle {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: 34%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(207, 160, 85, 0.75);
+  border-radius: 50%;
+  box-shadow:
+    0 0 18px rgba(207, 160, 85, 0.5),
+    inset 0 0 22px rgba(255, 255, 255, 0.6);
+  animation: haloPulse 2.8s ease-out infinite;
+}
+@keyframes haloPulse {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.55); }
+  35% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.75); }
+}
+
+.scan-stage-text {
+  margin: 0;
+  color: #1c5a47;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  animation: stageFade 0.5s ease both;
+}
+@keyframes stageFade {
+  from { opacity: 0; transform: translateY(4px); }
+}
+
+/* Indeterminate progress track under the stage text */
+.scan-track {
+  width: min(340px, 78%);
+  height: 3px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(24, 45, 35, 0.12);
+}
+.scan-track span {
+  display: block;
+  width: 42%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #58c9a3, #f0d9a4, #cfa055);
+  box-shadow: 0 0 12px rgba(207, 160, 85, 0.7);
+  animation: trackSlide 1.7s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes trackSlide {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(340%); }
+}
+
+/* — Results — */
+.scan-result-heading {
+  margin: 0 0 12px;
+  color: #14382d;
+  font-size: 1.15rem;
+}
+.scan-signal-list {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding: 0;
+  list-style: none;
+}
+/* Name | meter | label — a grid keeps the columns aligned and stops the
+   label from wrapping under the name on narrow screens. */
+.scan-signal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "name meter" "level level";
+  align-items: center;
+  gap: 6px 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(24, 33, 29, 0.08);
+  border-left: 3px solid var(--signal-accent, #cfd8cb);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 0.86rem;
+  color: #26352f;
+}
+.scan-signal.low { --signal-accent: #9ab08f; }
+.scan-signal.mild { --signal-accent: #b9c49a; }
+.scan-signal.moderate { --signal-accent: #d8bc82; }
+.scan-signal.high { --signal-accent: #c98080; }
+.scan-signal.uncertain { --signal-accent: #b3b3ad; }
+.scan-signal-name {
+  grid-area: name;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.scan-meter {
+  grid-area: meter;
+  display: inline-flex;
+  gap: 4px;
+}
+.scan-meter span {
+  width: 22px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(24, 33, 29, 0.1);
+}
+.scan-meter span.is-on {
+  background: var(--signal-accent);
+}
+.scan-level {
+  grid-area: level;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #6d746f;
+}
+@media (min-width: 470px) {
+  .scan-signal {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: "name meter level";
+  }
+  .scan-level {
+    min-width: 128px;
+    text-align: right;
+  }
+}
+.scan-suggestions-title {
+  margin: 0 0 8px;
+  color: #a5834a;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.scan-suggestion {
+  position: relative;
+  padding: 14px 16px 14px 44px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(201, 163, 92, 0.4);
+  border-radius: 14px;
+  background: linear-gradient(150deg, #fdf6e7, #f8eed6);
+  box-shadow: 0 8px 20px rgba(160, 122, 52, 0.1);
+}
+.scan-suggestion::before {
+  content: "✓";
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #1c5a47;
+  color: #f4e9d0;
+  font-size: 0.66rem;
+}
+.scan-suggestion strong {
+  display: block;
+  color: #14382d;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.2rem;
+  margin-bottom: 3px;
+}
+.scan-suggestion p {
+  margin: 0;
+  color: #5c6660;
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+/* Clear result. Reassuring rather than empty: this is a real finding, so it
+   is presented as one, in the same visual weight as a concern card. */
+.scan-clear {
+  padding: 16px 18px;
+  border: 1px solid rgba(122, 158, 130, 0.45);
+  border-left: 3px solid #6f9b7e;
+  border-radius: 14px;
+  background: linear-gradient(150deg, #f4faf4, #eaf4ec);
+}
+.scan-clear strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #14382d;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.2rem;
+}
+.scan-clear p {
+  margin: 0;
+  color: #4a5c52;
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+/* Standing caveats from the decision layer (unreliable signals, and the
+   note that dehydration is not photographically assessable). */
+.scan-assessment-note {
+  margin: 10px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid rgba(201, 163, 92, 0.5);
+  color: #6d746f;
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+/* Signals that carry no concern weight are visually muted, so confirmed
+   concerns are never confused with background measurements. */
+.scan-signal.not_assessable {
+  --signal-accent: #c3c3bc;
+  opacity: 0.85;
+}
+
+.scan-none {
+  padding: 14px;
+  border: 1px solid rgba(24, 33, 29, 0.1);
+  border-radius: 12px;
+  background: #fff;
+  color: #465f53;
+  font-size: 0.86rem;
+}
+.scan-disclaimer {
+  margin: 16px 0 0;
+  color: #6d746f;
+  font-size: 0.74rem;
+  line-height: 1.6;
+}
+
+/* Capture-quality banner: informative, not alarming */
+.scan-quality-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
+  padding: 14px 16px;
+  border: 1px solid rgba(201, 163, 92, 0.5);
+  border-radius: 14px;
+  background: linear-gradient(150deg, #fdf7ea, #f8eed8);
+}
+.scan-quality-banner strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #7d6128;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.scan-quality-banner p {
+  margin: 0;
+  color: #5c5340;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.scan-quality-banner .scan-ghost-btn {
+  flex: none;
+  min-height: 40px;
+  background: #fff;
+}
+
+/* Fairness notice: calm, readable, clearly part of the result */
+.scan-notice {
+  margin: 20px 0 0;
+  padding: 18px 20px;
+  border: 1px solid rgba(24, 33, 29, 0.1);
+  border-left: 3px solid #9ab08f;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #f7faf5, #eef3ea);
+}
+.scan-notice h3 {
+  margin: 0 0 10px;
+  color: #14382d;
+  font-size: 1.12rem;
+}
+.scan-notice p {
+  margin: 0 0 10px;
+  color: #46554c;
+  font-size: 0.8rem;
+  line-height: 1.62;
+}
+.scan-notice p:last-child {
+  margin-bottom: 0;
+}
+
+/* Per-condition feedback */
+.scan-feedback {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(160, 122, 52, 0.35);
+}
+.scan-feedback-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #7d6128;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.scan-feedback-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.scan-feedback-btn {
+  padding: 7px 13px;
+  border: 1px solid rgba(24, 33, 29, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.85);
+  color: #35473e;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.scan-feedback-btn:hover {
+  background: #fff;
+  border-color: rgba(201, 163, 92, 0.65);
+}
+.scan-feedback-btn.is-chosen {
+  background: #1c5a47;
+  border-color: #1c5a47;
+  color: #f4e9d0;
+}
+.scan-feedback-btn.is-edit {
+  border-style: dashed;
+}
+.scan-feedback[data-recorded="true"] .scan-feedback-label::after {
+  content: " · saved locally";
+  color: #6d746f;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.scan-error-main {
+  margin: 0;
+}
+.scan-error-hint {
+  margin: 10px 0 0;
+  color: #7a4a3c;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* — Error state — */
+.scan-error {
+  padding: 18px;
+  border: 1px solid rgba(138, 52, 56, 0.3);
+  border-radius: 14px;
+  background: #fbf1f0;
+  color: #6e2a2e;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* — Footer — */
+/* Opaque, with a soft lift, so scrolled content clearly passes BEHIND it
+   rather than appearing to be chopped in half by a translucent bar. */
+.scan-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 14px 24px 18px;
+  border-top: 1px solid rgba(24, 33, 29, 0.1);
+  background: #fffdf8;
+  box-shadow: 0 -10px 22px rgba(24, 45, 35, 0.07);
+}
+.scan-footer .btn {
+  min-height: 46px;
+  padding: 10px 22px;
+  font-size: 0.88rem;
+}
+.scan-ghost-btn {
+  min-height: 46px;
+  padding: 10px 16px;
+  border: 1px solid rgba(24, 33, 29, 0.16);
+  border-radius: 999px;
+  background: transparent;
+  color: #26352f;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.scan-ghost-btn:hover {
+  background: #fff;
+  border-color: rgba(201, 163, 92, 0.55);
+}
+.scan-footer [hidden] {
+  display: none !important;
+}
+
+/* Lock background scrolling while the modal is open */
+body.scan-open {
+  overflow: hidden;
+}
+
+/* Short viewports (laptops, split screens, browser chrome eating height).
+   The header and footer are fixed rows, so on a 560px-tall window they can
+   swallow a third of the dialog and leave the content looking sliced. This
+   block reclaims that space rather than letting the body shrink further. */
+@media (max-height: 760px) {
+  .scan-overlay {
+    padding: 8px;
+  }
+  .scan-modal {
+    max-height: calc(100svh - 16px);
+  }
+  .scan-header {
+    padding: 12px 20px 10px;
+  }
+  .scan-header h2 {
+    font-size: 1.2rem;
+  }
+  .scan-subtitle {
+    font-size: 0.6rem;
+    letter-spacing: 0.16em;
+  }
+  .scan-close {
+    width: 30px;
+    height: 30px;
+  }
+  .scan-body {
+    padding: 12px 20px 26px;
+  }
+  .scan-footer {
+    padding: 10px 20px 12px;
+  }
+  .scan-footer .btn,
+  .scan-ghost-btn {
+    min-height: 38px;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+  }
+  .scan-stage {
+    max-height: 38svh;
+  }
+  .scan-notice {
+    padding: 14px 16px;
+  }
+  .scan-notice h3 {
+    font-size: 1rem;
+  }
+  .scan-signal {
+    padding: 9px 12px;
+  }
+  .scan-suggestion {
+    padding: 11px 14px 11px 40px;
+  }
+  .scan-quality-banner {
+    padding: 10px 14px;
+  }
+  .scan-progress-frame {
+    width: min(260px, 62%);
+  }
+}
+
+@media (max-width: 560px) {
+  .scan-body { padding: 14px 16px; }
+  .scan-header { padding: 16px 16px 12px; }
+  .scan-footer { padding: 12px 16px 14px; justify-content: stretch; }
+  .scan-footer .btn { flex: 1 1 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-guide-oval ellipse,
+  .scan-line,
+  .scan-sweep,
+  .scan-mesh,
+  .scan-bracket,
+  .scan-reticle,
+  .scan-track span,
+  .scan-flash.flashing,
+  .scan-overlay:not([hidden]),
+  .scan-overlay:not([hidden]) .scan-modal {
+    animation: none;
+  }
+  .scan-choice:hover,
+  .scan-close:hover {
+    transform: none;
+  }
+}

@@ -1170,6 +1170,14 @@ legend {
   font-size: 0.8rem;
   line-height: 1.4;
 }
+/* Price provenance: quiet, but always present next to the figures. */
+.results-price-note {
+  margin: -8px 0 16px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.45;
+  opacity: 0.85;
+}
 .loading,
 .empty-box,
 .error-box {
@@ -2753,6 +2761,7 @@ legend {
 }
 .results-header,
 .results-meta,
+.results-price-note,
 #story,
 .more-title,
 .product-grid,
@@ -3802,6 +3811,683 @@ legend {
     width: 20px;
     height: 20px;
   }
+}
+
+/* ============================================================
+   16b. Premium finish pass
+   (final visual override layer — keep before responsive rules)
+   ============================================================ */
+:root {
+  --champagne: #d8bc82;
+  --bronze: #a5834a;
+  --emerald: #0e352a;
+}
+
+/* — Hero: richer color grade and champagne accents — */
+.home::before {
+  background:
+    radial-gradient(120% 95% at 12% 32%, rgba(250, 253, 246, 0.96) 0%, rgba(240, 248, 236, 0.74) 38%, rgba(232, 244, 228, 0.14) 60%, transparent 78%);
+}
+.hero-nature {
+  color: var(--bronze);
+  letter-spacing: 0.3em;
+}
+.hero-nature::before {
+  content: "";
+  display: inline-block;
+  width: 36px;
+  height: 1px;
+  margin-right: 14px;
+  vertical-align: middle;
+  background: linear-gradient(90deg, #a98245, #dbc180);
+}
+.hero-copy h1 {
+  color: #103329;
+  letter-spacing: -0.045em;
+}
+.hero-copy h1 em,
+.hero-copy h1 .hero-word-accent {
+  font-style: italic;
+  font-weight: 500;
+  text-shadow: none;
+  background: linear-gradient(110deg, #2e6b52 10%, #9c7a3a 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-subtitle {
+  color: #3f6a52;
+  font-style: italic;
+}
+.hero-display-word {
+  --display-opacity: 0.26;
+  color: rgba(255, 245, 216, 0.95);
+  font-size: clamp(6rem, 12.5vw, 11.5rem);
+  letter-spacing: 0.06em;
+}
+.home .btn-primary {
+  background: linear-gradient(140deg, #1c5a47, var(--emerald) 72%);
+  border: 1px solid rgba(216, 188, 130, 0.38);
+  box-shadow:
+    0 18px 40px rgba(14, 53, 42, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+.home .btn-primary:hover {
+  background: linear-gradient(140deg, #17493a, #0a2a21 72%);
+  box-shadow:
+    0 22px 48px rgba(14, 53, 42, 0.32),
+    0 0 0 4px rgba(194, 161, 91, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+.home .btn-ghost {
+  border-color: rgba(20, 62, 50, 0.26);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.home .btn-ghost:hover {
+  border-color: rgba(194, 161, 91, 0.55);
+  box-shadow: 0 14px 32px rgba(24, 45, 35, 0.12);
+}
+
+/* — Match section: porcelain backdrop with champagne and sage glows — */
+.match {
+  background:
+    radial-gradient(90% 60% at 86% 0%, rgba(216, 188, 130, 0.16), transparent 62%),
+    radial-gradient(72% 58% at 6% 88%, rgba(158, 183, 155, 0.2), transparent 66%),
+    linear-gradient(180deg, #f8f5ed, #f2eee3);
+}
+.match .eyebrow {
+  color: var(--bronze);
+}
+.match-intro h2 {
+  color: #14382d;
+  letter-spacing: -0.04em;
+}
+
+/* Consultation panel: soft glass card */
+.match .filter-panel {
+  background: linear-gradient(168deg, rgba(255, 255, 255, 0.94), rgba(250, 246, 238, 0.88));
+  border: 1px solid rgba(24, 33, 29, 0.08);
+  border-radius: 26px;
+  box-shadow:
+    0 30px 70px rgba(24, 45, 35, 0.1),
+    inset 0 1px 0 #fff;
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+}
+
+/* Step indicator: emerald and champagne */
+.match-steps li.is-active span {
+  background: linear-gradient(140deg, #1c5a47, var(--emerald));
+  color: #f4e9d0;
+  box-shadow:
+    0 0 0 3px rgba(194, 161, 91, 0.35),
+    0 10px 22px rgba(14, 53, 42, 0.24);
+}
+.match-steps li.is-active strong {
+  color: #14382d;
+}
+
+/* Ingredient pills */
+#allergenOpts .option-card {
+  border: 1px solid rgba(24, 33, 29, 0.1);
+  background: rgba(255, 255, 255, 0.88);
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease;
+}
+#allergenOpts .option-card:hover {
+  border-color: rgba(194, 161, 91, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(24, 45, 35, 0.08);
+}
+#allergenOpts .option-card[aria-checked="true"] {
+  background: linear-gradient(140deg, #fdf6e7, #f5e7c6);
+  border-color: rgba(201, 163, 92, 0.75);
+  box-shadow:
+    inset 0 0 0 1px rgba(201, 163, 92, 0.3),
+    0 12px 26px rgba(160, 122, 52, 0.14);
+}
+
+/* Selection summary: champagne note card */
+.selection-summary {
+  background: linear-gradient(150deg, #fbf6ea, #f4ecd9);
+  border: 1px solid rgba(201, 163, 92, 0.28);
+  border-radius: 18px;
+}
+
+/* Primary CTA inside the panel */
+.filter-panel .btn-primary {
+  background: linear-gradient(140deg, #1c5a47, var(--emerald) 72%);
+  border: 1px solid rgba(216, 188, 130, 0.38);
+  box-shadow:
+    0 16px 34px rgba(14, 53, 42, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+.filter-panel .btn-primary:hover:not(:disabled) {
+  box-shadow:
+    0 20px 42px rgba(14, 53, 42, 0.3),
+    0 0 0 4px rgba(194, 161, 91, 0.14);
+}
+
+/* Concern preview stage: gallery framing */
+.concern-stage-frame {
+  border-radius: 28px;
+  box-shadow:
+    0 44px 96px rgba(24, 45, 35, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+/* Concern tiles: lifted photography cards */
+#skinProblemOpts .option-card {
+  border-radius: 20px;
+  box-shadow: 0 18px 40px rgba(24, 45, 35, 0.14);
+  transition:
+    transform 0.28s cubic-bezier(0.22, 0.7, 0.2, 1),
+    box-shadow 0.28s ease,
+    outline-color 0.2s ease;
+}
+#skinProblemOpts .option-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 52px rgba(24, 45, 35, 0.2);
+}
+#skinProblemOpts .option-card[aria-checked="true"] {
+  outline: 2px solid rgba(201, 163, 92, 0.85);
+  outline-offset: 3px;
+  box-shadow: 0 26px 54px rgba(24, 45, 35, 0.24);
+}
+
+/* — Headline: roomier reveal window so italics and descenders never clip — */
+.hero-copy h1 {
+  line-height: 0.92;
+}
+.hero-word {
+  padding: 0.08em 0.06em 0.14em;
+  margin-right: 0.1em;
+  clip-path: inset(100% -0.2em -0.3em);
+  animation-name: wordRevealSafe;
+}
+@keyframes wordRevealSafe {
+  to {
+    opacity: 1;
+    clip-path: inset(-0.3em -0.2em -0.3em);
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+/* — Video captions: clearer, richer text card — */
+.video-moment {
+  bottom: 5%;
+  width: min(560px, 68vw);
+  padding: 20px 34px 24px;
+  color: #102f24;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 24px;
+  background: linear-gradient(155deg, rgba(255, 253, 247, 0.95), rgba(240, 246, 238, 0.88));
+  box-shadow:
+    0 26px 64px rgba(24, 45, 35, 0.2),
+    inset 0 1px 0 #fff;
+  backdrop-filter: blur(20px) saturate(1.12);
+  -webkit-backdrop-filter: blur(20px) saturate(1.12);
+  text-shadow: none;
+}
+.video-moment small {
+  margin-bottom: 8px;
+  color: var(--bronze);
+  font-size: 0.6rem;
+  letter-spacing: 0.26em;
+}
+.video-moment small::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 1px;
+  margin: 8px auto 0;
+  background: linear-gradient(90deg, transparent, #c8a25e, transparent);
+}
+
+/* — Selection feedback: champagne glow pulses — */
+@keyframes tileSelectGlow {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(201, 163, 92, 0.5),
+      0 26px 54px rgba(24, 45, 35, 0.24);
+  }
+  100% {
+    box-shadow:
+      0 0 0 18px rgba(201, 163, 92, 0),
+      0 26px 54px rgba(24, 45, 35, 0.24);
+  }
+}
+#skinProblemOpts .option-card[aria-checked="true"] {
+  animation: tileSelectGlow 0.75s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+#skinProblemOpts .option-card:active {
+  transform: translateY(-1px) scale(0.98);
+}
+@keyframes pillSelectGlow {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(201, 163, 92, 0.45),
+      inset 0 0 0 1px rgba(201, 163, 92, 0.3);
+  }
+  100% {
+    box-shadow:
+      0 0 0 12px rgba(201, 163, 92, 0),
+      inset 0 0 0 1px rgba(201, 163, 92, 0.3);
+  }
+}
+#allergenOpts .option-card[aria-checked="true"] {
+  animation: pillSelectGlow 0.6s ease-out;
+}
+.concern-stage:not(.is-neutral) .concern-stage-frame {
+  box-shadow:
+    0 44px 96px rgba(24, 45, 35, 0.22),
+    0 0 0 1px rgba(201, 163, 92, 0.22),
+    0 0 44px rgba(216, 188, 130, 0.24),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  transition: box-shadow 0.5s ease;
+}
+
+/* — Header: compacts gracefully once scrolling begins — */
+.nav {
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    height 0.38s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.nav.scrolled {
+  height: 52px;
+}
+.logo {
+  transition:
+    font-size 0.38s cubic-bezier(0.22, 0.7, 0.2, 1),
+    letter-spacing 0.38s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.nav.scrolled .logo {
+  font-size: 1.18rem;
+  letter-spacing: 0.13em;
+}
+.nav-links a {
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease,
+    font-size 0.38s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.nav.scrolled .nav-links a {
+  font-size: 0.66rem;
+}
+
+/* — Concern theming: the whole page shifts hue with the chosen concern — */
+body[data-concern="Dryness"] {
+  --concern-accent: #b97f3f;
+}
+body[data-concern="Acne"] {
+  --concern-accent: #2f6e57;
+}
+body[data-concern="Redness"] {
+  --concern-accent: #b25757;
+}
+body[data-concern="Dehydration"] {
+  --concern-accent: #3f7b99;
+}
+.theme-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 44;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+body[data-concern] .theme-veil {
+  opacity: 1;
+}
+body[data-concern="Dryness"] .theme-veil {
+  background:
+    radial-gradient(120% 85% at 82% 8%, rgba(224, 160, 90, 0.17), transparent 60%),
+    radial-gradient(100% 75% at 8% 92%, rgba(240, 205, 150, 0.15), transparent 64%);
+}
+body[data-concern="Acne"] .theme-veil {
+  background:
+    radial-gradient(120% 85% at 82% 8%, rgba(88, 142, 116, 0.16), transparent 60%),
+    radial-gradient(100% 75% at 8% 92%, rgba(150, 196, 172, 0.15), transparent 64%);
+}
+body[data-concern="Redness"] .theme-veil {
+  background:
+    radial-gradient(120% 85% at 82% 8%, rgba(214, 116, 116, 0.15), transparent 60%),
+    radial-gradient(100% 75% at 8% 92%, rgba(236, 172, 160, 0.14), transparent 64%);
+}
+body[data-concern="Dehydration"] .theme-veil {
+  background:
+    radial-gradient(120% 85% at 82% 8%, rgba(96, 150, 178, 0.16), transparent 60%),
+    radial-gradient(100% 75% at 8% 92%, rgba(150, 196, 214, 0.14), transparent 64%);
+}
+/* Accent details follow the concern color */
+body[data-concern] .match .eyebrow,
+body[data-concern] .video-moment small {
+  color: var(--concern-accent);
+}
+body[data-concern] .match-steps li.is-active span {
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--concern-accent) 40%, transparent),
+    0 10px 22px rgba(14, 53, 42, 0.24);
+}
+body[data-concern] .selection-summary {
+  border-color: color-mix(in srgb, var(--concern-accent) 34%, transparent);
+}
+body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
+  box-shadow:
+    0 44px 96px rgba(24, 45, 35, 0.22),
+    0 0 0 1px color-mix(in srgb, var(--concern-accent) 28%, transparent),
+    0 0 52px color-mix(in srgb, var(--concern-accent) 26%, transparent),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+/* — Video experience: richer gallery framing — */
+.video-sticky {
+  background:
+    radial-gradient(85% 65% at 85% 10%, rgba(216, 188, 130, 0.14), transparent 60%),
+    radial-gradient(70% 60% at 10% 90%, rgba(158, 183, 155, 0.16), transparent 64%),
+    linear-gradient(150deg, #f9f6ee, #edf1e7);
+}
+.video-frame {
+  --video-radius: 34px;
+  border: 1px solid rgba(201, 163, 92, 0.24);
+  box-shadow:
+    0 40px 100px rgba(24, 45, 35, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.video-trio {
+  gap: 16px;
+  padding: 18px;
+  background: linear-gradient(135deg, #eef2e9, #f8f3e9);
+}
+.video-frame .video-trio > video {
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 22px 48px rgba(24, 45, 35, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+.video-shade {
+  background: linear-gradient(
+    0deg,
+    rgba(238, 237, 228, 0.82) 0%,
+    rgba(244, 242, 234, 0.3) 32%,
+    transparent 58%
+  );
+}
+
+/* ============================================================
+   16d. More Matches gallery band
+   (final override layer — keep before responsive rules)
+   ============================================================ */
+
+/* Heading: clearly announces the band that follows */
+.results .more-title {
+  margin: 56px 0 22px;
+  color: #12352a;
+  letter-spacing: -0.035em;
+}
+.results .more-title::after {
+  width: 72px;
+  height: 2px;
+  margin-top: 18px;
+  background: linear-gradient(90deg, #c9a35c, rgba(201, 163, 92, 0));
+}
+
+/* The grid sits on a deep emerald "gallery wall" so the pale product cards
+   read as distinct objects instead of blending into the warm page.
+   Uses the ID selector to override the earlier pale-sage panel. */
+#productGrid {
+  padding: clamp(20px, 2.6vw, 36px);
+  border: 1px solid rgba(201, 163, 92, 0.28);
+  border-radius: 30px;
+  background:
+    radial-gradient(85% 60% at 88% 4%, rgba(201, 163, 92, 0.16), transparent 62%),
+    radial-gradient(70% 55% at 6% 96%, rgba(122, 158, 130, 0.2), transparent 66%),
+    linear-gradient(165deg, #16382c 0%, #10291f 100%);
+  box-shadow:
+    0 36px 84px rgba(12, 32, 24, 0.28),
+    inset 0 1px 0 rgba(255, 245, 225, 0.14);
+}
+
+/* Cards: brighter and crisper so they lift off the dark band */
+#productGrid .product-card {
+  border: 1px solid rgba(201, 163, 92, 0.32);
+  border-radius: 20px;
+  background: linear-gradient(168deg, #fffefb 0%, #fdf8ef 78%, #f7efe1 100%);
+  box-shadow:
+    0 20px 44px rgba(6, 20, 14, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 0.7, 0.2, 1),
+    box-shadow 0.32s ease,
+    border-color 0.32s ease;
+}
+#productGrid .product-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(216, 188, 130, 0.7);
+  box-shadow:
+    0 30px 62px rgba(6, 20, 14, 0.42),
+    0 0 0 1px rgba(216, 188, 130, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+/* Product photography sits on a stage that shares the card's own palette.
+   The stage previously kept a sage-green gradient while the card became warm
+   ivory, which showed up as a hard rectangular patch behind every product. */
+#productGrid .product-card .product-image-wrap {
+  margin: 14px 14px 2px;
+  padding: 24px;
+  border-radius: 18px;
+  border: 0;
+  /* Each card carries its own palette (sage, blush, champagne, teal) through
+     --stage-a/b/c. An earlier fix replaced this with a plain white glow to
+     kill a colour-mismatch patch, which also threw the palettes away and
+     left the products floating on near-white. The gradient is back, with a
+     much gentler centre highlight so the middle is not blown out. */
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(255, 255, 255, 0.5) 0 20%,
+      rgba(255, 255, 255, 0.16) 46%,
+      transparent 74%
+    ),
+    linear-gradient(152deg,
+      var(--stage-a) 0%,
+      var(--stage-b) 62%,
+      var(--stage-c) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+/* The frame needs a DEFINITE height, otherwise the percentage width/height on
+   the product image has nothing to resolve against: the box was computing to
+   188px inside a 153px frame and `max-height: 100%` could not cap it either,
+   so tall narrow bottles were clipped along the bottom. A fixed square gives
+   percentages a basis and keeps every stage the same shape. */
+#productGrid .product-card .product-image-wrap {
+  aspect-ratio: 1 / 1;
+}
+/* Positioned by insets rather than percentage width/height.
+   Percentage heights on this element do not resolve: it is a grid item inside
+   an aspect-ratio box, so the height stays indefinite and BOTH `height: 75%`
+   and `max-height: 84%` were ignored. The image box computed to 236px inside
+   a 174px frame and tall bottles were sliced off at the bottom.
+   Absolute insets are measured against the frame's padding box directly, so
+   the box is always exactly 82% of the frame, and `object-fit: contain` then
+   guarantees the product fits inside it whatever its aspect ratio. */
+#productGrid .product-card .product-image-wrap img {
+  position: absolute;
+  top: 9%;
+  left: 9%;
+  /* Explicit percentages, not `auto` with insets: for an absolutely
+     positioned REPLACED element `width: auto` resolves to the image's
+     intrinsic size and the insets are then over-constrained and ignored,
+     which blew the box up to 566x1068 inside a 174px frame. Percentages on
+     an absolutely positioned element resolve against the containing block,
+     which is definite here, so this sizes reliably. */
+  width: 82%;
+  height: 82%;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+  object-position: center;
+}
+/* The old glass sheen drew a visible edge around that patch; drop it. */
+#productGrid .product-card .product-image-wrap::after {
+  background: none;
+  box-shadow: none;
+}
+#productGrid .product-card .product-image-wrap::before {
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.92) 0 16%,
+    rgba(255, 250, 235, 0.42) 40%,
+    transparent 72%
+  );
+  box-shadow: none;
+}
+#productGrid .product-card .price {
+  color: #12352a;
+}
+#productGrid .product-card .product-link {
+  color: #1c5a47;
+}
+
+/* Section heading + count read against the band's champagne accents */
+.results .results-count {
+  border-color: rgba(201, 163, 92, 0.4);
+  color: #8a6d3b;
+}
+
+/* ============================================================
+   16e. Consultation clarity pass
+   (reduces how much competes for attention at once —
+   final override layer, keep before responsive rules)
+   ============================================================ */
+
+/* The concern choice IS step one, but it occupied the narrowest column while
+   the decorative preview took the widest. Rebalanced so visual weight
+   follows the actual task order. */
+@media (min-width: 1025px) {
+  #find-your-match .match-layout {
+    grid-template-columns:
+      minmax(300px, 0.86fr)
+      minmax(300px, 0.98fr)
+      minmax(272px, 0.84fr);
+  }
+}
+
+/* Explicit step markers, so the eye is told where to begin rather than
+   having to infer it from the separate progress bar above. */
+.concern-rail::before,
+.match .ingredient-fieldset::before {
+  display: block;
+  margin-bottom: 8px;
+  color: #a5834a;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.concern-rail::before {
+  content: "Step 1 · Choose concerns";
+}
+.match .ingredient-fieldset::before {
+  content: "Step 2 · Refine (optional)";
+}
+.match .ingredient-fieldset legend {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* Progressive disclosure: before a concern is picked, the later steps stay
+   visible and usable (browsing the full catalogue is a valid path) but
+   recede so the first decision is unmistakable. */
+.match-layout .ingredient-fieldset,
+.match-layout .selection-summary {
+  transition: opacity 0.45s ease;
+}
+.match-layout[data-concern=""] .ingredient-fieldset,
+.match-layout[data-concern=""] .selection-summary {
+  opacity: 0.72;
+}
+
+/* Concern tiles.
+   These were wide letterbox crops of extreme skin close-ups, which read as
+   clinical rather than editorial and cut the faces awkwardly. Taller frames,
+   a softer crop position and a gentler scrim make them look composed. */
+.concern-rail #skinProblemOpts {
+  gap: 12px;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card {
+  min-height: clamp(96px, 12vh, 132px);
+  border-radius: 20px;
+  background-size: cover;
+  box-shadow:
+    0 14px 30px rgba(24, 45, 35, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 0.7, 0.2, 1),
+    box-shadow 0.32s ease,
+    outline-color 0.2s ease;
+}
+/* Pull the crop toward the cheek so each tile shows skin, not an ear or a
+   half-closed eye. The tiles animate their position through --thumb-x/y, so
+   the variables must be set rather than background-position directly. */
+#find-your-match #skinProblemOpts .option-card {
+  background-size: 128%;
+}
+#find-your-match #skinProblemOpts .option-card[data-value="Dryness"] {
+  --thumb-x: 44%;
+  --thumb-y: 54%;
+}
+#find-your-match #skinProblemOpts .option-card[data-value="Acne"] {
+  --thumb-x: 40%;
+  --thumb-y: 58%;
+}
+#find-your-match #skinProblemOpts .option-card[data-value="Redness"] {
+  --thumb-x: 50%;
+  --thumb-y: 56%;
+}
+#find-your-match #skinProblemOpts .option-card[data-value="Dehydration"] {
+  --thumb-x: 46%;
+  --thumb-y: 60%;
+}
+/* Scrim only where the label sits, so the photography stays visible. */
+.concern-rail #skinProblemOpts .option-card::before {
+  background: linear-gradient(
+    180deg,
+    rgba(12, 30, 24, 0) 34%,
+    rgba(12, 30, 24, 0.55) 74%,
+    rgba(10, 26, 21, 0.88) 100%
+  );
+}
+.concern-rail #skinProblemOpts .option-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 22px 42px rgba(24, 45, 35, 0.24),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card strong {
+  font-size: 0.94rem;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 10px rgba(8, 22, 17, 0.7);
+}
+
+/* The "Start here" hint is now redundant: the Step 1 label above the tiles
+   says the same thing in the same place. One instruction, not two. */
+.concern-start-hint {
+  display: none;
 }
 
 /* ============================================================

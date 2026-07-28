@@ -1,0 +1,2401 @@
+{
+  "_comment": "SYNTHETIC EXAMPLE DATA. Not real people, not dermatologist labels, not a validation result. It exists only to demonstrate the file format and the metrics output, and deliberately contains an injected group difference so the report shows what a disparity looks like.",
+  "records": [
+    {
+      "sample_id": "sample-0001",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.58,
+        "Redness": 0.91,
+        "Dryness": 0.21,
+        "Dehydration": 0.09
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.48,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0002",
+      "ground_truth": [],
+      "predicted": [
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.63,
+        "Redness": 0.58,
+        "Dryness": 0.06,
+        "Dehydration": 0.59
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.94,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0003",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.57,
+        "Redness": 0.56,
+        "Dryness": 0.68,
+        "Dehydration": 0.1
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.77,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0004",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness",
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.68,
+        "Redness": 0.43,
+        "Dryness": 0.31,
+        "Dehydration": 0.59
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.63,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0005",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.88,
+        "Redness": 0.73,
+        "Dryness": 0.29,
+        "Dehydration": 0.98
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.71,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0006",
+      "ground_truth": [
+        "Dryness"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.76,
+        "Redness": 0.57,
+        "Dryness": 0.88,
+        "Dehydration": 0.31
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.63,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0007",
+      "ground_truth": [
+        "Dehydration",
+        "Acne"
+      ],
+      "predicted": [
+        "Acne",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.06,
+        "Redness": 0.7,
+        "Dryness": 0.65,
+        "Dehydration": 0.99
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.59,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0008",
+      "ground_truth": [
+        "Dryness",
+        "Acne"
+      ],
+      "predicted": [
+        "Acne",
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.22,
+        "Redness": 0.29,
+        "Dryness": 0.74,
+        "Dehydration": 0.4
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.49,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0009",
+      "ground_truth": [
+        "Dehydration",
+        "Dryness"
+      ],
+      "predicted": [
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.71,
+        "Redness": 0.99,
+        "Dryness": 0.68,
+        "Dehydration": 0.38
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.53,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0010",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.26,
+        "Redness": 0.0,
+        "Dryness": 0.42,
+        "Dehydration": 0.37
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.61,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0011",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.56,
+        "Redness": 0.4,
+        "Dryness": 0.39,
+        "Dehydration": 0.48
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.48,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0012",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.1,
+        "Redness": 0.57,
+        "Dryness": 0.54,
+        "Dehydration": 0.95
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.46,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0013",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.12,
+        "Redness": 0.85,
+        "Dryness": 0.99,
+        "Dehydration": 0.47
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.61,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0014",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.52,
+        "Redness": 0.21,
+        "Dryness": 0.95,
+        "Dehydration": 0.36
+      },
+      "skin_tone_group": "monk-2",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.72,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0015",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.85,
+        "Redness": 0.52,
+        "Dryness": 0.91,
+        "Dehydration": 0.36
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.72,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0016",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.24,
+        "Redness": 0.4,
+        "Dryness": 0.8,
+        "Dehydration": 0.2
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.63,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0017",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.61,
+        "Redness": 0.34,
+        "Dryness": 0.81,
+        "Dehydration": 0.72
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.93,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0018",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.62,
+        "Redness": 0.9,
+        "Dryness": 0.84,
+        "Dehydration": 0.48
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.62,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0019",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.2,
+        "Redness": 0.89,
+        "Dryness": 0.43,
+        "Dehydration": 0.64
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.85,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0020",
+      "ground_truth": [
+        "Dehydration",
+        "Redness"
+      ],
+      "predicted": [
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.03,
+        "Redness": 0.59,
+        "Dryness": 0.47,
+        "Dehydration": 0.66
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.86,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0021",
+      "ground_truth": [
+        "Dryness",
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.65,
+        "Redness": 0.53,
+        "Dryness": 0.93,
+        "Dehydration": 0.43
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.86,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0022",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.26,
+        "Redness": 0.42,
+        "Dryness": 0.13,
+        "Dehydration": 0.91
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.9,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0023",
+      "ground_truth": [
+        "Redness",
+        "Dryness"
+      ],
+      "predicted": [
+        "Redness",
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.61,
+        "Redness": 0.78,
+        "Dryness": 0.15,
+        "Dehydration": 0.14
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.81,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0024",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.11,
+        "Redness": 0.56,
+        "Dryness": 0.25,
+        "Dehydration": 0.28
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.7,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0025",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.51,
+        "Redness": 0.51,
+        "Dryness": 0.69,
+        "Dehydration": 0.45
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.85,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0026",
+      "ground_truth": [
+        "Dryness"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.42,
+        "Redness": 0.39,
+        "Dryness": 0.32,
+        "Dehydration": 0.67
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.49,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0027",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.14,
+        "Redness": 0.88,
+        "Dryness": 0.97,
+        "Dehydration": 0.22
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.65,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0028",
+      "ground_truth": [
+        "Redness",
+        "Dryness"
+      ],
+      "predicted": [
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.34,
+        "Redness": 0.2,
+        "Dryness": 0.32,
+        "Dehydration": 0.72
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.62,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0029",
+      "ground_truth": [
+        "Dehydration",
+        "Dryness"
+      ],
+      "predicted": [
+        "Acne",
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.06,
+        "Redness": 0.99,
+        "Dryness": 0.79,
+        "Dehydration": 0.97
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.49,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0030",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.85,
+        "Redness": 0.68,
+        "Dryness": 0.95,
+        "Dehydration": 0.41
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.91,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0031",
+      "ground_truth": [
+        "Dryness",
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.27,
+        "Redness": 0.02,
+        "Dryness": 0.09,
+        "Dehydration": 0.26
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.88,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0032",
+      "ground_truth": [],
+      "predicted": [
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.42,
+        "Redness": 0.92,
+        "Dryness": 0.62,
+        "Dehydration": 0.04
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.57,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0033",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.63,
+        "Redness": 0.53,
+        "Dryness": 0.21,
+        "Dehydration": 0.45
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.54,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0034",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness",
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.98,
+        "Redness": 0.51,
+        "Dryness": 0.25,
+        "Dehydration": 0.45
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.86,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0035",
+      "ground_truth": [
+        "Dehydration",
+        "Dryness"
+      ],
+      "predicted": [
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.98,
+        "Redness": 0.34,
+        "Dryness": 0.83,
+        "Dehydration": 0.71
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.52,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0036",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.43,
+        "Redness": 0.06,
+        "Dryness": 0.67,
+        "Dehydration": 0.38
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.79,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0037",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.0,
+        "Redness": 0.36,
+        "Dryness": 0.33,
+        "Dehydration": 0.98
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.57,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0038",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.5,
+        "Redness": 0.2,
+        "Dryness": 0.5,
+        "Dehydration": 0.0
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.86,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0039",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.08,
+        "Redness": 0.96,
+        "Dryness": 0.85,
+        "Dehydration": 0.16
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.84,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0040",
+      "ground_truth": [
+        "Dryness",
+        "Dehydration"
+      ],
+      "predicted": [
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.04,
+        "Redness": 0.84,
+        "Dryness": 0.89,
+        "Dehydration": 0.63
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.8,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0041",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.69,
+        "Redness": 0.23,
+        "Dryness": 0.03,
+        "Dehydration": 0.13
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.93,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0042",
+      "ground_truth": [
+        "Dehydration",
+        "Dryness"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness",
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.26,
+        "Redness": 0.46,
+        "Dryness": 0.07,
+        "Dehydration": 0.93
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.5,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0043",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.23,
+        "Redness": 0.76,
+        "Dryness": 0.23,
+        "Dehydration": 0.65
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.7,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0044",
+      "ground_truth": [
+        "Acne",
+        "Redness"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness",
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.2,
+        "Redness": 0.6,
+        "Dryness": 0.33,
+        "Dehydration": 0.65
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.6,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0045",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.22,
+        "Redness": 0.49,
+        "Dryness": 0.71,
+        "Dehydration": 0.29
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.68,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0046",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.47,
+        "Redness": 0.29,
+        "Dryness": 0.08,
+        "Dehydration": 0.51
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.95,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0047",
+      "ground_truth": [
+        "Redness",
+        "Acne"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.36,
+        "Redness": 0.6,
+        "Dryness": 0.63,
+        "Dehydration": 0.28
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.8,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0048",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.49,
+        "Redness": 0.45,
+        "Dryness": 0.3,
+        "Dehydration": 0.14
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.64,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0049",
+      "ground_truth": [],
+      "predicted": [
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.12,
+        "Redness": 0.93,
+        "Dryness": 0.71,
+        "Dehydration": 0.9
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.58,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0050",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.43,
+        "Redness": 0.28,
+        "Dryness": 0.05,
+        "Dehydration": 0.1
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.59,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0051",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.79,
+        "Redness": 0.43,
+        "Dryness": 0.03,
+        "Dehydration": 0.76
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.91,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0052",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.64,
+        "Redness": 0.29,
+        "Dryness": 0.05,
+        "Dehydration": 0.93
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.54,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0053",
+      "ground_truth": [
+        "Dryness",
+        "Redness"
+      ],
+      "predicted": [
+        "Redness",
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.66,
+        "Redness": 0.3,
+        "Dryness": 0.56,
+        "Dehydration": 0.39
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.77,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0054",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.91,
+        "Redness": 1.0,
+        "Dryness": 0.45,
+        "Dehydration": 0.14
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.57,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0055",
+      "ground_truth": [
+        "Dryness"
+      ],
+      "predicted": [
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.2,
+        "Redness": 0.02,
+        "Dryness": 0.87,
+        "Dehydration": 0.38
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.71,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0056",
+      "ground_truth": [
+        "Dryness",
+        "Redness"
+      ],
+      "predicted": [
+        "Redness",
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.69,
+        "Redness": 0.53,
+        "Dryness": 0.79,
+        "Dehydration": 0.85
+      },
+      "skin_tone_group": "monk-4",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.59,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0057",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.87,
+        "Redness": 0.02,
+        "Dryness": 0.03,
+        "Dehydration": 0.71
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.93,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0058",
+      "ground_truth": [
+        "Acne",
+        "Dehydration"
+      ],
+      "predicted": [
+        "Acne",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.97,
+        "Redness": 0.25,
+        "Dryness": 0.11,
+        "Dehydration": 0.15
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.94,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0059",
+      "ground_truth": [],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.46,
+        "Redness": 0.55,
+        "Dryness": 0.04,
+        "Dehydration": 0.78
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.73,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0060",
+      "ground_truth": [],
+      "predicted": [
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.64,
+        "Redness": 0.7,
+        "Dryness": 0.11,
+        "Dehydration": 0.07
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.92,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0061",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Acne",
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 1.0,
+        "Redness": 0.28,
+        "Dryness": 0.32,
+        "Dehydration": 0.84
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.69,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0062",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.19,
+        "Redness": 0.88,
+        "Dryness": 0.65,
+        "Dehydration": 0.08
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.78,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0063",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.4,
+        "Redness": 0.01,
+        "Dryness": 0.29,
+        "Dehydration": 0.85
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.55,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0064",
+      "ground_truth": [
+        "Dryness"
+      ],
+      "predicted": [
+        "Redness",
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.89,
+        "Redness": 0.11,
+        "Dryness": 0.62,
+        "Dehydration": 0.61
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.69,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0065",
+      "ground_truth": [],
+      "predicted": [
+        "Redness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.97,
+        "Redness": 0.14,
+        "Dryness": 0.05,
+        "Dehydration": 0.06
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.67,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0066",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.94,
+        "Redness": 0.75,
+        "Dryness": 0.03,
+        "Dehydration": 0.66
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.87,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0067",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness",
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.96,
+        "Redness": 0.12,
+        "Dryness": 0.96,
+        "Dehydration": 0.21
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.83,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0068",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Acne",
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.45,
+        "Redness": 0.32,
+        "Dryness": 0.74,
+        "Dehydration": 0.47
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.66,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0069",
+      "ground_truth": [
+        "Acne",
+        "Redness"
+      ],
+      "predicted": [
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.75,
+        "Redness": 0.9,
+        "Dryness": 0.34,
+        "Dehydration": 0.27
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.47,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0070",
+      "ground_truth": [
+        "Dryness"
+      ],
+      "predicted": [
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.95,
+        "Redness": 0.07,
+        "Dryness": 0.83,
+        "Dehydration": 0.11
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.93,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0071",
+      "ground_truth": [
+        "Dryness",
+        "Redness"
+      ],
+      "predicted": [
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.93,
+        "Redness": 0.3,
+        "Dryness": 0.69,
+        "Dehydration": 0.15
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.61,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0072",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.75,
+        "Redness": 0.25,
+        "Dryness": 0.06,
+        "Dehydration": 0.03
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.72,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0073",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.1,
+        "Redness": 0.5,
+        "Dryness": 0.71,
+        "Dehydration": 0.45
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.52,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0074",
+      "ground_truth": [
+        "Redness",
+        "Dryness"
+      ],
+      "predicted": [
+        "Redness",
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.29,
+        "Redness": 0.28,
+        "Dryness": 0.27,
+        "Dehydration": 0.25
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.55,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0075",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.33,
+        "Redness": 0.4,
+        "Dryness": 0.99,
+        "Dehydration": 0.51
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.77,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0076",
+      "ground_truth": [],
+      "predicted": [
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.82,
+        "Redness": 0.84,
+        "Dryness": 0.91,
+        "Dehydration": 0.04
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.57,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0077",
+      "ground_truth": [],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.37,
+        "Redness": 0.87,
+        "Dryness": 0.45,
+        "Dehydration": 0.26
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.92,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0078",
+      "ground_truth": [],
+      "predicted": [
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.34,
+        "Redness": 0.04,
+        "Dryness": 1.0,
+        "Dehydration": 0.04
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.78,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0079",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.08,
+        "Redness": 0.03,
+        "Dryness": 0.5,
+        "Dehydration": 0.48
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.5,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0080",
+      "ground_truth": [
+        "Redness",
+        "Dryness"
+      ],
+      "predicted": [
+        "Redness",
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.99,
+        "Redness": 0.67,
+        "Dryness": 0.42,
+        "Dehydration": 0.05
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.73,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0081",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.2,
+        "Redness": 0.73,
+        "Dryness": 0.2,
+        "Dehydration": 0.01
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.66,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0082",
+      "ground_truth": [],
+      "predicted": [
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.01,
+        "Redness": 0.55,
+        "Dryness": 0.64,
+        "Dehydration": 0.91
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.74,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0083",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.11,
+        "Redness": 0.49,
+        "Dryness": 0.8,
+        "Dehydration": 0.97
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.6,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0084",
+      "ground_truth": [],
+      "predicted": [
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.39,
+        "Redness": 0.9,
+        "Dryness": 0.62,
+        "Dehydration": 0.82
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.77,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0085",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Redness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.04,
+        "Redness": 0.94,
+        "Dryness": 0.16,
+        "Dehydration": 0.36
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.57,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0086",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.32,
+        "Redness": 0.39,
+        "Dryness": 0.46,
+        "Dehydration": 0.85
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.77,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0087",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.02,
+        "Redness": 0.62,
+        "Dryness": 0.49,
+        "Dehydration": 0.24
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.84,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0088",
+      "ground_truth": [
+        "Redness",
+        "Dehydration"
+      ],
+      "predicted": [
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.8,
+        "Redness": 0.5,
+        "Dryness": 0.66,
+        "Dehydration": 0.04
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.49,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0089",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.14,
+        "Redness": 0.86,
+        "Dryness": 1.0,
+        "Dehydration": 0.73
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.55,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0090",
+      "ground_truth": [
+        "Dryness",
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.61,
+        "Redness": 0.25,
+        "Dryness": 0.32,
+        "Dehydration": 0.61
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.52,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0091",
+      "ground_truth": [
+        "Redness",
+        "Dryness"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness",
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.18,
+        "Redness": 0.16,
+        "Dryness": 0.94,
+        "Dehydration": 0.68
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.53,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0092",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.45,
+        "Redness": 0.52,
+        "Dryness": 0.69,
+        "Dehydration": 0.9
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.95,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0093",
+      "ground_truth": [
+        "Dryness",
+        "Redness"
+      ],
+      "predicted": [
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.08,
+        "Redness": 0.23,
+        "Dryness": 0.62,
+        "Dehydration": 0.96
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "directional",
+      "lighting_score": 0.86,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0094",
+      "ground_truth": [
+        "Dryness"
+      ],
+      "predicted": [
+        "Dryness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.31,
+        "Redness": 0.0,
+        "Dryness": 0.03,
+        "Dehydration": 0.15
+      },
+      "skin_tone_group": "monk-7",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.76,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0095",
+      "ground_truth": [
+        "Dryness",
+        "Acne"
+      ],
+      "predicted": [
+        "Redness",
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.0,
+        "Redness": 0.35,
+        "Dryness": 0.11,
+        "Dehydration": 0.36
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.66,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0096",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.94,
+        "Redness": 0.24,
+        "Dryness": 0.15,
+        "Dehydration": 0.1
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.52,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0097",
+      "ground_truth": [
+        "Dehydration"
+      ],
+      "predicted": [
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.89,
+        "Redness": 0.59,
+        "Dryness": 0.58,
+        "Dehydration": 0.6
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.82,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0098",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [],
+      "confidence_scores": {
+        "Acne": 0.24,
+        "Redness": 0.06,
+        "Dryness": 0.78,
+        "Dehydration": 0.01
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.78,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0099",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.42,
+        "Redness": 0.61,
+        "Dryness": 0.51,
+        "Dehydration": 0.06
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.47,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0100",
+      "ground_truth": [
+        "Acne",
+        "Redness"
+      ],
+      "predicted": [
+        "Acne",
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.45,
+        "Redness": 0.23,
+        "Dryness": 0.11,
+        "Dehydration": 0.23
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.51,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0101",
+      "ground_truth": [
+        "Acne"
+      ],
+      "predicted": [
+        "Acne"
+      ],
+      "confidence_scores": {
+        "Acne": 0.52,
+        "Redness": 0.27,
+        "Dryness": 0.64,
+        "Dehydration": 0.97
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.49,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0102",
+      "ground_truth": [],
+      "predicted": [
+        "Acne",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.16,
+        "Redness": 0.91,
+        "Dryness": 0.19,
+        "Dehydration": 0.39
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.57,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0103",
+      "ground_truth": [
+        "Dehydration",
+        "Dryness"
+      ],
+      "predicted": [
+        "Dryness",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.57,
+        "Redness": 0.31,
+        "Dryness": 0.21,
+        "Dehydration": 0.62
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "even-daylight",
+      "lighting_score": 0.73,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0104",
+      "ground_truth": [
+        "Redness"
+      ],
+      "predicted": [
+        "Acne",
+        "Dehydration"
+      ],
+      "confidence_scores": {
+        "Acne": 0.98,
+        "Redness": 0.7,
+        "Dryness": 0.03,
+        "Dehydration": 0.14
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.77,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    },
+    {
+      "sample_id": "sample-0105",
+      "ground_truth": [],
+      "predicted": [
+        "Redness"
+      ],
+      "confidence_scores": {
+        "Acne": 0.82,
+        "Redness": 0.82,
+        "Dryness": 0.89,
+        "Dehydration": 0.07
+      },
+      "skin_tone_group": "monk-9",
+      "skin_tone_scale": "monk-10",
+      "lighting_condition": "low-light",
+      "lighting_score": 0.92,
+      "image_source": "dataset",
+      "device": "smartphone-front",
+      "algorithm_version": "0.4.0-relative-baseline",
+      "notes": null
+    }
+  ]
+}

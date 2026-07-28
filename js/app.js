@@ -20,10 +20,7 @@ function buildQuery(condition, allergen) {
   const requested = Array.isArray(condition) ? condition : [condition];
   const conditions = [...new Set(requested.filter(value => allowedConditions.includes(value)))];
 
-  if (!conditions.length) {
-    throw new Error('Choose at least one valid skin concern.');
-  }
-
+  // With no concerns selected the query returns the full catalogue.
   // One ingredient pattern per concern, so every concern must be covered.
   const conditionPatterns = conditions.map((value, index) => `
   ?product :containsIngredient ?ingredient${index} .
@@ -278,10 +275,14 @@ function normalizeVisibleProduct(image) {
     const centerX = (left + right + 1) / (2 * width);
     const centerY = (top + bottom + 1) / (2 * height);
 
-    // Clamp so extreme crops can't blow the image out of its frame.
-    const scale = Math.max(.88, Math.min(1.35, .84 / Math.max(visibleWidth, visibleHeight)));
-    const shiftX = Math.max(-12, Math.min(12, (.5 - centerX) * 100 * scale));
-    const shiftY = Math.max(-10, Math.min(10, (.5 - centerY) * 100 * scale));
+    // Clamp so extreme crops can't blow the image out of its frame. The
+    // ceiling matters: the CSS sizes the image at 75% of the frame, the frame
+    // clips, and 75% x 1.35 overflowed, which cropped the bottom off taller
+    // bottles. 1.22 keeps the worst case inside the frame with room for the
+    // centring shift.
+    const scale = Math.max(.88, Math.min(1.22, .84 / Math.max(visibleWidth, visibleHeight)));
+    const shiftX = Math.max(-9, Math.min(9, (.5 - centerX) * 100 * scale));
+    const shiftY = Math.max(-8, Math.min(8, (.5 - centerY) * 100 * scale));
 
     image.style.setProperty('--visible-scale', scale.toFixed(3));
     image.style.setProperty('--image-shift-x', `${shiftX.toFixed(2)}%`);
@@ -418,6 +419,7 @@ function showNeutralConcern() {
   clearTimeout(concernSwitchTimer);
   matchLayout.dataset.concern = '';
   concernStage.dataset.concern = '';
+  delete document.body.dataset.concern;
   concernStage.classList.add('is-neutral');
   activeConcernTitle.textContent = 'Choose a concern';
   activeConcernDescription.textContent = 'Select one or more skin concerns to begin.';
@@ -444,6 +446,7 @@ function updateConcernPreview(value, animate = true) {
   pauseNeutralConcern();
   matchLayout.dataset.concern = option.value;
   concernStage.dataset.concern = option.value;
+  document.body.dataset.concern = option.value;
   activeConcernTitle.textContent = option.label;
   activeConcernDescription.textContent = presentation.description;
 
@@ -535,8 +538,9 @@ function updateOnboarding() {
   concernStartHint.classList.toggle('is-hidden', hasConditions);
   concernRail.classList.toggle('needs-guidance', !hasConditions);
   ctaHelper.textContent = !hasConditions
-    ? 'Choose at least one concern to continue.'
+    ? 'Browse the full collection, or choose concerns for a tailored match.'
     : 'We’ll find products matching all selected concerns.';
+  findBtn.textContent = hasConditions ? 'Show my matches' : 'Show all products';
 }
 
 // Mirrors the hidden form state onto the visual option cards.
@@ -553,7 +557,7 @@ function syncOptions() {
     button.setAttribute('aria-checked', String(selected));
     button.tabIndex = selected ? 0 : -1;
   });
-  findBtn.disabled = !selectedConditions().length || isSearching;
+  findBtn.disabled = isSearching;
   updateOnboarding();
 }
 
@@ -581,7 +585,7 @@ function addProductInfo(parent, binding, condition, allergenValue, headingClass 
   badges.className = 'badges';
   const match = document.createElement('span');
   match.className = 'badge';
-  match.textContent = `Matches ${conditionText(condition)}`;
+  match.textContent = condition.length ? `Matches ${conditionText(condition)}` : 'Full collection';
   const filter = document.createElement('span');
   filter.className = 'badge filter';
   filter.textContent = filterText(allergenValue);
@@ -876,8 +880,9 @@ function setSearchBusy(busy) {
     resetChoicesButton
   ].forEach(button => { button.disabled = busy; });
   findBtn.classList.toggle('is-loading', busy);
-  findBtn.textContent = busy ? 'Finding matches…' : 'Show my matches';
-  findBtn.disabled = busy || !selectedConditions().length;
+  findBtn.textContent = busy ? 'Finding matches…'
+    : selectedConditions().length ? 'Show my matches' : 'Show all products';
+  findBtn.disabled = busy;
 }
 
 function scrollToResults() {
@@ -923,10 +928,6 @@ async function settleResultsAndScroll() {
 async function findProducts() {
   const conditions = selectedConditions();
   const allergenValue = allergen.value;
-  if (!conditions.length) {
-    formMessage.textContent = 'Please choose at least one skin concern first.';
-    return;
-  }
 
   // Track this request so a newer search can invalidate stale responses.
   const requestId = ++searchRequestId;
@@ -937,7 +938,8 @@ async function findProducts() {
   onboardingStep = 3;
   updateOnboarding();
 
-  const concernsLabel = conditionText(conditions);
+  const concernsLabel = conditions.length ? conditionText(conditions) : 'All products';
+  document.getElementById('results-title').textContent = conditions.length ? 'Your matches.' : 'The full collection.';
   restoreResultsIntro();
   formMessage.textContent = '';
   results.classList.remove('is-ready');
@@ -950,7 +952,9 @@ async function findProducts() {
   productGrid.replaceChildren();
   moreTitle.classList.remove('visible');
   resultsCount.textContent = 'Loading…';
-  resultsMeta.textContent = `${concernsLabel} · ${filterText(allergenValue)} · Lowest price first`;
+  // "Recorded price" rather than "price": the ordering is by the dataset
+  // snapshot, which is not necessarily the retailer's order today.
+  resultsMeta.textContent = `${concernsLabel} · ${filterText(allergenValue)} · Lowest recorded price first`;
   startLoading();
 
   try {
@@ -1030,7 +1034,8 @@ function setupMotion() {
   const moments = [...document.querySelectorAll('.video-moment')];
   const nav = document.querySelector('.nav');
   const navAnchors = [...document.querySelectorAll('.nav-links a')];
-  const sections = [...document.querySelectorAll('main>section')];
+  // Footer holds the #contact anchor, so it joins the scroll-spy list.
+  const sections = [...document.querySelectorAll('main>section'), document.getElementById('contact')].filter(Boolean);
 
   const playVideos = () => {
     if (!reduced) videos.forEach(video => {
@@ -1050,7 +1055,7 @@ function setupMotion() {
 
   pageMotionUpdate = () => {
     const y = scrollY;
-    nav.classList.toggle('scrolled', y > Math.max(40, home.offsetHeight - 90));
+    nav.classList.toggle('scrolled', y > 24);
 
     // Highlight the nav link for the section under the upper-middle of the viewport.
     const marker = y + innerHeight * .42;
@@ -1058,6 +1063,8 @@ function setupMotion() {
     sections.forEach(item => {
       if (marker >= item.offsetTop) activeId = item.id;
     });
+    // The footer is short, so treat reaching the page bottom as Contact.
+    if (y + innerHeight >= document.documentElement.scrollHeight - 40) activeId = 'contact';
     navAnchors.forEach(link => link.classList.toggle('active', link.getAttribute('href') === `#${activeId}`));
 
     if (!reduced && !mobile) {
@@ -1099,7 +1106,14 @@ function setupScrolling() {
 
   if (!reduced && !mobile && window.Lenis) {
     try {
-      lenis = new Lenis({ duration: 1.05, smoothWheel: true, wheelMultiplier: .9, touchMultiplier: 1, syncTouch: false });
+      lenis = new Lenis({
+        duration: 1.25,
+        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        wheelMultiplier: .9,
+        touchMultiplier: 1,
+        syncTouch: false
+      });
     } catch (error) {
       console.warn('Lenis unavailable; using native scrolling.', error);
     }
@@ -1110,9 +1124,55 @@ function setupScrolling() {
     const target = document.querySelector(link.getAttribute('href'));
     if (!target) return;
     event.preventDefault();
-    if (lenis) lenis.scrollTo(target, { offset: -82 });
+    if (lenis) lenis.scrollTo(target, { offset: -82, duration: 1.4 });
     else target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
   }));
+
+  // Magnetic snap: when scrolling settles with the consultation section
+  // nearby, glide its top edge to the viewport so the frame is never half-cut.
+  if (lenis && !reduced && !mobile) {
+    const matchSection = document.getElementById('find-your-match');
+    let settleTimer = null;
+    let snapping = false;
+    // The magnet disarms after each capture so a deliberate scroll away
+    // releases cleanly instead of fighting the user (no re-grab jerk).
+    let armed = true;
+    const sectionDelta = () => {
+      const navHeight = document.querySelector('.nav')?.offsetHeight || 0;
+      return matchSection.getBoundingClientRect().top - navHeight - 12;
+    };
+    window.addEventListener('scroll', () => {
+      if (snapping || isSearching) return;
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        const delta = sectionDelta();
+        // Re-arm only once the user is well clear of the section.
+        if (!armed) {
+          if (Math.abs(delta) > innerHeight * 0.85) armed = true;
+          return;
+        }
+        // Already in contact counts as captured — disarm so the next
+        // scroll away is a clean release.
+        if (Math.abs(delta) <= 8) {
+          armed = false;
+          return;
+        }
+        // Pull in whenever the section top settles in the upper two thirds
+        // of the viewport, in either scroll direction.
+        if (delta > -innerHeight * 0.45 && delta < innerHeight * 0.66) {
+          snapping = true;
+          // Disarm at snap start: one pull per approach, and Lenis itself
+          // hands control back to the user if they scroll mid-glide.
+          armed = false;
+          lenis.scrollTo(window.scrollY + delta, {
+            duration: 0.9,
+            onComplete: () => { snapping = false; }
+          });
+          setTimeout(() => { snapping = false; }, 1400);
+        }
+      }, 120);
+    }, { passive: true });
+  }
 
   // Single rAF loop drives Lenis, the page motion handler, and the story.
   const animationLoop = time => {
@@ -1173,11 +1233,13 @@ function setupPremiumMotion() {
   // Split the hero title into per-word spans for the staggered reveal.
   const title = document.getElementById('hero-title');
   const titleText = title.textContent.trim();
+  // Words inside <em> keep their italic accent styling after the split.
+  const accentWords = new Set((title.querySelector('em')?.textContent.trim().split(/\s+/)) || []);
   const words = titleText.split(/\s+/);
   title.setAttribute('aria-label', titleText);
   title.replaceChildren(...words.map((word, index) => {
     const span = document.createElement('span');
-    span.className = 'hero-word';
+    span.className = accentWords.has(word) ? 'hero-word hero-word-accent' : 'hero-word';
     span.style.setProperty('--word-index', index);
     span.setAttribute('aria-hidden', 'true');
     span.textContent = word;
@@ -1282,3 +1344,33 @@ setupNeutralVideoLoop();
 setupPremiumMotion();
 setupMotion();
 setupScrolling();
+
+// ---------------------------------------------------------------------------
+// Bridge for the visual skin-screening module (js/skin-scan.js)
+// ---------------------------------------------------------------------------
+
+// Selects the given concern values through the existing form state. The
+// screening only suggests and preselects; the user still reviews, edits and
+// submits through the normal buildQuery()/findProducts() flow.
+window.cosmoApplyConcerns = values => {
+  const allowed = new Set([...skinProblem.options].map(option => option.value));
+  const wanted = values.filter(value => allowed.has(value));
+  if (!wanted.length) return false;
+  [...skinProblem.options].forEach(option => {
+    option.selected = wanted.includes(option.value);
+  });
+  activeConcern = wanted[wanted.length - 1];
+  onboardingStep = 2;
+  formMessage.textContent = '';
+  updateConcernPreview(activeConcern);
+  return true;
+};
+
+// Lenis drives scrolling from its own rAF loop, so `overflow: hidden` on the
+// body does not stop it. Modal overlays must pause it explicitly, otherwise
+// the page keeps scrolling behind the dialog.
+window.cosmoLockScroll = locked => {
+  if (!lenis) return;
+  if (locked) lenis.stop();
+  else lenis.start();
+};
