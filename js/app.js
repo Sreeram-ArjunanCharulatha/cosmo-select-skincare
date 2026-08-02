@@ -1143,7 +1143,23 @@ function buildIngredientComposition(keyIngredients, binding, name) {
 // card is open at a time; opening a new one closes whichever was open.
 function setupCardFlip(card, flipTrigger, back, name) {
   const backToFront = back.querySelector('.flip-back-btn');
+  const inner = card.querySelector('.flip-card-inner');
   let open = false;
+
+  // The front carries two purely decorative pseudo-elements (a gold corner
+  // accent, a hover shine sweep). They only make sense on a card sitting
+  // flat facing the viewer; mid-rotation their absolutely-positioned box
+  // shadows can render at odd angles against the 3D-transformed face and
+  // read as a stray line poking out of the card. .is-flipped only covers
+  // the OPEN half of that (JS applies it before the opening animation
+  // starts, but removes it before the closing one does), so a is-turning
+  // class - live for both directions - is what actually needs to gate them.
+  inner?.addEventListener('transitionstart', event => {
+    if (event.propertyName === 'transform') card.classList.add('is-turning');
+  });
+  inner?.addEventListener('transitionend', event => {
+    if (event.propertyName === 'transform') card.classList.remove('is-turning');
+  });
 
   const focusableBackControls = () => [...back.querySelectorAll('a,button')];
 

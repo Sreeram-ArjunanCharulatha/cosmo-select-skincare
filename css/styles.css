@@ -5809,6 +5809,23 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 }
 .flip-card.is-flipped .flip-trigger { opacity: 0; }
 
+/* The gold corner accent and hover shine sweep only belong on a card lying
+   flat facing the viewer. .is-turning covers rotation in both directions
+   (opening AND closing - .is-flipped alone only covers the open half,
+   since it's removed the instant a close begins, before that animation
+   runs); .is-flipped covers holding fully open. Together they suppress
+   these decorative marks for the entire time the face is at any angle
+   other than flat, so their absolutely-positioned box-shadows never render
+   against a 3D-transformed plane, which is what could read as a stray line
+   detached from the card during the turn. */
+.flip-card.is-turning .flip-face-front::before,
+.flip-card.is-turning .flip-face-front::after,
+.flip-card.is-flipped .flip-face-front::before,
+.flip-card.is-flipped .flip-face-front::after {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
 /* -- Back face content ------------------------------------------------------ */
 
 .flip-back-btn {
