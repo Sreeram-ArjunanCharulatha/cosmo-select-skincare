@@ -1242,23 +1242,41 @@ function setupMotion() {
 }
 
 function setupScrolling() {
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const mobile = matchMedia('(max-width: 768px)').matches;
+  const reducedQuery = matchMedia('(prefers-reduced-motion: reduce)');
+  const mobileQuery = matchMedia('(max-width: 768px)');
+  const coarseInput = () => reducedQuery.matches || mobileQuery.matches;
 
-  if (!reduced && !mobile && window.Lenis) {
-    try {
-      lenis = new Lenis({
-        duration: 1.25,
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smoothWheel: true,
-        wheelMultiplier: .9,
-        touchMultiplier: 1,
-        syncTouch: false
-      });
-    } catch (error) {
-      console.warn('Lenis unavailable; using native scrolling.', error);
+  // Smooth scrolling is re-decided whenever the viewport or the motion
+  // preference changes, not just once on load. Deciding once meant a page
+  // opened in a narrow window — or a tablet held in portrait, or a browser
+  // restored small and then maximised — never created Lenis at all, and since
+  // the magnetic recentre below runs through Lenis, the pull stayed dead for
+  // the whole session however wide the window later became. That is what made
+  // it look like it worked only sometimes.
+  const syncSmoothScrolling = () => {
+    const wanted = !coarseInput() && !!window.Lenis;
+    if (wanted && !lenis) {
+      try {
+        lenis = new Lenis({
+          duration: 1.25,
+          easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          smoothWheel: true,
+          wheelMultiplier: .9,
+          touchMultiplier: 1,
+          syncTouch: false
+        });
+      } catch (error) {
+        console.warn('Lenis unavailable; using native scrolling.', error);
+        lenis = null;
+      }
+    } else if (!wanted && lenis) {
+      lenis.destroy();
+      lenis = null;
     }
-  }
+  };
+  syncSmoothScrolling();
+  reducedQuery.addEventListener('change', syncSmoothScrolling);
+  mobileQuery.addEventListener('change', syncSmoothScrolling);
 
   // Anchor links route through Lenis when it's active.
   document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', event => {
@@ -1266,51 +1284,72 @@ function setupScrolling() {
     if (!target) return;
     event.preventDefault();
     if (lenis) lenis.scrollTo(target, { offset: -82, duration: 1.4 });
-    else target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    else target.scrollIntoView({ behavior: reducedQuery.matches ? 'auto' : 'smooth', block: 'start' });
   }));
 
   // Magnetic snap: when scrolling settles with the consultation section
   // nearby, glide its top edge to the viewport so the frame is never half-cut.
-  if (lenis && !reduced && !mobile) {
+  {
     const matchSection = document.getElementById('find-your-match');
     let settleTimer = null;
     let snapping = false;
-    // The magnet disarms after each capture so a deliberate scroll away
-    // releases cleanly instead of fighting the user (no re-grab jerk).
-    let armed = true;
+    // Direction of the gesture that is currently settling.
+    let gestureStartY = window.scrollY;
+    let gestureActive = false;
+
     const sectionDelta = () => {
       const navHeight = document.querySelector('.nav')?.offsetHeight || 0;
       return matchSection.getBoundingClientRect().top - navHeight - 12;
     };
+
+    // WHY DIRECTION RATHER THAN AN ARMED LATCH
+    // ----------------------------------------
+    // The magnet used to disarm after each capture and only re-arm once the
+    // reader moved 0.85 x viewport away. That distance is larger than the
+    // capture band itself, so backing off by less — which is the normal way
+    // anyone re-approaches a section — left it disarmed and the pull simply
+    // never came. It worked on the first approach and looked broken after
+    // that.
+    //
+    // The latch was really there to stop the magnet yanking a reader back
+    // while they scroll down through the section. Direction says that
+    // directly: pull only when the section's top edge is travelling TOWARD
+    // the capture line, never when it is moving away. Approaching from either
+    // side still captures, and scrolling on through is left alone.
+    const CAPTURE_LOW = () => -innerHeight * 0.45;
+    const CAPTURE_HIGH = () => innerHeight * 0.66;
+    const MIN_GESTURE = 2;   // ignore sub-pixel jitter
+
     window.addEventListener('scroll', () => {
+      // Checked live rather than captured at start-up, so the magnet becomes
+      // available the moment smooth scrolling does.
+      if (!lenis || coarseInput()) return;
       if (snapping || isSearching) return;
+      if (!gestureActive) {
+        gestureStartY = window.scrollY;
+        gestureActive = true;
+      }
       clearTimeout(settleTimer);
       settleTimer = setTimeout(() => {
+        gestureActive = false;
         const delta = sectionDelta();
-        // Re-arm only once the user is well clear of the section.
-        if (!armed) {
-          if (Math.abs(delta) > innerHeight * 0.85) armed = true;
-          return;
-        }
-        // Already in contact counts as captured — disarm so the next
-        // scroll away is a clean release.
-        if (Math.abs(delta) <= 8) {
-          armed = false;
-          return;
-        }
-        // Pull in whenever the section top settles in the upper two thirds
-        // of the viewport, in either scroll direction.
-        if (delta > -innerHeight * 0.45 && delta < innerHeight * 0.66) {
-          snapping = true;
-          // Disarm at snap start: one pull per approach, and Lenis itself
-          // hands control back to the user if they scroll mid-glide.
-          armed = false;
-          lenis.scrollTo(window.scrollY + delta, {
-            duration: 0.9,
-            onComplete: () => { snapping = false; }
-          });
-          setTimeout(() => { snapping = false; }, 1400);
-        }
+
+        if (Math.abs(delta) <= 8) return;                              // already centred
+        if (delta <= CAPTURE_LOW() || delta >= CAPTURE_HIGH()) return; // out of range
+
+        const moved = window.scrollY - gestureStartY;
+        if (Math.abs(moved) < MIN_GESTURE) return;
+        // delta > 0: the section sits below the line, so scrolling down closes
+        // the gap. delta < 0: it sits above, so scrolling up closes it.
+        const approaching = delta > 0 ? moved > 0 : moved < 0;
+        if (!approaching) return;
+
+        snapping = true;
+        lenis.scrollTo(window.scrollY + delta, {
+          duration: 0.9,
+          onComplete: () => { snapping = false; }
+        });
+        setTimeout(() => { snapping = false; }, 1400);
       }, 120);
     }, { passive: true });
   }
