@@ -1652,7 +1652,9 @@ legend {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  overflow: hidden;
+  /* No overflow:hidden here: it sits above the flip-card-inner's 3D context,
+     and WebKit flattens 3D transforms on any descendant of an overflow:hidden
+     ancestor. Each flip face clips its own corners instead (see below). */
   border: 1px solid rgba(70, 91, 78, 0.11);
   border-radius: 22px;
   background: #fffdf8;
@@ -2825,7 +2827,7 @@ legend {
 .product-grid {
   gap: 24px;
 }
-.product-card::before {
+.product-card .flip-face-front::before {
   content: "";
   position: absolute;
   z-index: 2;
@@ -2936,7 +2938,7 @@ legend {
 #productGrid .product-card {
   isolation: isolate;
 }
-#productGrid .product-card::after {
+#productGrid .product-card .flip-face-front::after {
   content: "";
   position: absolute;
   z-index: 3;
@@ -2957,7 +2959,7 @@ legend {
     0 30px 72px rgba(36, 57, 45, 0.17),
     0 0 0 1px rgba(231, 206, 151, 0.25);
 }
-#productGrid .product-card:hover::after {
+#productGrid .product-card:hover .flip-face-front::after {
   opacity: 1;
   transform: rotate(14deg) translateX(650%);
 }
@@ -3025,7 +3027,7 @@ legend {
   --card-tint: #f0f6f3;
   --accent: #6e988c;
 }
-#productGrid .product-card::before {
+#productGrid .product-card .flip-face-front::before {
   left: 25px;
   width: 78px;
   height: 4px;
@@ -5701,4 +5703,473 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 @media (prefers-reduced-motion: reduce) {
   #find-your-match .concern-rail #skinProblemOpts .option-card,
   #find-your-match .profile-actions .btn-primary { transition: none; }
+}
+
+/* ===========================================================================
+   PRODUCT CARD FLIP — front/back ingredient reveal
+   ---------------------------------------------------------------------------
+   Every rule here is additive on top of the existing .product-card styling
+   above; nothing in that styling was removed except .product-card's own
+   overflow:hidden (moved onto each flip face — see the note where it used to
+   be) and the front-only pseudo-elements, which were renamed to target
+   .flip-face-front so they keep working exactly as before.
+   =========================================================================== */
+
+.flip-card {
+  perspective: 1700px;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 680ms cubic-bezier(0.34, 0.02, 0.16, 1);
+  will-change: transform;
+}
+.flip-card.is-flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+.flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 22px;
+  overflow: hidden;
+}
+.flip-face-front {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  /* Normal flow, not absolute: this is what gives .flip-card-inner (and so
+     .product-card) its height. The back face is pinned to that height with
+     inset:0 below, so both faces are always identical in size. */
+}
+.flip-face-back {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 20px 22px;
+  transform: rotateY(180deg);
+  background: var(--tint-a, #f6f2e8);
+}
+
+/* Flip trigger: small circular icon, top-right of the front, never competing
+   with the product information beneath it. */
+.flip-trigger {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(70, 91, 78, 0.14);
+  border-radius: 50%;
+  color: var(--forest);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(53, 48, 40, 0.12);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.flip-trigger svg { width: 16px; height: 16px; }
+.flip-trigger:hover {
+  background: #fff;
+  transform: scale(1.06);
+  box-shadow: 0 6px 16px rgba(53, 48, 40, 0.18);
+}
+.flip-trigger:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
+}
+.flip-card.is-flipped .flip-trigger { opacity: 0; }
+
+/* -- Back face content ------------------------------------------------------ */
+
+.flip-back-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(31, 61, 46, 0.14);
+  border-radius: 50%;
+  color: var(--forest);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.flip-back-btn svg { width: 15px; height: 15px; }
+.flip-back-btn:hover { background: #fff; transform: scale(1.06); }
+.flip-back-btn:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
+
+.back-header {
+  padding-right: 40px;   /* clear of the back-to-front control */
+}
+.back-brand {
+  display: block;
+  color: var(--forest);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.back-name {
+  margin: 5px 0 0;
+  color: var(--ink);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.18rem;
+  font-weight: 600;
+  line-height: 1.16;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.back-kicker {
+  display: block;
+  margin: 14px 0 6px;
+  color: #8a6f3c;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.ingredient-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  min-height: 0;
+}
+.ingredient-callouts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+.ingredient-callouts:empty { display: none; }
+.callout {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.side-right .callout { flex-direction: row; }
+.callout-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c8a76a;
+  box-shadow: 0 0 0 3px rgba(200, 167, 106, 0.18);
+}
+.callout-line {
+  flex: none;
+  width: 16px;
+  height: 1px;
+  background: rgba(31, 61, 46, 0.28);
+}
+.callout-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.side-left .callout-text { text-align: right; align-items: flex-end; }
+.side-right .callout-text { text-align: left; align-items: flex-start; }
+.callout-text strong {
+  color: var(--ink);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 108px;
+}
+.callout-text small {
+  color: var(--muted);
+  font-size: 0.62rem;
+  line-height: 1.3;
+}
+
+.ingredient-image {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(64px, 26%, 96px);
+  aspect-ratio: 1;
+  margin: 0 2px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.25) 62%, transparent 78%);
+  box-shadow: 0 10px 22px rgba(31, 61, 46, 0.12);
+}
+.ingredient-image .product-image-wrap {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 10px;
+  aspect-ratio: auto;
+  background: none;
+}
+.ingredient-image .product-image-wrap img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 10px rgba(31, 61, 46, 0.18));
+}
+
+.ingredient-empty {
+  flex: 1;
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.back-match-note {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  color: var(--ink);
+  font-size: 0.72rem;
+  line-height: 1.45;
+  opacity: 0.88;
+}
+
+.back-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+.back-view-full {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--forest);
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  min-height: 32px;
+}
+.back-view-full:hover { color: var(--deep-forest); }
+.back-visit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  background: var(--forest);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.back-visit:hover { background: var(--deep-forest); transform: translateY(-1px); }
+
+/* Category tint, chosen per product from its real ingredient/type data. */
+.flip-face-back[data-tint="hydrating"] { --tint-a: #eef4f2; }
+.flip-face-back[data-tint="barrier"] { --tint-a: #f6f0e3; }
+.flip-face-back[data-tint="acne"] { --tint-a: #eaf3ec; }
+.flip-face-back[data-tint="soothing"] { --tint-a: #faeee7; }
+.flip-face-back[data-tint="spf"] { --tint-a: #f8f1e0; }
+
+/* -- Reduced motion: fade/swap instead of a 3D turn ------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-card-inner {
+    transition: none;
+    transform: none !important;
+  }
+  .flip-face-back {
+    position: absolute;
+    inset: 0;
+    transform: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+  .flip-face-front {
+    transition: opacity 160ms ease;
+  }
+  .flip-card.is-flipped .flip-face-back {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .flip-card.is-flipped .flip-face-front {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* -- Full-ingredient modal --------------------------------------------------- */
+
+.ingredient-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(24, 34, 28, 0.42);
+  backdrop-filter: blur(2px);
+}
+.ingredient-modal {
+  position: relative;
+  width: min(420px, 100%);
+  max-height: min(560px, 82vh);
+  overflow-y: auto;
+  padding: 30px 28px 26px;
+  background: #fdfbf5;
+  border-radius: 22px;
+  box-shadow: 0 30px 70px rgba(20, 32, 26, 0.32);
+}
+.ingredient-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: rgba(31, 61, 46, 0.06);
+  border: 0;
+  border-radius: 50%;
+  color: var(--forest);
+  cursor: pointer;
+}
+.ingredient-modal-close svg { width: 14px; height: 14px; }
+.ingredient-modal-close:hover { background: rgba(31, 61, 46, 0.12); }
+.ingredient-modal-brand {
+  margin: 0;
+  padding-right: 30px;
+  color: var(--forest);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.ingredient-modal-title {
+  margin: 5px 0 0;
+  padding-right: 30px;
+  color: var(--ink);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.ingredient-modal-match {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: rgba(31, 61, 46, 0.05);
+  border-radius: 12px;
+  color: var(--ink);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.ingredient-modal-filter {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.ingredient-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ingredient-modal-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 4px;
+  border-bottom: 1px solid rgba(31, 61, 46, 0.08);
+}
+.ingredient-modal-item:last-child { border-bottom: 0; }
+.ingredient-modal-item-name {
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.ingredient-modal-item.is-key .ingredient-modal-item-name { color: var(--forest); }
+.ingredient-modal-item-benefit {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+/* -- Responsive -------------------------------------------------------------- */
+
+/* Tablet 2-column grid: slightly tighter callout distances. */
+@media (max-width: 1024px) {
+  .callout-line { width: 12px; }
+  .callout-text strong { max-width: 92px; }
+  .ingredient-image { width: clamp(60px, 24%, 84px); }
+}
+
+/* Narrow single-column cards: side callouts would crowd against a ~340px
+   width, so the composition stacks instead — image, then a plain list. */
+@media (max-width: 480px) {
+  .ingredient-stage { flex-direction: column; gap: 12px; }
+  .ingredient-callouts { flex-direction: column; width: 100%; }
+  .side-left .callout,
+  .side-right .callout { flex-direction: row; }
+  .side-left .callout-text,
+  .side-right .callout-text { text-align: left; align-items: flex-start; }
+  .callout-text strong { max-width: none; white-space: normal; }
+  .ingredient-image { order: -1; width: 96px; margin: 0 auto; }
+  .ingredient-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .ingredient-modal {
+    width: 100%;
+    max-height: 78vh;
+    border-radius: 22px 22px 0 0;
+    padding: 24px 20px 28px;
+  }
+  /* Larger touch targets: mobile has no hover state to fall back on. */
+  .flip-trigger,
+  .flip-back-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .back-visit { min-height: 44px; padding: 0 16px; }
+  .back-view-full { min-height: 44px; display: inline-flex; align-items: center; }
+  .ingredient-modal-close { width: 40px; height: 40px; }
 }

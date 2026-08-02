@@ -99,6 +99,95 @@ const LOADING_MESSAGES = [
 ];
 
 // ---------------------------------------------------------------------------
+// Ingredient knowledge (card flip, back-of-card ingredient story)
+// ---------------------------------------------------------------------------
+
+// Maps a raw ingredient name (as stored in the graph, or a common synonym) to
+// a canonical key, so spelling/capitalisation/naming variants group under one
+// display entry rather than appearing as duplicates.
+const INGREDIENT_ALIASES = {
+  'hyaluronic acid': 'hyaluronic-acid',
+  'sodium hyaluronate': 'hyaluronic-acid',
+  'niacinamide': 'niacinamide',
+  'ceramide': 'ceramides',
+  'ceramides': 'ceramides',
+  'ceramide np': 'ceramides',
+  'ceramide ap': 'ceramides',
+  'ceramide eop': 'ceramides',
+  'salicylic acid': 'salicylic-acid',
+  'glycerin': 'glycerin',
+  'glycerine': 'glycerin',
+  'panthenol': 'panthenol',
+  'pro-vitamin b5': 'panthenol',
+  'provitamin b5': 'panthenol',
+  'urea': 'urea',
+  'vitamin e': 'vitamin-e',
+  'tocopherol': 'vitamin-e',
+  'tocopheryl acetate': 'vitamin-e',
+  'shea butter': 'shea-butter',
+  'butyrospermum parkii': 'shea-butter',
+  'squalane': 'squalane',
+  'retinol': 'retinol',
+  'peptide': 'peptides',
+  'peptides': 'peptides',
+  'lactic acid': 'lactic-acid',
+  'zinc': 'zinc',
+  'zinc oxide': 'zinc',
+  'zinc pca': 'zinc',
+  'aloe vera': 'aloe-vera',
+  'aloe barbadensis leaf juice': 'aloe-vera',
+  'centella asiatica': 'centella-asiatica',
+  'cica': 'centella-asiatica',
+  'allantoin': 'allantoin',
+  'vitamin c': 'vitamin-c',
+  'ascorbic acid': 'vitamin-c',
+  'titanium dioxide': 'sunscreen-filter',
+  'avobenzone': 'sunscreen-filter',
+  'octinoxate': 'sunscreen-filter'
+};
+
+// Canonical key -> display label, a short non-medical benefit and a priority
+// rank used to choose which ingredients earn one of the five callout slots.
+// Ranking follows the order requested for the card back; entries the graph
+// happens to carry that weren't on that list (allantoin, vitamin C) are kept
+// but ranked after it, so a named ingredient never crowds out one the graph
+// doesn't actually have any of.
+const INGREDIENT_INFO = {
+  'hyaluronic-acid': { label: 'Hyaluronic acid', benefit: 'Hydration', priority: 0 },
+  'niacinamide': { label: 'Niacinamide', benefit: 'Calming and tone support', priority: 1 },
+  'ceramides': { label: 'Ceramides', benefit: 'Barrier support', priority: 2 },
+  'salicylic-acid': { label: 'Salicylic acid', benefit: 'Pore care', priority: 3 },
+  'glycerin': { label: 'Glycerin', benefit: 'Moisture retention', priority: 4 },
+  'panthenol': { label: 'Panthenol', benefit: 'Soothing', priority: 5 },
+  'urea': { label: 'Urea', benefit: 'Hydration and softening', priority: 6 },
+  'vitamin-e': { label: 'Vitamin E', benefit: 'Antioxidant support', priority: 7 },
+  'shea-butter': { label: 'Shea butter', benefit: 'Moisture retention', priority: 8 },
+  'squalane': { label: 'Squalane', benefit: 'Moisture retention', priority: 9 },
+  'retinol': { label: 'Retinol', benefit: 'Renewal support', priority: 10 },
+  'peptides': { label: 'Peptides', benefit: 'Renewal support', priority: 11 },
+  'lactic-acid': { label: 'Lactic acid', benefit: 'Gentle exfoliation', priority: 12 },
+  'zinc': { label: 'Zinc', benefit: 'Calming support', priority: 13 },
+  'aloe-vera': { label: 'Aloe vera', benefit: 'Soothing', priority: 14 },
+  'centella-asiatica': { label: 'Centella asiatica', benefit: 'Soothing', priority: 15 },
+  'sunscreen-filter': { label: 'Sunscreen filter', benefit: 'Sun protection', priority: 16 },
+  'allantoin': { label: 'Allantoin', benefit: 'Soothing', priority: 17 },
+  'vitamin-c': { label: 'Vitamin C', benefit: 'Antioxidant support', priority: 18 }
+};
+
+// Fallback benefit for an ingredient the alias map above doesn't recognise:
+// the graph's own :hasFunction value, in plain words, never an invented one.
+const FUNCTION_BENEFIT = {
+  Humectant: 'Hydration',
+  Occlusant: 'Barrier support',
+  Emollient: 'Moisture retention',
+  Exfoliant: 'Pore care',
+  Brightening: 'Tone support',
+  Soothing: 'Soothing',
+  Anti_Aging: 'Renewal support',
+  Antioxidant: 'Antioxidant support'
+};
+
+// ---------------------------------------------------------------------------
 // DOM references
 // ---------------------------------------------------------------------------
 
@@ -165,6 +254,10 @@ let isSearching = false;
 // against the current selection. Cleared whenever the selection changes so the
 // summary never reports a count for a profile the user has since edited.
 let lastMatchCount = null;
+// The single flipped product card, if any. Opening a card closes whichever
+// one this points to; both are set to null together.
+let openFlipCard = null;
+let ingredientModal = null;
 
 // ---------------------------------------------------------------------------
 // Utility functions
@@ -255,6 +348,107 @@ function applyPriceCorrections(bindings, corrections) {
     ? Number.POSITIVE_INFINITY
     : Number.parseFloat(binding.price?.value) || Number.POSITIVE_INFINITY);
   return bindings.sort((a, b) => rank(a) - rank(b));
+}
+
+// ---------------------------------------------------------------------------
+// Ingredient data (card flip, back-of-card ingredient story)
+// ---------------------------------------------------------------------------
+
+// A separate, additive query: the recommendation query above is left exactly
+// as it was, so filtering, matching and ordering cannot be affected by this.
+// It asks for every :containsIngredient triple regardless of concern, which
+// buildQuery() deliberately does not, since it only needs ingredients that
+// match the SELECTED concern to build the WHERE clause.
+const INGREDIENT_QUERY = `${PREFIX}
+
+SELECT ?productName ?ingName ?funcUri WHERE {
+  ?product :productName ?productName .
+  ?product :containsIngredient ?ing .
+  ?ing :ingredientName ?ingName .
+  OPTIONAL { ?ing :hasFunction ?funcUri . }
+}`;
+
+let ingredientDataPromise = null;
+
+// Returns a Map<productName, [{name, function}]>, in the order the graph
+// returned them, deduplicated by name. Like loadPriceCorrections, this is an
+// enhancement: on failure the cards still render, just without a back side
+// worth flipping to.
+function loadIngredientData() {
+  if (!ingredientDataPromise) {
+    ingredientDataPromise = fetch(`${ENDPOINT}?query=${encodeURIComponent(INGREDIENT_QUERY)}`, {
+      headers: { Accept: 'application/sparql-results+json' }
+    })
+      .then(response => (response.ok ? response.json() : null))
+      .then(data => {
+        const bindings = Array.isArray(data?.results?.bindings) ? data.results.bindings : [];
+        const map = new Map();
+        bindings.forEach(row => {
+          const productName = row.productName?.value;
+          const ingName = row.ingName?.value;
+          if (!productName || !ingName) return;
+          const funcUri = row.funcUri?.value || '';
+          const func = funcUri ? funcUri.split('#').pop() : null;
+          if (!map.has(productName)) map.set(productName, []);
+          const list = map.get(productName);
+          if (!list.some(entry => entry.name.toLowerCase() === ingName.toLowerCase())) {
+            list.push({ name: ingName, function: func });
+          }
+        });
+        return map;
+      })
+      .catch(() => null);
+  }
+  return ingredientDataPromise;
+}
+
+// Resolves one raw {name, function} entry to a display label, a short
+// benefit and a priority rank. Unrecognised ingredients are still shown
+// under their own name — never dropped — with the graph's own function as
+// their benefit when one is recorded, and no invented benefit otherwise.
+function enrichIngredient(entry) {
+  const key = INGREDIENT_ALIASES[entry.name.trim().toLowerCase()];
+  const known = key ? INGREDIENT_INFO[key] : null;
+  if (known) {
+    return { label: known.label, benefit: known.benefit, priority: known.priority, raw: entry.name, function: entry.function };
+  }
+  return {
+    label: entry.name,
+    benefit: entry.function ? (FUNCTION_BENEFIT[entry.function] || null) : null,
+    priority: 999,
+    raw: entry.name,
+    function: entry.function
+  };
+}
+
+function getEnrichedIngredients(productName, ingredientsMap) {
+  const raw = ingredientsMap?.get(productName) || [];
+  return raw.map(enrichIngredient);
+}
+
+// A background tint the back of the card can lean on, chosen from what the
+// product actually is rather than fixed per product, so it varies with real
+// data instead of being hardcoded.
+function pickIngredientTint(enriched, typeText) {
+  const type = (typeText || '').toLowerCase();
+  if (/spf|sun\s*protect/.test(type)) return 'spf';
+  const has = key => enriched.some(ing => INGREDIENT_ALIASES[ing.raw.trim().toLowerCase()] === key);
+  if (has('salicylic-acid')) return 'acne';
+  if (has('allantoin') || has('centella-asiatica') || has('aloe-vera')) return 'soothing';
+  if (has('ceramides')) return 'barrier';
+  return 'hydrating';
+}
+
+// Short, dynamically generated, and phrased as a suggestion rather than a
+// promise: it names the selected concerns, never the matching algorithm.
+function buildMatchExplanation(conditions) {
+  const list = (Array.isArray(conditions) ? conditions : [conditions]).filter(Boolean);
+  if (!list.length) return 'Shown as part of the full collection, not matched to a specific concern.';
+  const names = list.map(value => value.toLowerCase());
+  const joined = names.length === 1
+    ? names[0]
+    : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
+  return `Recommended for ${joined} based on the product's matched ingredient data.`;
 }
 
 function filterText(value) {
@@ -740,18 +934,340 @@ function addProductInfo(parent, binding, condition, allergenValue, headingClass 
   parent.append(brand, name, type, badges, footer);
 }
 
-function createCard(binding, condition, allergenValue) {
+const FLIP_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.5-5.8M20 12a8 8 0 0 1-13.5 5.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M18 3v4h-4M6 21v-4h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CLOSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+
+function createCard(binding, condition, allergenValue, ingredientsMap) {
   const card = document.createElement('article');
-  card.className = 'product-card';
+  card.className = 'product-card flip-card';
   const name = valueOf(binding, 'productName', 'Product');
-  card.append(createProductImage(name, valueOf(binding, 'image')));
+
+  // FRONT — unchanged from the plain card: same image, same product info.
+  const front = document.createElement('div');
+  front.className = 'flip-face flip-face-front';
+  front.append(createProductImage(name, valueOf(binding, 'image')));
 
   const body = document.createElement('div');
   body.className = 'product-body';
   addProductInfo(body, binding, condition, allergenValue, 'product-name');
-  card.append(body);
+  front.append(body);
+
+  const flipTrigger = document.createElement('button');
+  flipTrigger.type = 'button';
+  flipTrigger.className = 'flip-trigger';
+  flipTrigger.setAttribute('aria-label', `View ingredients for ${name}`);
+  flipTrigger.setAttribute('aria-expanded', 'false');
+  flipTrigger.title = 'View ingredients';
+  flipTrigger.innerHTML = FLIP_ICON;
+  front.append(flipTrigger);
+
+  // BACK — the ingredient story.
+  const back = buildIngredientBack(binding, name, ingredientsMap, condition, allergenValue);
+
+  const inner = document.createElement('div');
+  inner.className = 'flip-card-inner';
+  inner.append(front, back);
+  card.append(inner);
+
+  setupCardFlip(card, flipTrigger, back, name);
   return card;
 }
+
+// Builds the reverse face: brand, name, an ingredient composition centred on
+// the product's own photo, a one-line match explanation, and the back's
+// actions. Ingredient content comes only from ingredientsMap; nothing here is
+// invented when data is missing.
+function buildIngredientBack(binding, name, ingredientsMap, condition, allergenValue) {
+  const back = document.createElement('div');
+  back.className = 'flip-face flip-face-back';
+  back.setAttribute('aria-hidden', 'true');
+
+  const brandText = valueOf(binding, 'brand', '');
+  const typeText = valueOf(binding, 'type', '');
+  const enriched = getEnrichedIngredients(name, ingredientsMap);
+  back.dataset.tint = pickIngredientTint(enriched, typeText);
+
+  const backToFront = document.createElement('button');
+  backToFront.type = 'button';
+  backToFront.className = 'flip-back-btn';
+  backToFront.setAttribute('aria-label', 'Back to product');
+  backToFront.title = 'Back to product';
+  backToFront.innerHTML = FLIP_ICON;
+
+  const header = document.createElement('div');
+  header.className = 'back-header';
+  const brand = document.createElement('span');
+  brand.className = 'back-brand';
+  brand.textContent = brandText;
+  const heading = document.createElement('h4');
+  heading.className = 'back-name';
+  heading.textContent = name.replace(/\s+(\d+(?:\.\d+)?\s?(?:ml|g)\b)$/i, ' $1');
+  header.append(brand, heading);
+
+  const kicker = document.createElement('span');
+  kicker.className = 'back-kicker';
+  kicker.textContent = 'Key ingredients';
+
+  const ranked = [...enriched].sort((a, b) => a.priority - b.priority);
+  const keyIngredients = ranked.slice(0, 5);
+  const composition = buildIngredientComposition(keyIngredients, binding, name);
+
+  const matchNote = document.createElement('p');
+  matchNote.className = 'back-match-note';
+  matchNote.textContent = buildMatchExplanation(condition);
+
+  const actions = document.createElement('div');
+  actions.className = 'back-actions';
+
+  if (enriched.length > keyIngredients.length) {
+    const viewFull = document.createElement('button');
+    viewFull.type = 'button';
+    viewFull.className = 'back-view-full';
+    viewFull.textContent = 'View full ingredients';
+    viewFull.addEventListener('click', event => {
+      event.stopPropagation();
+      const keySet = new Set(keyIngredients.map(ing => ing.raw.toLowerCase()));
+      const modal = ensureIngredientModal();
+      modal.open({
+        name,
+        brand: brandText,
+        matchExplanation: buildMatchExplanation(condition),
+        filterStatus: `Ingredient filter: ${filterText(allergenValue)}`,
+        ingredients: enriched.map(ing => ({ ...ing, isKey: keySet.has(ing.raw.toLowerCase()) }))
+      }, viewFull);
+    });
+    actions.append(viewFull);
+  }
+
+  const url = valueOf(binding, 'url');
+  if (safeHttp(url)) {
+    const visit = document.createElement('a');
+    visit.className = 'back-visit';
+    visit.href = url;
+    visit.target = '_blank';
+    visit.rel = 'noopener noreferrer';
+    visit.textContent = 'Visit product site ↗';
+    visit.addEventListener('click', event => event.stopPropagation());
+    actions.append(visit);
+  }
+
+  back.append(backToFront, header, kicker, composition, matchNote, actions);
+  return back;
+}
+
+// Product image centred, key ingredients flanking it as callouts (label,
+// thin connector line, small anchor dot) split roughly evenly left/right, in
+// the spirit of the ingredient-reference composition without depending on
+// pixel-measured lines to the image, which would not survive the card's own
+// responsive resizing.
+function buildIngredientComposition(keyIngredients, binding, name) {
+  const stage = document.createElement('div');
+  stage.className = 'ingredient-stage';
+
+  if (!keyIngredients.length) {
+    const empty = document.createElement('p');
+    empty.className = 'ingredient-empty';
+    empty.textContent = 'Ingredient details are not currently available.';
+    stage.append(createProductImage(name, valueOf(binding, 'image')), empty);
+    return stage;
+  }
+
+  const left = document.createElement('div');
+  left.className = 'ingredient-callouts side-left';
+  const right = document.createElement('div');
+  right.className = 'ingredient-callouts side-right';
+  const splitAt = Math.ceil(keyIngredients.length / 2);
+
+  keyIngredients.forEach((ing, index) => {
+    const callout = document.createElement('div');
+    callout.className = 'callout';
+    const dot = document.createElement('span');
+    dot.className = 'callout-dot';
+    dot.setAttribute('aria-hidden', 'true');
+    const line = document.createElement('span');
+    line.className = 'callout-line';
+    line.setAttribute('aria-hidden', 'true');
+    const text = document.createElement('span');
+    text.className = 'callout-text';
+    const label = document.createElement('strong');
+    label.textContent = ing.label;
+    text.append(label);
+    if (ing.benefit) {
+      const benefit = document.createElement('small');
+      benefit.textContent = ing.benefit;
+      text.append(benefit);
+    }
+
+    if (index < splitAt) {
+      callout.append(text, line, dot);
+      left.append(callout);
+    } else {
+      callout.append(dot, line, text);
+      right.append(callout);
+    }
+  });
+
+  const imageWrap = document.createElement('div');
+  imageWrap.className = 'ingredient-image';
+  imageWrap.append(createProductImage(name, valueOf(binding, 'image')));
+
+  stage.append(left, imageWrap, right);
+  return stage;
+}
+
+// Flip mechanics: click anywhere on the card toggles it, except on a link or
+// button, which handles its own click and leaves the card as it is. Only one
+// card is open at a time; opening a new one closes whichever was open.
+function setupCardFlip(card, flipTrigger, back, name) {
+  const backToFront = back.querySelector('.flip-back-btn');
+  let open = false;
+
+  const focusableBackControls = () => [...back.querySelectorAll('a,button')];
+
+  const setOpen = next => {
+    if (next === open) return;
+    open = next;
+    card.classList.toggle('is-flipped', open);
+    flipTrigger.setAttribute('aria-expanded', String(open));
+    back.setAttribute('aria-hidden', String(!open));
+    // Keep the hidden face out of the tab order so its content is never
+    // announced or reachable while turned away from the viewer.
+    focusableBackControls().forEach(el => { el.tabIndex = open ? 0 : -1; });
+    flipTrigger.tabIndex = open ? -1 : 0;
+
+    if (open) {
+      if (openFlipCard && openFlipCard !== controller) openFlipCard.close();
+      openFlipCard = controller;
+      // Move focus into the revealed face so a keyboard user lands somewhere
+      // reachable, rather than staying on a trigger that backface-visibility
+      // has just turned away from the viewer.
+      backToFront?.focus();
+    } else if (openFlipCard === controller) {
+      openFlipCard = null;
+    }
+  };
+
+  const controller = {
+    card,
+    close: () => setOpen(false),
+    isOpen: () => open
+  };
+
+  flipTrigger.addEventListener('click', event => {
+    event.stopPropagation();
+    setOpen(true);
+  });
+  backToFront?.addEventListener('click', event => {
+    event.stopPropagation();
+    setOpen(false);
+    flipTrigger.focus();
+  });
+  card.addEventListener('click', event => {
+    if (event.target.closest('a,button')) return;
+    setOpen(!open);
+  });
+  card.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && open) {
+      event.stopPropagation();
+      setOpen(false);
+      flipTrigger.focus();
+    }
+  });
+
+  // Start every back face fully out of the tab order.
+  focusableBackControls().forEach(el => { el.tabIndex = -1; });
+}
+
+// One modal, created on first use and reused for every card, so opening the
+// full ingredient list never adds more than a handful of nodes to the page.
+function ensureIngredientModal() {
+  if (ingredientModal) return ingredientModal;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'ingredient-modal-overlay';
+  overlay.hidden = true;
+
+  const modal = document.createElement('div');
+  modal.className = 'ingredient-modal';
+  modal.setAttribute('role', 'dialog');
+  modal.setAttribute('aria-modal', 'true');
+  modal.tabIndex = -1;
+
+  const closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.className = 'ingredient-modal-close';
+  closeBtn.setAttribute('aria-label', 'Close ingredient list');
+  closeBtn.innerHTML = CLOSE_ICON;
+
+  const brand = document.createElement('p');
+  brand.className = 'ingredient-modal-brand';
+  const title = document.createElement('h4');
+  title.className = 'ingredient-modal-title';
+  const matchNote = document.createElement('p');
+  matchNote.className = 'ingredient-modal-match';
+  const filterNote = document.createElement('p');
+  filterNote.className = 'ingredient-modal-filter';
+  const list = document.createElement('ul');
+  list.className = 'ingredient-modal-list';
+
+  modal.append(closeBtn, brand, title, matchNote, filterNote, list);
+  overlay.append(modal);
+  document.body.append(overlay);
+
+  let returnFocus = null;
+  const close = () => {
+    if (overlay.hidden) return;
+    overlay.hidden = true;
+    document.body.classList.remove('ingredient-modal-open');
+    returnFocus?.focus();
+  };
+  overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
+  closeBtn.addEventListener('click', close);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !overlay.hidden) close();
+  });
+
+  ingredientModal = {
+    open(data, trigger) {
+      returnFocus = trigger || null;
+      brand.textContent = data.brand || '';
+      title.textContent = data.name;
+      matchNote.textContent = data.matchExplanation;
+      filterNote.textContent = data.filterStatus;
+      list.replaceChildren();
+      data.ingredients.forEach(ing => {
+        const item = document.createElement('li');
+        item.className = 'ingredient-modal-item';
+        item.classList.toggle('is-key', Boolean(ing.isKey));
+        const label = document.createElement('span');
+        label.className = 'ingredient-modal-item-name';
+        label.textContent = ing.label;
+        item.append(label);
+        if (ing.benefit) {
+          const benefit = document.createElement('span');
+          benefit.className = 'ingredient-modal-item-benefit';
+          benefit.textContent = ing.benefit;
+          item.append(benefit);
+        }
+        list.append(item);
+      });
+      overlay.hidden = false;
+      document.body.classList.add('ingredient-modal-open');
+      requestAnimationFrame(() => modal.focus());
+    },
+    close
+  };
+  return ingredientModal;
+}
+
+// Clicking anywhere outside the open card closes it; this is one listener
+// for every card, not one per card.
+document.addEventListener('click', event => {
+  if (openFlipCard && !openFlipCard.card.contains(event.target)) openFlipCard.close();
+});
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && openFlipCard) openFlipCard.close();
+});
 
 // ---------------------------------------------------------------------------
 // Featured product story
@@ -760,7 +1276,7 @@ function createCard(binding, condition, allergenValue) {
 // Renders up to four featured products as a sticky, scroll-driven sequence
 // (01/04 → 04/04) with the rest in the More Matches grid. On mobile or with
 // reduced motion everything goes straight to the grid.
-function renderResults(bindings, condition, allergenValue) {
+function renderResults(bindings, condition, allergenValue, ingredientsMap) {
   if (resultStoryCleanup) resultStoryCleanup();
   restoreResultsIntro();
   story.replaceChildren();
@@ -773,7 +1289,7 @@ function renderResults(bindings, condition, allergenValue) {
   const remaining = bindings.slice(featured.length);
 
   if (mobile || reduced || featured.length < 2) {
-    bindings.forEach(item => productGrid.append(createCard(item, condition, allergenValue)));
+    bindings.forEach(item => productGrid.append(createCard(item, condition, allergenValue, ingredientsMap)));
     moreTitle.classList.add('visible');
     return;
   }
@@ -849,7 +1365,7 @@ function renderResults(bindings, condition, allergenValue) {
   stickyFrame.append(resultsHeader, resultsMeta, sticky);
   shell.append(stickyFrame);
   story.append(shell);
-  remaining.forEach(item => productGrid.append(createCard(item, condition, allergenValue)));
+  remaining.forEach(item => productGrid.append(createCard(item, condition, allergenValue, ingredientsMap)));
   moreTitle.classList.toggle('visible', remaining.length > 0);
 
   // Give the shell enough height to scroll through every featured product,
@@ -1104,7 +1620,8 @@ async function findProducts() {
 
     // Overlay verified retailer prices before anything is measured or drawn,
     // so the count, the ordering and the cards all agree on one set of figures.
-    const corrections = await loadPriceCorrections();
+    // Ingredient data loads alongside it; the two queries are independent.
+    const [corrections, ingredientsMap] = await Promise.all([loadPriceCorrections(), loadIngredientData()]);
     if (requestId !== searchRequestId) return;
     applyPriceCorrections(uniqueBindings, corrections);
 
@@ -1125,7 +1642,7 @@ async function findProducts() {
     resultsCount.textContent = `${uniqueBindings.length} product${uniqueBindings.length === 1 ? '' : 's'}`;
     // Feed the count back into the profile panel's summary line.
     lastMatchCount = uniqueBindings.length;
-    renderResults(uniqueBindings, conditions, allergenValue);
+    renderResults(uniqueBindings, conditions, allergenValue, ingredientsMap);
     await settleResultsAndScroll();
   } catch (error) {
     if (error.name === 'AbortError' || requestId !== searchRequestId) return;
