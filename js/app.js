@@ -1051,21 +1051,24 @@ function buildIngredientBack(binding, name, ingredientsMap, condition, allergenV
     actions.append(visit);
   }
 
-  // Grouped into a natural-height top block and a bottom-anchored block,
-  // rather than one flex column: a grid row is stretched to its tallest
-  // card, and centering the ingredient composition in that leftover space
-  // was what produced the large dead gaps above and below it on any row
-  // sharing space with a taller neighbour. Anchoring the actions to the
-  // bottom keeps that same leftover space in one place instead.
+  // Three zones, matching how the card is meant to read: a fixed-height
+  // header, a flexible centre that claims whatever space a taller grid row
+  // adds and centres the ingredient composition within it (so leftover
+  // height becomes breathing room around the hero circle rather than a dead
+  // gap under it), and a bottom block at its own natural size.
   const top = document.createElement('div');
   top.className = 'back-top';
-  top.append(header, kicker, composition);
+  top.append(header, kicker);
+
+  const centre = document.createElement('div');
+  centre.className = 'back-centre';
+  centre.append(composition);
 
   const bottom = document.createElement('div');
   bottom.className = 'back-bottom';
   bottom.append(matchNote, actions);
 
-  back.append(backToFront, top, bottom);
+  back.append(backToFront, top, centre, bottom);
   return back;
 }
 
@@ -1079,10 +1082,16 @@ function buildIngredientComposition(keyIngredients, binding, name) {
   stage.className = 'ingredient-stage';
 
   if (!keyIngredients.length) {
+    // Still gets the hero circle treatment (grid-column: 2, via the shared
+    // .ingredient-image class) so a product with no ingredient data doesn't
+    // read as a broken/unfinished card next to ones that do.
+    const imageWrap = document.createElement('div');
+    imageWrap.className = 'ingredient-image';
+    imageWrap.append(createProductImage(name, valueOf(binding, 'image')));
     const empty = document.createElement('p');
     empty.className = 'ingredient-empty';
     empty.textContent = 'Ingredient details are not currently available.';
-    stage.append(createProductImage(name, valueOf(binding, 'image')), empty);
+    stage.append(imageWrap, empty);
     return stage;
   }
 

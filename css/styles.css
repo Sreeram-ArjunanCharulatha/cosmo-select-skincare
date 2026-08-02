@@ -5866,63 +5866,80 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   text-transform: uppercase;
 }
 
-/* Natural height: sized by its own content (header, kicker, composition),
-   never stretched. See the note above buildIngredientBack in app.js for why
-   that stretching was the cause of the large dead gaps on taller rows. */
+/* Three zones. Header is natural height; back-centre is the ONLY flexible
+   one and claims whatever a taller grid row adds, centring the ingredient
+   composition within that space so extra height reads as deliberate
+   breathing room around a hero circle rather than a dead gap under it;
+   back-bottom sits at its own natural size below that. */
 .back-top { flex: none; }
-/* Whatever height a grid row adds beyond back-top's own content collects
-   here, in one place, rather than as padding around a centred composition. */
+.back-centre {
+  /* min-height intentionally left at its default (auto), NOT 0: auto is what
+     stops a flex item shrinking below its own content's size. With it at 0,
+     a composition taller than the leftover centre space (five ingredients,
+     stacked, on a narrow card) got flex-shrunk smaller than that content
+     regardless, and centring an oversized child inside an undersized box
+     overflows equally both ways - the second half of the last row spilled
+     straight into back-bottom. Now the centre can only ever be as small as
+     its content needs; anything genuinely taller than the card scrolls via
+     flip-face-back's overflow-y, never overlaps a neighbour. */
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .back-bottom {
-  /* flex:none + margin-top:auto, not flex:1 + justify-content:flex-end: the
-     latter stretched this to whatever leftover space existed and then, when
-     match-note + actions needed more than that leftover, overflowed UPWARD
-     out of its own box and into back-top - flex overflow spills toward the
-     packing origin, and flex-end packs from the bottom, so the spill went up
-     and the two blocks visibly overlapped. margin-top:auto instead lets this
-     block sit at its own natural height and simply absorbs any extra row
-     space above itself, so it can never be smaller than its content. */
   flex: none;
-  margin-top: auto;
   display: flex;
   flex-direction: column;
   padding-top: 14px;
 }
 
+/* Grid, not flex, for the callout columns: a grid track's max size is capped
+   by its own fraction of the row, so a long ingredient name can never push
+   its column past the card edge the way an unconstrained flex child could -
+   that was the exact cause of labels being cropped at the left ("Hyaluronic
+   acid" reading as "valuronic acid"). Text wraps onto a second line instead
+   of being truncated, which the grid track has room to absorb. */
 .ingredient-stage {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 22px 0 10px;
+  column-gap: clamp(8px, 2.4vw, 16px);
+  width: 100%;
 }
 .ingredient-callouts {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 16px;
-  flex: 1;
+  gap: 14px;
   min-width: 0;
 }
 .ingredient-callouts:empty { display: none; }
+.side-left { grid-column: 1; align-items: flex-end; }
+.side-right { grid-column: 3; align-items: flex-start; }
 .callout {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 7px;
   min-width: 0;
+  max-width: 100%;
 }
-.side-right .callout { flex-direction: row; }
+.side-left .callout { justify-content: flex-end; }
 .callout-dot {
   flex: none;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
+  margin-top: 8px;
   border-radius: 50%;
   background: #c8a76a;
   box-shadow: 0 0 0 4px rgba(200, 167, 106, 0.16);
 }
 .callout-line {
-  flex: none;
-  width: 24px;
+  flex: 1 1 10px;
+  min-width: 8px;
+  max-width: 26px;
   height: 1px;
+  margin-top: 12px;
   background: rgba(31, 61, 46, 0.3);
 }
 .callout-text {
@@ -5930,46 +5947,52 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   flex-direction: column;
   gap: 1px;
   min-width: 0;
+  max-width: 100%;
 }
 .side-left .callout-text { text-align: right; align-items: flex-end; }
 .side-right .callout-text { text-align: left; align-items: flex-start; }
 .callout-text strong {
   color: var(--ink);
   font-family: 'Manrope', system-ui, sans-serif;
-  font-size: 0.86rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  line-height: 1.25;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 132px;
+  line-height: 1.28;
+  /* Wraps rather than truncating: a grid column can only ever be as wide as
+     its own track, so this can never overflow the card - it can only take a
+     second line, which reads as considered rather than cramped. */
+  white-space: normal;
+  overflow-wrap: break-word;
+  max-width: 100%;
 }
 .callout-text small {
   color: var(--muted);
-  font-size: 0.72rem;
+  font-size: 0.7rem;
+  font-weight: 500;
   line-height: 1.3;
 }
 
+/* The hero: significantly larger than before, always centred, photo filling
+   it with real presence rather than floating small inside empty padding. */
 .ingredient-image {
   position: relative;
+  grid-column: 2;
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(84px, 30%, 128px);
+  width: clamp(122px, 40%, 176px);
   aspect-ratio: 1;
-  margin: 0 4px;
   overflow: hidden;      /* clips the photo to the circle it sits in */
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.94) 0%, rgba(255, 255, 255, 0.3) 64%, transparent 80%);
-  box-shadow: 0 14px 28px rgba(31, 61, 46, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.32) 64%, transparent 80%);
+  box-shadow: 0 18px 36px rgba(31, 61, 46, 0.16), 0 2px 0 rgba(255, 255, 255, 0.6) inset;
 }
 .ingredient-image .product-image-wrap {
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 16px;
+  padding: 12px;
   aspect-ratio: auto;
   background: none;
 }
@@ -5980,15 +6003,16 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   max-height: none;
   object-fit: contain;
   object-position: center;
-  filter: drop-shadow(0 6px 8px rgba(31, 61, 46, 0.16));
+  filter: drop-shadow(0 8px 10px rgba(31, 61, 46, 0.18));
 }
 
 .ingredient-empty {
-  margin: 14px 0 0;
+  grid-column: 3;
+  margin: 0;
   color: var(--muted);
   font-size: 0.8rem;
   line-height: 1.5;
-  text-align: center;
+  text-align: left;
 }
 
 .back-match-note {
@@ -6039,8 +6063,11 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 }
 .back-visit:hover { background: var(--deep-forest); transform: translateY(-1px); }
 
-/* Category tint, chosen per product from its real ingredient/type data. */
-.flip-face-back[data-tint="hydrating"] { --tint-a: #eef4f2; }
+/* Category tint, chosen per product from its real ingredient/type data.
+   Hydrating was previously a pale mint close enough to acne's sage to read
+   as the same colour on two different concerns; it's now the warm cream the
+   category calls for, distinct from barrier's cooler ivory/oat. */
+.flip-face-back[data-tint="hydrating"] { --tint-a: #f8f0dd; }
 .flip-face-back[data-tint="barrier"] { --tint-a: #f6f0e3; }
 .flip-face-back[data-tint="acne"] { --tint-a: #eaf3ec; }
 .flip-face-back[data-tint="soothing"] { --tint-a: #faeee7; }
@@ -6181,9 +6208,8 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 
 /* Tablet 2-column grid: slightly tighter callout distances. */
 @media (max-width: 1024px) {
-  .callout-line { width: 12px; }
-  .callout-text strong { max-width: 92px; }
-  .ingredient-image { width: clamp(60px, 24%, 84px); }
+  .callout-line { max-width: 18px; }
+  .ingredient-image { width: clamp(100px, 34%, 140px); }
 }
 
 /* Narrow single-column cards: side callouts would crowd against a ~340px
@@ -6193,15 +6219,16 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
      plain list, tight enough that five items still fit most card heights
      without the back needing to scroll (flip-face-back now can, as a
      fallback, but this keeps that the exception rather than the norm). */
-  .ingredient-stage { flex-direction: column; gap: 8px; padding: 14px 0 8px; }
-  .ingredient-callouts { flex-direction: column; width: 100%; gap: 9px; }
+  .ingredient-stage { grid-template-columns: 1fr; justify-items: center; row-gap: 12px; }
+  .side-left, .side-right { grid-column: 1; align-items: center; width: 100%; }
+  .ingredient-image { grid-column: 1; order: -1; margin: 0 auto; width: clamp(96px, 40%, 132px); }
+  .ingredient-empty { grid-column: 1; text-align: center; }
   .side-left .callout,
-  .side-right .callout { flex-direction: row; }
+  .side-right .callout { justify-content: flex-start; }
   .side-left .callout-text,
   .side-right .callout-text { text-align: left; align-items: flex-start; }
-  .callout-text strong { max-width: none; white-space: normal; font-size: 0.8rem; }
+  .callout-text strong { font-size: 0.82rem; }
   .callout-text small { font-size: 0.68rem; }
-  .ingredient-image { order: -1; width: 74px; margin: 0 auto; }
   .back-kicker { margin: 8px 0 6px; }
   .back-name { font-size: 1.05rem; }
   .back-match-note { padding: 9px 11px; font-size: 0.72rem; }
