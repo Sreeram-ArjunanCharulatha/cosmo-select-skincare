@@ -5902,7 +5902,13 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
    of being truncated, which the grid track has room to absorb. */
 .ingredient-stage {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  /* A real minimum, not 0: with no floor a track can be squeezed narrower
+     than a single ingredient word needs, and since words no longer break
+     mid-word (see .callout-text strong), an unbreakable word in a
+     zero-minimum track would overflow it instead. 68px comfortably holds
+     the longest single word this data actually contains ("Hyaluronic",
+     "Centella") at this font size. */
+  grid-template-columns: minmax(68px, 1fr) auto minmax(68px, 1fr);
   align-items: center;
   column-gap: clamp(8px, 2.4vw, 16px);
   width: 100%;
@@ -5959,9 +5965,15 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   line-height: 1.28;
   /* Wraps rather than truncating: a grid column can only ever be as wide as
      its own track, so this can never overflow the card - it can only take a
-     second line, which reads as considered rather than cramped. */
+     second line, which reads as considered rather than cramped.
+     overflow-wrap was break-word, which let a single long word (Allantoin,
+     Centella asiatica) split mid-word onto its own fragment line - looked
+     like corrupted/cut-off text, easy to mistake for missing content. Normal
+     wrapping only ever breaks at a space, so a word is either whole on one
+     line or whole on the next, never in two pieces. */
   white-space: normal;
-  overflow-wrap: break-word;
+  overflow-wrap: normal;
+  word-break: normal;
   max-width: 100%;
 }
 .callout-text small {
@@ -5980,7 +5992,7 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(122px, 40%, 176px);
+  width: clamp(130px, 42%, 184px);
   aspect-ratio: 1;
   overflow: hidden;      /* clips the photo to the circle it sits in */
   border-radius: 50%;
@@ -5992,7 +6004,11 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   width: 100%;
   height: 100%;
   margin: 0;
-  padding: 12px;
+  /* Trimmed from 12px: object-fit:contain already leaves its own margin for
+     any packaging that isn't perfectly square, so extra padding on top of
+     that was making the product read small and timid inside a "hero"
+     circle rather than filling it. */
+  padding: 7px;
   aspect-ratio: auto;
   background: none;
 }
