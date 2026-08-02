@@ -5043,7 +5043,11 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   text-align: left;
 }
 #find-your-match .match-portrait { display: none; }
-#find-your-match .match-intro h2 { margin: 0 0 6px; }
+#find-your-match .match-intro h2 {
+  margin: 0 0 6px;
+  font-size: clamp(1.75rem, 2.5vw, 2.35rem);
+  line-height: 1.08;
+}
 #find-your-match .match-intro p { margin: 0; font-size: 0.88rem; color: var(--muted); }
 #find-your-match .match-intro .eyebrow { display: none; }
 
@@ -5103,6 +5107,9 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 /* -- The three columns ----------------------------------------------------- */
 
 #find-your-match .match-layout {
+  /* The centre visual and the profile share one height so the two right-hand
+     columns start and finish together instead of leaving a cream gap. */
+  --consult-h: clamp(400px, 38vw, 560px);
   display: grid;
   grid-template-areas: "main stage profile";
   grid-template-columns: minmax(0, 31fr) minmax(0, 38fr) minmax(0, 31fr);
@@ -5171,14 +5178,14 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 /* Compact screening control: whole area stays around 100px. */
 #find-your-match .scan-entry {
   display: block;
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   padding: 0;
   background: none;
   border: 0;
   border-radius: 0;
 }
 #find-your-match .scan-entry-lead {
-  margin: 0 0 7px;
+  margin: 0 0 5px;
   color: var(--forest);
   font-size: 0.8rem;
   font-weight: 600;
@@ -5205,7 +5212,7 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   border-color: rgba(31, 61, 46, 0.28);
 }
 #find-your-match .scan-entry-note {
-  margin: 6px 0 0;
+  margin: 5px 0 0;
   color: var(--muted);
   font-size: 0.7rem;
   line-height: 1.4;
@@ -5252,11 +5259,14 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 26%;   /* keeps eyes/cheeks in frame, not foreheads */
   transition: none;              /* no aggressive zoom on hover */
 }
-#find-your-match .concern-card[data-value="Dehydration"] .concern-card-photo { object-position: center 22%; }
-#find-your-match .concern-card[data-value="Redness"] .concern-card-photo { object-position: center 34%; }
+/* Framed per photograph so the affected skin stays in shot and the crop does
+   not land across an eye or cut the chin mid-feature. */
+#find-your-match .concern-card[data-value="Dryness"] .concern-card-photo { object-position: 54% 34%; }
+#find-your-match .concern-card[data-value="Acne"] .concern-card-photo { object-position: 42% 44%; }
+#find-your-match .concern-card[data-value="Redness"] .concern-card-photo { object-position: 52% 46%; }
+#find-your-match .concern-card[data-value="Dehydration"] .concern-card-photo { object-position: 48% 38%; }
 
 #find-your-match .concern-card::after {
   content: "" !important;
@@ -5355,13 +5365,16 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   position: relative;
   width: 100%;
   max-width: none;
-  height: clamp(430px, 46vw, 660px);
+  /* Shorter than before: the clip is 16:9 inside a portrait panel, so every
+     extra pixel of height magnified the horizontal crop. At this height the
+     head sits in frame with room around the crown and chin. */
+  height: var(--consult-h);
   min-height: 0;
   margin: 0;
   padding: 0;
   border-radius: 26px;
   overflow: hidden;
-  background: linear-gradient(168deg, #f4f7f3 0%, #eef2f5 55%, #e9efe9 100%);
+  background: linear-gradient(168deg, #f6f2ea 0%, #eef1ee 55%, #eaefe8 100%);
   border: 1px solid rgba(31, 61, 46, 0.07);
   box-shadow: 0 10px 34px rgba(31, 61, 46, 0.08);
   pointer-events: auto;         /* the visual tracks the pointer, as before */
@@ -5396,13 +5409,26 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   border-radius: 26px;
 }
 #find-your-match .concern-stage-glow { opacity: 0.3; }
+/* The clip carries its own cool grey-blue backdrop, and because it fills the
+   panel the CSS background never shows. A warm wash over the top settles it
+   into the ivory/sage palette without touching the asset. */
+#find-your-match .concern-stage-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(180deg, rgba(250, 245, 235, 0.26), rgba(236, 240, 233, 0.2) 60%, rgba(244, 238, 227, 0.3));
+  pointer-events: none;
+}
 #find-your-match .stage-caption {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 16px;
-  z-index: 3;
+  bottom: 18px;
+  z-index: 4;
   margin: 0;
+  padding: 0 18px;
   color: rgba(255, 255, 255, 0.92);
   font-size: 0.72rem;
   font-weight: 500;
@@ -5423,6 +5449,7 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-height: var(--consult-h);
   padding: 22px;
   background: rgba(255, 255, 255, 0.66);
   border: 1px solid rgba(31, 61, 46, 0.08);
@@ -5515,7 +5542,9 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 #find-your-match #allergenOpts .option-card[aria-checked="true"] strong { color: #fff; }
 
 #find-your-match .cta-helper {
-  margin: 0;
+  /* Takes up the slack so the concerns and preferences stay grouped at the
+     top and the status/actions settle at the bottom - no gap in between. */
+  margin: auto 0 0;
   padding: 11px 13px;
   background: rgba(31, 61, 46, 0.045);
   border-radius: 12px;
@@ -5556,8 +5585,8 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   box-shadow: 0 8px 18px rgba(31, 61, 46, 0.2);
 }
 #find-your-match .profile-actions .btn-primary:disabled {
-  background: #e6e1d5;
-  color: #7d8a80;          /* readable, not washed out */
+  background: #e4dfd2;
+  color: #5f6b63;          /* muted but properly legible */
   box-shadow: none;
   transform: none;
   cursor: not-allowed;
@@ -5573,25 +5602,44 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   font-family: inherit;
   font-size: 0.77rem;
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  text-decoration: none;
   cursor: pointer;
   transition: color 0.2s ease;
 }
 #find-your-match .link-btn:hover { color: var(--forest); }
-#find-your-match .browse-all { align-self: center; }
+/* A refined secondary button, not a browser link. */
+#find-your-match .browse-all {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  color: var(--forest);
+  border: 1px solid rgba(31, 61, 46, 0.14);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+#find-your-match .browse-all:hover {
+  background: rgba(31, 61, 46, 0.05);
+  border-color: rgba(31, 61, 46, 0.26);
+}
+#find-your-match .browse-all .link-arrow { font-size: 0.9em; transition: transform 0.2s ease; }
+#find-your-match .browse-all:hover .link-arrow { transform: translateX(2px); }
 #find-your-match .reset-btn {
-  align-self: flex-start;
+  align-self: center;
   margin: 0;
   padding: 0;
   background: none;
   border: 0;
-  color: var(--muted);
-  font-size: 0.74rem;
+  color: rgba(90, 104, 96, 0.72);
+  font-size: 0.72rem;
   font-weight: 500;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 #find-your-match .reset-btn:hover { color: var(--forest); background: none; }
 #find-your-match .form-message:empty { display: none; }
@@ -5601,7 +5649,7 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 /* Laptop: keep three columns, ease the gaps and the visual height. */
 @media (max-width: 1280px) {
   #find-your-match .match-layout { gap: 16px; }
-  #find-your-match .concern-stage { height: clamp(400px, 42vw, 520px); }
+  #find-your-match .match-layout { --consult-h: clamp(380px, 36vw, 500px); }
   #find-your-match .concern-rail #skinProblemOpts .option-card { height: clamp(120px, 10.5vw, 150px); }
 }
 
@@ -5612,7 +5660,8 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
     grid-template-columns: minmax(0, 1fr);
     gap: 24px;
   }
-  #find-your-match .concern-stage { height: clamp(360px, 48vw, 470px); }
+  #find-your-match .match-layout { --consult-h: clamp(360px, 48vw, 470px); }
+  #find-your-match .profile-sticky { min-height: 0; }
   #find-your-match .concern-rail #skinProblemOpts .option-card { height: clamp(140px, 17vw, 175px); }
   #find-your-match .profile-sticky { position: static; }
   #find-your-match .match-steps { max-width: none; }
@@ -5634,7 +5683,7 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
     padding: 6px 12px;
   }
   #find-your-match .match-steps strong { font-size: 0.72rem; }
-  #find-your-match .concern-stage { height: clamp(340px, 78vw, 430px); }
+  #find-your-match .match-layout { --consult-h: clamp(340px, 78vw, 430px); }
   #find-your-match .concern-rail #skinProblemOpts .option-card { height: clamp(130px, 34vw, 155px); }
 }
 
