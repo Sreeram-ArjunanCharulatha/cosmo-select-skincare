@@ -5907,8 +5907,18 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
      mid-word (see .callout-text strong), an unbreakable word in a
      zero-minimum track would overflow it instead. 68px comfortably holds
      the longest single word this data actually contains ("Hyaluronic",
-     "Centella") at this font size. */
-  grid-template-columns: minmax(68px, 1fr) auto minmax(68px, 1fr);
+     "Centella") at this font size.
+     The centre column carries the size directly (clamp, not `auto`), and
+     .ingredient-image is 100% of it - not its own percentage-based clamp.
+     A percentage width on a grid ITEM inside an `auto` TRACK is a circular
+     dependency (the track sizes to the item, the item sizes as a percentage
+     of the track) that engines resolve inconsistently; measured on a real
+     card it produced a 100px circle from a clamp(130px,42%,184px) rule and,
+     at narrower widths, let the circle's resolved size disagree with the
+     column next to it enough to overlap it. A percentage in
+     grid-template-columns resolves against the stage's own width instead,
+     which is always definite - no ambiguity, no overlap. */
+  grid-template-columns: minmax(68px, 1fr) clamp(122px, 34%, 176px) minmax(68px, 1fr);
   align-items: center;
   column-gap: clamp(8px, 2.4vw, 16px);
   width: 100%;
@@ -5992,7 +6002,7 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(130px, 42%, 184px);
+  width: 100%;           /* sized by the grid track (see .ingredient-stage) */
   aspect-ratio: 1;
   overflow: hidden;      /* clips the photo to the circle it sits in */
   border-radius: 50%;
@@ -6222,27 +6232,36 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 
 /* -- Responsive -------------------------------------------------------------- */
 
-/* Tablet 2-column grid: slightly tighter callout distances. */
+/* Tablet 2-column grid AND single-column mobile both stack rather than
+   flank. Measured directly: at the product grid's own 2-column breakpoint a
+   card's content box is only ~260-265px wide, but the flanking layout's
+   minimum width (two 68px side floors + the centre circle's own 122px floor
+   + gaps) needs roughly 290px - narrower than that, the grid itself
+   overflows the card and the right-most ingredient gets clipped by the
+   card's own edge. That is a hard floor set by needing real ingredient
+   words (Hyaluronic, Niacinamide, Centella) to stay readable without either
+   breaking mid-word or shrinking illegibly, so the fix is to stop trying to
+   flank below the width that can actually hold it, rather than to keep
+   shrinking the floors - stacking is the correct layout down here, not a
+   fallback for one. This threshold matches .product-grid's own switch to
+   two columns, so "stacks" and "is a card narrow enough to need it" agree. */
 @media (max-width: 1024px) {
-  .callout-line { max-width: 18px; }
-  .ingredient-image { width: clamp(100px, 34%, 140px); }
-}
-
-/* Narrow single-column cards: side callouts would crowd against a ~340px
-   width, so the composition stacks instead — image, then a plain list. */
-@media (max-width: 480px) {
-  /* Stacked instead of flanking: image first, then every ingredient as one
-     plain list, tight enough that five items still fit most card heights
-     without the back needing to scroll (flip-face-back now can, as a
-     fallback, but this keeps that the exception rather than the norm). */
+  /* Image first, then every ingredient as one plain list, tight enough that
+     five items still fit most card heights without the back needing to
+     scroll (flip-face-back can, as a fallback, but this keeps that the
+     exception rather than the norm). */
   .ingredient-stage { grid-template-columns: 1fr; justify-items: center; row-gap: 12px; }
   .side-left, .side-right { grid-column: 1; align-items: center; width: 100%; }
-  .ingredient-image { grid-column: 1; order: -1; margin: 0 auto; width: clamp(96px, 40%, 132px); }
+  .ingredient-image { grid-column: 1; order: -1; margin: 0 auto; width: clamp(110px, 34%, 148px); }
   .ingredient-empty { grid-column: 1; text-align: center; }
   .side-left .callout,
   .side-right .callout { justify-content: flex-start; }
   .side-left .callout-text,
   .side-right .callout-text { text-align: left; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+  .ingredient-image { width: clamp(96px, 40%, 132px); }
   .callout-text strong { font-size: 0.82rem; }
   .callout-text small { font-size: 0.68rem; }
   .back-kicker { margin: 8px 0 6px; }
