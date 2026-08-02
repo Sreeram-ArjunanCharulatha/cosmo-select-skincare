@@ -2853,15 +2853,13 @@ legend {
    12. Footer
    ============================================================ */
 .site-footer {
-  padding: 54px 0 30px;
+  padding: 34px 0;
   background: var(--deep-forest);
   color: #cbd7d1;
 }
 .footer-inner {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr 1fr;
-  gap: 45px;
-  align-items: start;
+  display: flex;
+  align-items: center;
 }
 .footer-brand {
   font-family: "Cormorant Garamond", serif;
@@ -2869,33 +2867,6 @@ legend {
   font-size: 1.65rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-}
-.footer-title {
-  margin-bottom: 10px;
-  color: var(--gold);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-.footer-copy,
-.footer-list {
-  margin: 0;
-  color: #cbd7d1;
-  font-size: 0.75rem;
-  line-height: 1.75;
-}
-.footer-list {
-  padding: 0;
-  list-style: none;
-}
-.footer-bottom {
-  grid-column: 1/-1;
-  margin-top: 15px;
-  padding-top: 22px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  font-size: 0.7rem;
-  color: #9db0a8;
 }
 
 /* ============================================================
@@ -4536,12 +4507,6 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   .product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .footer-inner {
-    grid-template-columns: 1fr 1fr;
-  }
-  .footer-brand {
-    grid-column: 1/-1;
-  }
 }
 @media (max-width: 768px) {
   body {
@@ -4765,14 +4730,6 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   #productGrid {
     padding: 14px;
     border-radius: 22px;
-  }
-  .footer-inner {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-  .footer-brand,
-  .footer-bottom {
-    grid-column: auto;
   }
 }
 @media (max-width: 480px) {
