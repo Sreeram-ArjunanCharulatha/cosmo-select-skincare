@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/styles.css?v=premium-32">
+  <link rel="stylesheet" href="./css/styles.css?v=premium-36">
   <link rel="stylesheet" href="./css/skin-scan.css?v=scan-24">
 </head>
 <body>
@@ -94,6 +94,7 @@
       <div class="container">
         <div class="match-head">
 
+          <div class="match-topbar">
           <div class="match-intro">
             <img class="match-portrait" src="./images/editorial/woman-serum.jpeg" alt="">
             <div class="match-intro-copy">
@@ -108,6 +109,7 @@
             <li data-step="2"><span>2</span><strong>Set preferences</strong></li>
             <li data-step="3"><span>3</span><strong>View matches</strong></li>
           </ol>
+          </div>
 
           <!-- Two columns: the choosing happens on the left because it is the
                first action; the profile on the right accumulates the result. -->
@@ -134,20 +136,23 @@
               <div class="option-grid concern-grid" id="skinProblemOpts" role="group" aria-label="Skin concerns"></div>
             </section>
 
+            <!-- CENTRE: the consultation visual -->
+            <div class="stage-col">
+              <div class="concern-stage is-neutral" id="concernStage" data-concern="">
+                <div class="concern-stage-glow" aria-hidden="true"></div>
+                <div class="concern-stage-frame">
+                  <video class="concern-neutral-video is-visible" id="concernNeutralVideo" src="./assets/videos/neutral-concern-loop.mp4" muted playsinline preload="auto" aria-label="Decorative skincare motion"></video>
+                  <video class="concern-neutral-video" id="concernNeutralVideoNext" src="./assets/videos/neutral-concern-loop.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+                  <img id="concernMainImage" src="./images/concerns/dryness.jpeg" alt="">
+                  <img id="concernNextImage" alt="">
+                </div>
+                <p class="stage-caption">Your personalised skin consultation</p>
+              </div>
+            </div>
+
             <!-- RIGHT: sticky skin profile -->
             <aside class="profile-panel" aria-label="Your skin profile">
               <div class="profile-sticky">
-
-                <!-- The looping concern visual, kept but reduced to a supporting role -->
-                <div class="concern-stage is-neutral" id="concernStage" data-concern="">
-                  <div class="concern-stage-glow" aria-hidden="true"></div>
-                  <div class="concern-stage-frame">
-                    <video class="concern-neutral-video is-visible" id="concernNeutralVideo" src="./assets/videos/neutral-concern-loop.mp4" muted playsinline preload="auto" aria-label="Decorative skincare motion"></video>
-                    <video class="concern-neutral-video" id="concernNeutralVideoNext" src="./assets/videos/neutral-concern-loop.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
-                    <img id="concernMainImage" src="./images/concerns/dryness.jpeg" alt="">
-                    <img id="concernNextImage" alt="">
-                  </div>
-                </div>
 
                 <h3 class="profile-title">Your skin profile</h3>
 
@@ -391,7 +396,7 @@
   </div>
 
   <script src="./js/vendor/lenis.min.js"></script>
-  <script src="./js/app.js?v=premium-15"></script>
+  <script src="./js/app.js?v=premium-16"></script>
   <script src="./js/skin-scan.js?v=scan-24"></script>
 </body>
 </html>
