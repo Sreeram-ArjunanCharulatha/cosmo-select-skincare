@@ -4994,3 +4994,605 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
     display: block !important;
   }
 }
+
+/* ===========================================================================
+   FIND YOUR MATCH — 2026 redesign
+   ---------------------------------------------------------------------------
+   The section used a three-column grid whose heading ("Choose a concern") sat
+   in the left column while the concern cards sat in a narrow rail on the far
+   right, with a large looping visual wedged between them. The first action was
+   therefore the furthest thing from the instruction that described it.
+
+   This block replaces that with two columns: choosing on the left, where the
+   eye starts, and an accumulating profile summary on the right. It is appended
+   last so it wins the cascade over the earlier layered overrides without those
+   having to be unpicked rule by rule.
+   =========================================================================== */
+
+/* -- Layout ---------------------------------------------------------------- */
+
+#find-your-match .match-layout {
+  display: grid;
+  grid-template-areas: "main profile";
+  grid-template-columns: minmax(0, 63fr) minmax(0, 37fr);
+  gap: clamp(24px, 3vw, 48px);
+  align-items: start;          /* both columns share one top edge */
+  min-width: 0;
+}
+/* Block, not flex: as a flex column the old rail rules stretched the tile grid
+   to the column height, which squeezed the row tracks under the tiles' own
+   aspect-ratio height and made the two rows overlap. */
+#find-your-match .match-main {
+  grid-area: main;
+  display: block;
+  min-width: 0;
+  height: auto;
+}
+#find-your-match .profile-panel { grid-area: profile; min-width: 0; }
+
+/* The old decorative step labels are replaced by real headings. */
+#find-your-match .concern-rail::before,
+#find-your-match .match .ingredient-fieldset::before { content: none; display: none; }
+
+/* Neutralise the old rail chrome: this column is now the main panel. */
+#find-your-match .concern-rail {
+  position: static;
+  max-width: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+#find-your-match .concern-rail.needs-guidance::after,
+#find-your-match .concern-rail.needs-guidance.is-visible::after { content: none; display: none; }
+
+/* Tighten the gap under the nav and keep the intro on the content grid. */
+#find-your-match .match-head { gap: clamp(18px, 2.4vw, 30px); }
+#find-your-match .match-intro { margin-bottom: 0; }
+
+/* -- Step indicator -------------------------------------------------------- */
+
+#find-your-match .match-steps {
+  max-width: 560px;
+  margin: 0 0 clamp(18px, 2.4vw, 28px);
+  padding: 0;
+  gap: clamp(10px, 1.6vw, 22px);
+}
+#find-your-match .match-steps li {
+  color: var(--muted);
+  opacity: 1;
+}
+#find-your-match .match-steps span {
+  width: 26px;
+  height: 26px;
+  background: rgba(31, 61, 46, 0.07);
+  color: var(--muted);
+  border: 0;
+  box-shadow: none;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+#find-your-match .match-steps strong {
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+#find-your-match .match-steps li.is-active span,
+#find-your-match .match-steps li.is-complete span {
+  background: var(--forest);
+  color: #fff;
+}
+#find-your-match .match-steps li.is-active strong { color: var(--forest); font-weight: 700; }
+#find-your-match .match-steps li.is-complete strong { color: var(--muted); }
+
+/* -- Left panel ------------------------------------------------------------ */
+
+#find-your-match .active-concern-copy {
+  min-height: 0;
+  margin: 0 0 20px;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+#find-your-match .active-concern-copy::after { content: none; display: none; }
+#find-your-match .step-eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  color: #a5834a;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+#find-your-match .active-concern-copy h3 {
+  margin: 0 0 8px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.6rem, 2.6vw, 2.15rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--forest);
+}
+#find-your-match .active-concern-copy p {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+/* Secondary route into the screening, clearly below the heading. */
+#find-your-match .scan-entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(31, 61, 46, 0.08);
+  border-radius: 20px;
+}
+#find-your-match .scan-entry-lead {
+  margin: 0;
+  color: var(--forest);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+#find-your-match .scan-open-btn {
+  flex: 0 0 auto;               /* sits beside the prompt, not stretched */
+  min-height: 44px;
+  padding: 10px 20px;
+  background: rgba(31, 61, 46, 0.06);
+  color: var(--forest);
+  border: 1px solid rgba(31, 61, 46, 0.18);
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+}
+#find-your-match .scan-open-btn:hover {
+  background: rgba(31, 61, 46, 0.11);
+  border-color: rgba(31, 61, 46, 0.3);
+  transform: translateY(-1px);
+}
+#find-your-match .scan-entry-note {
+  flex: 1 0 100%;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+#find-your-match .concern-start-hint {
+  margin: 0 0 12px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+#find-your-match .concern-start-hint.is-hidden { display: none; }
+
+/* -- Concern cards: 2 x 2, equal size, fixed aspect ------------------------ */
+
+#find-your-match .concern-grid,
+#find-your-match .concern-rail #skinProblemOpts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* The old vertical rail pinned four fixed ~92px rows here. Left in place the
+     taller image tiles overflow those tracks and the two rows overlap. */
+  grid-template-rows: none;
+  grid-auto-rows: auto;
+  gap: clamp(12px, 1.4vw, 18px);
+  margin: 0;
+  flex: none;
+  height: auto;
+  min-height: 0;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card,
+#find-your-match .concern-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 4 / 3;          /* one consistent ratio for all four */
+  padding: 0;
+  overflow: hidden;
+  background: #ded3c2;
+  border: 1px solid rgba(31, 61, 46, 0.08);
+  border-radius: 22px;
+  box-shadow: 0 2px 10px rgba(31, 61, 46, 0.05);
+  cursor: pointer;
+  transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+}
+/* Retire the tint/gradient overlays the old rail cards painted on. */
+#find-your-match .concern-rail #skinProblemOpts .option-card::before,
+#find-your-match .concern-rail #skinProblemOpts .option-card::after { content: none; display: none; }
+
+#find-your-match .concern-card-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;            /* fills the tile without distorting */
+  object-position: center 28%;  /* keeps faces out of the label zone */
+  transition: transform 0.4s ease;
+}
+#find-your-match .concern-card:hover .concern-card-photo { transform: scale(1.04); }
+
+/* Scrim only across the lower half, so the name stays legible. */
+#find-your-match .concern-card::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 62%;
+  background: linear-gradient(to top, rgba(20, 32, 26, 0.82), rgba(20, 32, 26, 0.3) 45%, transparent);
+  pointer-events: none;
+}
+
+#find-your-match .concern-rail #skinProblemOpts .option-icon {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.86);
+  border: 0;
+  border-radius: 50%;
+  color: var(--forest);
+  box-shadow: 0 1px 4px rgba(20, 32, 26, 0.16);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-icon svg { width: 16px; height: 16px; }
+
+#find-your-match .concern-card-body {
+  position: absolute;
+  left: 14px;
+  right: 46px;
+  bottom: 12px;
+  z-index: 2;
+  display: block;
+  text-align: left;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card strong {
+  display: block;
+  color: #fff;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.22rem;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card small {
+  display: none;                /* the photograph carries the description */
+}
+
+/* Selected: muted-gold border plus a circular tick. No glow. */
+#find-your-match .concern-rail #skinProblemOpts .option-check {
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  color: transparent;
+  font-size: 0.74rem;
+  font-weight: 800;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+#find-your-match .concern-card:hover .option-check { opacity: 1; transform: scale(1); }
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"] {
+  border-color: #c8a76a;
+  box-shadow: 0 0 0 2px #c8a76a, 0 6px 18px rgba(31, 61, 46, 0.12);
+  transform: translateY(-2px);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"] .option-check {
+  opacity: 1;
+  transform: scale(1);
+  background: #c8a76a;
+  border-color: #c8a76a;
+  color: #fff;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(31, 61, 46, 0.14);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"]:hover {
+  transform: translateY(-4px);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 3px;
+}
+/* The old "previewed" tint is redundant now selection is explicit. */
+#find-your-match .concern-rail #skinProblemOpts .option-card.is-preview:not([aria-checked="true"]) {
+  border-color: rgba(31, 61, 46, 0.08);
+  box-shadow: 0 2px 10px rgba(31, 61, 46, 0.05);
+}
+
+/* -- Right panel: skin profile --------------------------------------------- */
+
+#find-your-match .profile-panel { align-self: start; }
+#find-your-match .profile-sticky {
+  position: sticky;
+  top: 96px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: clamp(20px, 2vw, 26px);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(31, 61, 46, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 6px 26px rgba(31, 61, 46, 0.07);
+}
+#find-your-match .profile-title {
+  margin: 0;
+  color: #a5834a;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+#find-your-match .profile-block { display: flex; flex-direction: column; gap: 10px; }
+#find-your-match .profile-block-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+#find-your-match .profile-label {
+  color: var(--forest);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* The looping visual, reduced to a supporting element inside the panel. */
+#find-your-match .concern-stage {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  height: clamp(130px, 15vw, 172px);
+  margin: 0;
+  padding: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  pointer-events: none;         /* never blocks the controls beneath it */
+}
+#find-your-match .concern-stage-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 18px;
+  overflow: hidden;
+}
+#find-your-match .concern-stage-frame img,
+#find-your-match .concern-stage .concern-neutral-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+}
+/* The face model must stay whole, so it is contained rather than cropped. */
+#find-your-match .concern-stage .concern-neutral-video {
+  object-fit: contain;
+  object-position: center;
+}
+/* The concern photographs are decorative backdrops; filling reads better and
+   nothing meaningful is lost at the edges. */
+#find-your-match .concern-stage-frame img {
+  object-fit: cover;
+  object-position: center 30%;
+}
+#find-your-match .concern-stage-glow { opacity: 0.35; }
+
+/* Chips */
+#find-your-match .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+#find-your-match .chip-empty { color: var(--muted); font-size: 0.82rem; }
+#find-your-match .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px 7px 13px;
+  background: rgba(31, 61, 46, 0.06);
+  border: 1px solid rgba(31, 61, 46, 0.12);
+  border-radius: 999px;
+  color: var(--forest);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+#find-your-match .chip:hover { background: rgba(31, 61, 46, 0.11); border-color: rgba(31, 61, 46, 0.24); }
+#find-your-match .chip-x { font-size: 1rem; line-height: 1; opacity: 0.55; }
+#find-your-match .chip:hover .chip-x { opacity: 1; }
+
+/* Ingredient preference pills — one active at a time */
+#find-your-match .pref-grid,
+#find-your-match #allergenOpts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+#find-your-match #allergenOpts .option-card {
+  min-height: 44px;
+  aspect-ratio: auto;
+  padding: 11px 12px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(31, 61, 46, 0.12);
+  border-radius: 14px;
+  box-shadow: none;
+  text-align: center;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+#find-your-match #allergenOpts .option-card strong {
+  display: block;
+  color: var(--forest);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.79rem;
+  font-weight: 600;
+}
+#find-your-match #allergenOpts .option-card small,
+#find-your-match #allergenOpts .option-check { display: none; }
+#find-your-match #allergenOpts .option-card:hover {
+  background: #fff;
+  border-color: rgba(31, 61, 46, 0.26);
+  transform: none;
+}
+#find-your-match #allergenOpts .option-card[aria-checked="true"] {
+  background: var(--forest);
+  border-color: var(--forest);
+  box-shadow: none;
+}
+#find-your-match #allergenOpts .option-card[aria-checked="true"] strong { color: #fff; }
+
+/* Summary line + actions */
+#find-your-match .cta-helper {
+  margin: 0;
+  padding: 12px 14px;
+  background: rgba(31, 61, 46, 0.045);
+  border-radius: 14px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  text-align: left;
+}
+#find-your-match .profile-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#find-your-match .profile-actions .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 50px;
+  padding: 14px 22px;
+  background: var(--forest);
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+}
+#find-your-match .profile-actions .btn-primary:hover:not(:disabled) {
+  background: #17402d;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(31, 61, 46, 0.22);
+}
+#find-your-match .profile-actions .btn-primary:disabled {
+  background: rgba(31, 61, 46, 0.07);
+  color: rgba(31, 61, 46, 0.38);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+#find-your-match .btn-arrow { transition: transform 0.22s ease; }
+#find-your-match .profile-actions .btn-primary:hover:not(:disabled) .btn-arrow { transform: translateX(3px); }
+
+/* Text links: deliberately quiet so they cannot compete with the CTA. */
+#find-your-match .link-btn {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+#find-your-match .link-btn:hover { color: var(--forest); }
+#find-your-match .browse-all { align-self: center; min-height: 44px; }
+#find-your-match .reset-btn {
+  align-self: flex-start;
+  margin: 0;
+  padding: 0;
+  min-height: 44px;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+#find-your-match .reset-btn:hover { color: var(--forest); background: none; }
+#find-your-match .form-message:empty { display: none; }
+
+/* -- Responsive ------------------------------------------------------------ */
+
+@media (max-width: 1080px) {
+  #find-your-match .match-layout { grid-template-columns: minmax(0, 58fr) minmax(0, 42fr); }
+}
+
+@media (max-width: 880px) {
+  #find-your-match .match-layout {
+    grid-template-areas: "main" "profile";
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+  #find-your-match .profile-sticky { position: static; }
+  #find-your-match .concern-stage { height: clamp(150px, 26vw, 200px); }
+}
+
+@media (max-width: 620px) {
+  #find-your-match .match-steps { gap: 8px; }
+  #find-your-match .match-steps strong { font-size: 0.72rem; }
+  #find-your-match .scan-entry { flex-direction: column; align-items: flex-start; }
+  #find-your-match .scan-open-btn { width: 100%; }
+  /* Touch targets: chips and text links need a real 44px on a phone. */
+  #find-your-match .chip { min-height: 44px; padding: 10px 14px 10px 16px; }
+  #find-your-match .link-btn { min-height: 44px; display: inline-flex; align-items: center; }
+  /* The looping visual is the first thing to give up scarce vertical space. */
+  #find-your-match .concern-stage { display: none; }
+}
+
+@media (max-width: 440px) {
+  /* One column only once two would squeeze the label. */
+  #find-your-match .concern-grid,
+  #find-your-match .concern-rail #skinProblemOpts { grid-template-columns: minmax(0, 1fr); }
+  #find-your-match .concern-rail #skinProblemOpts .option-card { aspect-ratio: 16 / 9; }
+  #find-your-match .pref-grid,
+  #find-your-match #allergenOpts { grid-template-columns: minmax(0, 1fr); }
+  #find-your-match .match-steps strong { display: none; }   /* numbers only */
+  #find-your-match .match-steps { justify-content: flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #find-your-match .concern-card-photo,
+  #find-your-match .concern-rail #skinProblemOpts .option-card,
+  #find-your-match .profile-actions .btn-primary { transition: none; }
+  #find-your-match .concern-card:hover .concern-card-photo { transform: none; }
+}

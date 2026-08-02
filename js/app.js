@@ -105,6 +105,7 @@ const LOADING_MESSAGES = [
 const skinProblem = document.getElementById('skinProblem');
 const allergen = document.getElementById('allergen');
 const findBtn = document.getElementById('findBtn');
+const findBtnLabel = document.getElementById('findBtnLabel');
 const formMessage = document.getElementById('formMessage');
 const results = document.getElementById('results');
 const loading = document.getElementById('loading');
@@ -119,8 +120,10 @@ const skinProblemOpts = document.getElementById('skinProblemOpts');
 const allergenOpts = document.getElementById('allergenOpts');
 const loadingMsg = document.getElementById('loadingMsg');
 const quizForm = document.getElementById('quizForm');
-const clearAllergen = document.getElementById('clearAllergen');
 const resetChoicesButton = document.getElementById('resetChoices');
+const clearConcernsButton = document.getElementById('clearConcerns');
+const browseAllButton = document.getElementById('browseAllBtn');
+const selectionChips = document.getElementById('selectionChips');
 const videoFallback = document.getElementById('videoFallback');
 const matchLayout = document.querySelector('.match-layout');
 const concernStage = document.getElementById('concernStage');
@@ -131,8 +134,6 @@ const concernNeutralVideos = [
 const concernMainImage = document.getElementById('concernMainImage');
 const concernNextImage = document.getElementById('concernNextImage');
 const activeConcernCopy = document.getElementById('activeConcernCopy');
-const activeConcernTitle = document.getElementById('activeConcernTitle');
-const activeConcernDescription = document.getElementById('activeConcernDescription');
 const matchStepItems = [...document.querySelectorAll('#matchSteps li')];
 const selectionConcerns = document.getElementById('selectionConcerns');
 const selectionFilter = document.getElementById('selectionFilter');
@@ -160,6 +161,10 @@ let lenis = null;
 let requestController = null;
 let searchRequestId = 0;
 let isSearching = false;
+// Result count from the last completed search, or null when no search has run
+// against the current selection. Cleared whenever the selection changes so the
+// summary never reports a count for a profile the user has since edited.
+let lastMatchCount = null;
 
 // ---------------------------------------------------------------------------
 // Utility functions
@@ -390,18 +395,34 @@ function makeOption(option, group) {
   check.textContent = '✓';
   check.setAttribute('aria-hidden', 'true');
 
-  if (group === 'skin') {
-    const icon = document.createElement('span');
-    icon.className = 'option-icon';
-    icon.innerHTML = CONCERN_ICONS[option.value];
-    button.append(icon);
-  }
-
   const label = document.createElement('strong');
   label.textContent = option.label;
   const description = document.createElement('small');
   description.textContent = option.description;
-  button.append(check, label, description);
+
+  if (group === 'skin') {
+    // A concern card is an image tile: the photograph carries the meaning, the
+    // icon and label sit on top of it. The picture is decorative (the label
+    // already names the concern), so its alt stays empty.
+    button.classList.add('concern-card');
+    const photo = document.createElement('img');
+    photo.className = 'concern-card-photo';
+    photo.src = CONCERN_PRESENTATION[option.value]?.image || '';
+    photo.alt = '';
+    photo.loading = 'lazy';
+
+    const icon = document.createElement('span');
+    icon.className = 'option-icon';
+    icon.innerHTML = CONCERN_ICONS[option.value];
+
+    const body = document.createElement('span');
+    body.className = 'concern-card-body';
+    body.append(label, description);
+
+    button.append(photo, icon, check, body);
+  } else {
+    button.append(check, label, description);
+  }
 
   button.addEventListener('click', () => {
     // Clicking the active allergen again clears the filter.
@@ -471,8 +492,9 @@ function showNeutralConcern() {
   concernStage.dataset.concern = '';
   delete document.body.dataset.concern;
   concernStage.classList.add('is-neutral');
-  activeConcernTitle.textContent = 'Choose a concern';
-  activeConcernDescription.textContent = 'Select one or more skin concerns to begin.';
+  // The left heading is the fixed "Step 1" title now; it no longer mirrors the
+  // previewed concern, which is what made the panel read as a shifting label
+  // rather than a stable instruction.
   [concernMainImage, concernNextImage].forEach(layer => layer.className = '');
   playNeutralConcern();
   syncOptions();
@@ -497,8 +519,6 @@ function updateConcernPreview(value, animate = true) {
   matchLayout.dataset.concern = option.value;
   concernStage.dataset.concern = option.value;
   document.body.dataset.concern = option.value;
-  activeConcernTitle.textContent = option.label;
-  activeConcernDescription.textContent = presentation.description;
 
   // Restart the copy animation by forcing a reflow between class toggles.
   activeConcernCopy.classList.remove('is-switching');
@@ -545,12 +565,14 @@ function selectSkin(value) {
     }
   }
   onboardingStep = selectedConditions().length ? 2 : 1;
+  lastMatchCount = null;
   formMessage.textContent = '';
   updateConcernPreview(activeConcern);
 }
 
 function selectAllergen(value) {
   allergen.value = value;
+  lastMatchCount = null;
   if (selectedConditions().length) onboardingStep = 2;
   syncOptions();
 }
@@ -560,6 +582,7 @@ function resetChoices() {
   [...skinProblem.options].forEach(option => { option.selected = false; });
   allergen.value = '';
   onboardingStep = 1;
+  lastMatchCount = null;
   formMessage.textContent = '';
   showNeutralConcern();
 }
@@ -585,12 +608,59 @@ function updateOnboarding() {
     : allergen.value === 'Both' ? 'No fragrance or alcohol'
     : 'No ingredient exclusions';
 
+  renderSelectionChips(conditions);
+
   concernStartHint.classList.toggle('is-hidden', hasConditions);
   concernRail.classList.toggle('needs-guidance', !hasConditions);
+  // The helper doubles as the recommendation summary. Once a search has run it
+  // reports the count instead, so the panel answers "what will I get?".
   ctaHelper.textContent = !hasConditions
-    ? 'Browse the full collection, or choose concerns for a tailored match.'
-    : 'We’ll find products matching all selected concerns.';
-  findBtn.textContent = hasConditions ? 'Show my matches' : 'Show all products';
+    ? 'Choose at least one concern to view personalised matches.'
+    : lastMatchCount === null
+      ? 'We’ll find products matching all selected concerns.'
+      : `${lastMatchCount} product${lastMatchCount === 1 ? '' : 's'} match this profile.`;
+  // The primary action stays inert until there is something to match on; the
+  // "browse all" link below it covers the no-selection case.
+  findBtn.disabled = isSearching || !hasConditions;
+}
+
+// Renders the selected concerns as removable chips. Removal reuses selectSkin,
+// so a chip and a card toggle through exactly the same path.
+function renderSelectionChips(conditions) {
+  if (!selectionChips) return;
+  selectionChips.replaceChildren();
+
+  if (!conditions.length) {
+    const empty = document.createElement('span');
+    empty.className = 'chip-empty';
+    empty.textContent = 'No concerns selected';
+    selectionChips.append(empty);
+    if (clearConcernsButton) clearConcernsButton.hidden = true;
+    return;
+  }
+
+  conditions.forEach(value => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'chip';
+    chip.dataset.value = value;
+    chip.setAttribute('aria-label', `Remove ${value}`);
+    const text = document.createElement('span');
+    text.textContent = value;
+    const cross = document.createElement('span');
+    cross.className = 'chip-x';
+    cross.textContent = '×';
+    cross.setAttribute('aria-hidden', 'true');
+    chip.append(text, cross);
+    chip.addEventListener('click', () => {
+      if (isSearching) return;
+      selectSkin(value);
+      syncOptions();
+    });
+    selectionChips.append(chip);
+  });
+
+  if (clearConcernsButton) clearConcernsButton.hidden = false;
 }
 
 // Mirrors the hidden form state onto the visual option cards.
@@ -934,13 +1004,18 @@ function setSearchBusy(busy) {
   [
     ...skinProblemOpts.querySelectorAll('button'),
     ...allergenOpts.querySelectorAll('button'),
-    clearAllergen,
+    ...selectionChips.querySelectorAll('button'),
+    clearConcernsButton,
+    browseAllButton,
     resetChoicesButton
-  ].forEach(button => { button.disabled = busy; });
+  ].filter(Boolean).forEach(button => { button.disabled = busy; });
   findBtn.classList.toggle('is-loading', busy);
-  findBtn.textContent = busy ? 'Finding matches…'
-    : selectedConditions().length ? 'Show my matches' : 'Show all products';
-  findBtn.disabled = busy;
+  // Only the label text changes: rewriting textContent would delete the arrow.
+  if (findBtnLabel) findBtnLabel.textContent = busy ? 'Finding matches…' : 'View my matches';
+  findBtn.disabled = busy || !selectedConditions().length;
+  // Once the search finishes, refresh the panel so its summary line picks up
+  // the result count that findProducts just recorded.
+  if (!busy) updateOnboarding();
 }
 
 function scrollToResults() {
@@ -1042,11 +1117,14 @@ async function findProducts() {
         : 'No products matched every selected concern. Try removing one concern or changing the ingredient filter.';
       show(emptyBox);
       resultsCount.textContent = '0 products';
+      lastMatchCount = 0;
       await settleResultsAndScroll();
       return;
     }
 
     resultsCount.textContent = `${uniqueBindings.length} product${uniqueBindings.length === 1 ? '' : 's'}`;
+    // Feed the count back into the profile panel's summary line.
+    lastMatchCount = uniqueBindings.length;
     renderResults(uniqueBindings, conditions, allergenValue);
     await settleResultsAndScroll();
   } catch (error) {
@@ -1380,8 +1458,31 @@ quizForm.addEventListener('submit', event => {
   event.preventDefault();
   findProducts();
 });
-clearAllergen.addEventListener('click', () => selectAllergen(''));
 resetChoicesButton.addEventListener('click', resetChoices);
+
+// "Clear all" drops every concern but leaves the ingredient preference alone;
+// "Reset profile" is the one action that clears everything.
+clearConcernsButton?.addEventListener('click', () => {
+  if (isSearching) return;
+  [...skinProblem.options].forEach(option => { option.selected = false; });
+  activeConcern = '';
+  onboardingStep = 1;
+  lastMatchCount = null;
+  formMessage.textContent = '';
+  showNeutralConcern();
+});
+
+// "Browse all products" is the old no-concerns submit: the full catalogue is
+// what the query returns when nothing is selected, so clear and search.
+browseAllButton?.addEventListener('click', () => {
+  if (isSearching) return;
+  [...skinProblem.options].forEach(option => { option.selected = false; });
+  activeConcern = '';
+  lastMatchCount = null;
+  formMessage.textContent = '';
+  showNeutralConcern();
+  findProducts();
+});
 
 // Mobile navigation drawer.
 const navToggle = document.getElementById('navToggle');

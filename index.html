@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/styles.css?v=premium-26">
+  <link rel="stylesheet" href="./css/styles.css?v=premium-32">
   <link rel="stylesheet" href="./css/skin-scan.css?v=scan-24">
 </head>
 <body>
@@ -109,75 +109,95 @@
             <li data-step="3"><span>3</span><strong>View matches</strong></li>
           </ol>
 
-          <div class="match-layout" data-concern="">
+          <!-- Two columns: the choosing happens on the left because it is the
+               first action; the profile on the right accumulates the result. -->
+          <form class="match-layout" id="quizForm" data-concern="" novalidate>
 
-            <!-- Preference form -->
-            <form class="filter-panel" id="quizForm" novalidate>
+            <!-- LEFT: choose concerns -->
+            <section class="match-main concern-rail" aria-label="Choose skin concerns">
               <div class="active-concern-copy" id="activeConcernCopy" aria-live="polite">
-                <h3 id="activeConcernTitle">Choose a concern</h3>
-                <p id="activeConcernDescription">Select one or more skin concerns to begin.</p>
+                <span class="step-eyebrow">Step 1</span>
+                <h3 id="activeConcernTitle">Choose your skin concerns</h3>
+                <p id="activeConcernDescription">Select one or more concerns to personalise your recommendations.</p>
               </div>
-
-              <fieldset class="ingredient-fieldset">
-                <legend>Ingredient preferences</legend>
-                <button class="clear-btn" id="clearAllergen" type="button">Clear</button>
-                <div class="option-grid" id="allergenOpts" role="radiogroup" aria-label="Ingredients to avoid"></div>
-              </fieldset>
-
-              <div class="selection-summary" id="selectionSummary" aria-live="polite">
-                <span>Your selection</span>
-                <strong id="selectionConcerns">No concerns selected</strong>
-                <small id="selectionFilter">No ingredient exclusions</small>
-              </div>
-
-              <!-- Hidden selects mirror the visual option cards and hold the form state -->
-              <select id="skinProblem" class="sr-only" multiple tabindex="-1" aria-hidden="true">
-                <option value="Dryness">Dryness</option>
-                <option value="Acne">Acne</option>
-                <option value="Redness">Redness</option>
-                <option value="Dehydration">Dehydration</option>
-              </select>
-              <select id="allergen" class="sr-only" tabindex="-1" aria-hidden="true">
-                <option value="">Show all</option>
-                <option value="Fragrance">Fragrance</option>
-                <option value="Alcohol">Alcohol</option>
-                <option value="Both">Both</option>
-              </select>
 
               <!-- Optional experimental visual screening entry point -->
               <div class="scan-entry">
+                <p class="scan-entry-lead">Not sure what your skin needs?</p>
                 <button class="btn scan-open-btn" id="scanOpenBtn" type="button">
                   <span aria-hidden="true">✦</span> Analyse your skin
                 </button>
-                <p class="scan-entry-note">Optional. An experimental visual screening can suggest concerns. You can always choose them manually.</p>
+                <p class="scan-entry-note">Optional experimental screening. You can always choose manually.</p>
               </div>
 
-              <p class="cta-helper" id="ctaHelper">Browse the full collection, or choose concerns for a tailored match.</p>
-              <div class="form-actions">
-                <button class="reset-btn" id="resetChoices" type="button">Reset</button>
-                <button class="btn btn-primary" id="findBtn" type="submit">Show all products</button>
-              </div>
-              <p class="form-message" id="formMessage" role="alert"></p>
-            </form>
+              <p class="concern-start-hint" id="concernStartHint">Start here. Choose one or more skin concerns.</p>
+              <div class="option-grid concern-grid" id="skinProblemOpts" role="group" aria-label="Skin concerns"></div>
+            </section>
 
-            <!-- Concern preview stage -->
-            <div class="concern-stage is-neutral" id="concernStage" data-concern="">
-              <div class="concern-stage-glow" aria-hidden="true"></div>
-              <div class="concern-stage-frame">
-                <video class="concern-neutral-video is-visible" id="concernNeutralVideo" src="./assets/videos/neutral-concern-loop.mp4" muted playsinline preload="auto" aria-label="Decorative skincare motion"></video>
-                <video class="concern-neutral-video" id="concernNeutralVideoNext" src="./assets/videos/neutral-concern-loop.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
-                <img id="concernMainImage" src="./images/concerns/dryness.jpeg" alt="">
-                <img id="concernNextImage" alt="">
-              </div>
-            </div>
+            <!-- RIGHT: sticky skin profile -->
+            <aside class="profile-panel" aria-label="Your skin profile">
+              <div class="profile-sticky">
 
-            <!-- Concern selector rail -->
-            <aside class="concern-rail" aria-label="Choose skin concerns">
-              <p class="concern-start-hint" id="concernStartHint"><span aria-hidden="true">→</span> Start here. Choose one or more skin concerns.</p>
-              <div class="option-grid" id="skinProblemOpts" role="group" aria-label="Skin concerns"></div>
+                <!-- The looping concern visual, kept but reduced to a supporting role -->
+                <div class="concern-stage is-neutral" id="concernStage" data-concern="">
+                  <div class="concern-stage-glow" aria-hidden="true"></div>
+                  <div class="concern-stage-frame">
+                    <video class="concern-neutral-video is-visible" id="concernNeutralVideo" src="./assets/videos/neutral-concern-loop.mp4" muted playsinline preload="auto" aria-label="Decorative skincare motion"></video>
+                    <video class="concern-neutral-video" id="concernNeutralVideoNext" src="./assets/videos/neutral-concern-loop.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+                    <img id="concernMainImage" src="./images/concerns/dryness.jpeg" alt="">
+                    <img id="concernNextImage" alt="">
+                  </div>
+                </div>
+
+                <h3 class="profile-title">Your skin profile</h3>
+
+                <div class="profile-block">
+                  <div class="profile-block-head">
+                    <span class="profile-label">Selected concerns</span>
+                    <button class="link-btn" id="clearConcerns" type="button" hidden>Clear all</button>
+                  </div>
+                  <!-- Chips are rendered from the same hidden select the query
+                       reads, so the panel cannot drift from the search state. -->
+                  <div class="chip-row" id="selectionChips" aria-live="polite"></div>
+                  <strong id="selectionConcerns" class="sr-only">No concerns selected</strong>
+                </div>
+
+                <div class="profile-block">
+                  <span class="profile-label">Ingredient preferences</span>
+                  <div class="option-grid pref-grid" id="allergenOpts" role="radiogroup" aria-label="Ingredients to avoid"></div>
+                  <small id="selectionFilter" class="sr-only">No ingredient exclusions</small>
+                </div>
+
+                <!-- Hidden selects mirror the visual option cards and hold the form state -->
+                <select id="skinProblem" class="sr-only" multiple tabindex="-1" aria-hidden="true">
+                  <option value="Dryness">Dryness</option>
+                  <option value="Acne">Acne</option>
+                  <option value="Redness">Redness</option>
+                  <option value="Dehydration">Dehydration</option>
+                </select>
+                <select id="allergen" class="sr-only" tabindex="-1" aria-hidden="true">
+                  <option value="">Show all</option>
+                  <option value="Fragrance">Fragrance</option>
+                  <option value="Alcohol">Alcohol</option>
+                  <option value="Both">Both</option>
+                </select>
+
+                <p class="cta-helper" id="ctaHelper">Choose at least one concern to view personalised matches.</p>
+
+                <div class="profile-actions">
+                  <button class="btn btn-primary" id="findBtn" type="submit">
+                    <span id="findBtnLabel">View my matches</span>
+                    <span class="btn-arrow" aria-hidden="true">→</span>
+                  </button>
+                  <button class="link-btn browse-all" id="browseAllBtn" type="button">Browse all products</button>
+                </div>
+
+                <p class="form-message" id="formMessage" role="alert"></p>
+                <button class="reset-btn" id="resetChoices" type="button">Reset profile</button>
+              </div>
             </aside>
 
-          </div>
+          </form>
         </div>
 
         <!-- Recommendation results -->
@@ -371,7 +391,7 @@
   </div>
 
   <script src="./js/vendor/lenis.min.js"></script>
-  <script src="./js/app.js?v=premium-12"></script>
+  <script src="./js/app.js?v=premium-15"></script>
   <script src="./js/skin-scan.js?v=scan-24"></script>
 </body>
 </html>
