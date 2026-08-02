@@ -1051,7 +1051,21 @@ function buildIngredientBack(binding, name, ingredientsMap, condition, allergenV
     actions.append(visit);
   }
 
-  back.append(backToFront, header, kicker, composition, matchNote, actions);
+  // Grouped into a natural-height top block and a bottom-anchored block,
+  // rather than one flex column: a grid row is stretched to its tallest
+  // card, and centering the ingredient composition in that leftover space
+  // was what produced the large dead gaps above and below it on any row
+  // sharing space with a taller neighbour. Anchoring the actions to the
+  // bottom keeps that same leftover space in one place instead.
+  const top = document.createElement('div');
+  top.className = 'back-top';
+  top.append(header, kicker, composition);
+
+  const bottom = document.createElement('div');
+  bottom.className = 'back-bottom';
+  bottom.append(matchNote, actions);
+
+  back.append(backToFront, top, bottom);
   return back;
 }
 
@@ -1219,6 +1233,9 @@ function ensureIngredientModal() {
     if (overlay.hidden) return;
     overlay.hidden = true;
     document.body.classList.remove('ingredient-modal-open');
+    // Lenis drives scrolling from its own rAF loop, so it needs telling
+    // explicitly to resume — see the identical note on cosmoLockScroll.
+    window.cosmoLockScroll?.(false);
     returnFocus?.focus();
   };
   overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
@@ -1253,6 +1270,7 @@ function ensureIngredientModal() {
       });
       overlay.hidden = false;
       document.body.classList.add('ingredient-modal-open');
+      window.cosmoLockScroll?.(true);
       requestAnimationFrame(() => modal.focus());
     },
     close
