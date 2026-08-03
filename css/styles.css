@@ -1134,8 +1134,8 @@ legend {
   position: relative;
   display: none;
   min-height: calc(100svh - var(--nav-h));
-  margin-top: 52px;
-  padding: 30px clamp(20px, 3.2vw, 44px) 46px;
+  margin-top: 18px;
+  padding: 16px clamp(20px, 3.2vw, 44px) 32px;
   overflow: clip;
   background: #f6f3ec;
   border: 1px solid rgba(69, 91, 77, 0.1);
@@ -1151,8 +1151,8 @@ legend {
 }
 .results-header h2 {
   margin: 0;
-  font-size: clamp(3rem, 5vw, 5rem);
-  line-height: 0.94;
+  font-size: clamp(2.2rem, 3.6vw, 3.4rem);
+  line-height: 0.96;
 }
 .results-count {
   flex: 0 0 auto;
@@ -1165,7 +1165,7 @@ legend {
   font-weight: 700;
 }
 .results-meta {
-  margin: 8px 0 14px;
+  margin: 4px 0 8px;
   color: var(--muted);
   font-size: 0.8rem;
   line-height: 1.4;
@@ -1230,7 +1230,13 @@ legend {
 .results-story-frame {
   position: sticky;
   top: calc(var(--nav-h) + 12px);
-  height: calc(100svh - var(--nav-h) - 24px);
+  /* Capped: on tall viewports (1920x1080+) the fixed-size product photo and
+     detail text don't grow to fill the full available height, so letting
+     the frame stretch to it just leaves a large empty cream panel below the
+     content. Capping keeps the frame content-sized on tall screens while
+     still using the full available height on the shorter ones that actually
+     need it (1366x768, 1440x900). */
+  height: min(calc(100svh - var(--nav-h) - 24px), 800px);
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr);
   overflow: hidden;
@@ -1374,8 +1380,15 @@ legend {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  justify-content: center;
+  overflow: hidden;
   text-align: left;
+  /* Top-anchored, not vertically centred: centring pushed the whole block
+     down by half its leftover space, which is exactly the "excessive top
+     gap above the heading" and the footer sitting too close to the frame's
+     bottom edge that this pass fixes - anchoring from the top keeps both
+     ends predictable regardless of how tall a given product's content is. */
+  justify-content: flex-start;
+  padding-top: clamp(4px, 2vh, 22px);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1402,7 +1415,7 @@ legend {
 }
 .story-detail h3 {
   max-width: 11ch;
-  margin: 12px 0 16px;
+  margin: 8px 0 10px;
   color: var(--ink);
   font-size: clamp(2.2rem, 3.3vw, 4rem);
   line-height: 0.96;
@@ -1421,12 +1434,12 @@ legend {
   font-size: 0.88rem;
 }
 .story-ingredients {
-  margin: 6px 0 8px;
+  margin: 4px 0 6px;
   width: 100%;
   max-width: 420px;
 }
 .story-ingredients .back-kicker {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
 }
 
 /* Anchor rail: gold-dotted, connected by a thin baseline that reads as a
@@ -1438,8 +1451,8 @@ legend {
   flex-wrap: wrap;
   align-items: center;
   gap: 4px 0;
-  padding-bottom: 14px;
-  margin-bottom: 16px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
   border-bottom: 1px solid rgba(199, 165, 102, 0.3);
 }
 .spotlight-anchor {
@@ -1508,9 +1521,9 @@ legend {
   display: grid;
   grid-template-columns: auto 1fr;
   column-gap: 14px;
-  row-gap: 4px;
+  row-gap: 3px;
   align-items: start;
-  min-height: 92px;
+  min-height: 0;
 }
 .spotlight-icon {
   grid-row: 1 / 3;
@@ -2919,7 +2932,7 @@ legend {
   display: block;
   width: 54px;
   height: 2px;
-  margin-top: 16px;
+  margin-top: 8px;
   background: linear-gradient(90deg, #b28e4f, #e3ca91);
 }
 .story-sticky {
@@ -2934,8 +2947,15 @@ legend {
   background: transparent;
 }
 .story-detail {
-  padding: 36px;
+  padding: 12px 36px 20px;
   border-left: 1px solid rgba(199, 165, 102, 0.42);
+}
+.story-detail .badges {
+  margin: 8px 0;
+}
+.story-detail .product-footer {
+  margin-top: 10px;
+  padding-top: 10px;
 }
 .story-detail h3 {
   max-width: 11ch;
