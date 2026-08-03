@@ -4993,7 +4993,12 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   align-items: center;
   justify-content: space-between;
   gap: 16px 28px;
-  margin-bottom: clamp(18px, 2.2vw, 28px);
+  /* Tightened from clamp(18,2.2vw,28): this gap sits above BOTH the left
+     column's heading and the step pill's own bottom edge, so it was
+     responsible for the section reading as "loose above" on the left AND
+     for the pill feeling disconnected from the profile panel it sits over -
+     one number, two symptoms. */
+  margin-bottom: clamp(14px, 1.6vw, 22px);
 }
 #find-your-match .match-intro {
   flex: 1 1 380px;
@@ -5067,8 +5072,15 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 
 #find-your-match .match-layout {
   /* The centre visual and the profile share one height so the two right-hand
-     columns start and finish together instead of leaving a cream gap. */
-  --consult-h: clamp(400px, 38vw, 560px);
+     columns start and finish together instead of leaving a cream gap.
+     Nudged up from 38vw/560 - measured against the left column's natural
+     content height (heading block + scan entry + 2x2 grid), which ran ~50px
+     taller at common widths, making the three columns feel like three
+     unrelated blocks rather than one row. Meeting closer to the middle
+     (this bump plus the left-column spacing trims below) reads as one grid
+     instead of forcing an exact tie, which would need fragile flex tricks
+     tried and reverted earlier in this file. */
+  --consult-h: clamp(400px, 39vw, 575px);
   display: grid;
   grid-template-areas: "main stage profile";
   /* Centre column trimmed from 38fr to 33fr (~33% of the row) and handed to
@@ -5107,7 +5119,10 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 
 #find-your-match .active-concern-copy {
   min-height: 0;
-  margin: 0 0 16px;
+  /* Same 14px used between scan-entry and the concern grid below it, so the
+     left column reads as one consistent rhythm rather than two different
+     gap sizes (16px, then 14px) that read as arbitrary. */
+  margin: 0 0 14px;
   padding: 0;
   background: none;
   border: 0;
@@ -5189,7 +5204,7 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: none;    /* the old rail pinned four fixed tracks here */
   grid-auto-rows: auto;
-  gap: 14px;
+  gap: 12px;
   margin: 0;
   flex: none;
   height: auto;
@@ -5200,11 +5215,11 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   display: block;
   width: 100%;
   /* Explicit height, NOT aspect-ratio: tying height to a wide column is what
-     grew these into 300px+ portrait posters on large screens. Raised from
-     132-168px now that the left column has more width to give it (see
-     .match-layout), so the extra room becomes taller, easier tiles rather
-     than just wider ones. */
-  height: clamp(148px, 12.5vw, 190px);
+     grew these into 300px+ portrait posters on large screens. Capped a
+     little lower than before (190px -> 170px) as part of bringing the left
+     column's total height back in line with the centre/right columns,
+     which were running noticeably shorter. */
+  height: clamp(148px, 12vw, 170px);
   min-height: 0;
   aspect-ratio: auto;
   padding: 0;
@@ -5430,7 +5445,10 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 18px;
+  /* Lifted from 18px: sitting this close to the card's own rounded bottom
+     edge made it read as an afterthought pinned to the corner rather than a
+     caption placed with intent. */
+  bottom: 24px;
   z-index: 4;
   margin: 0;
   padding: 0 18px;
@@ -5457,7 +5475,10 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
    than a generic decorative loop. Empty/hidden in the neutral state. */
 #find-your-match .stage-badge {
   position: absolute;
-  top: 16px;
+  /* Matched to the caption's own inset (24px) rather than an unrelated
+     16px, so badge and caption read as one deliberate top/bottom pair
+     framing the image instead of two independently placed elements. */
+  top: 20px;
   left: 50%;
   transform: translateX(-50%) translateY(-6px);
   z-index: 4;
@@ -5520,7 +5541,7 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 #find-your-match .profile-block { display: flex; flex-direction: column; gap: 8px; }
 #find-your-match .profile-block-head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 10px;
 }
@@ -5659,11 +5680,17 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   transition: color 0.2s ease;
 }
 #find-your-match .link-btn:hover { color: var(--forest); }
-/* A refined secondary button, not a browser link. */
+/* A refined secondary button, not a browser link. Full width, matching the
+   primary CTA directly beneath it: centred-and-shrunk-to-content read as
+   inconsistent with every other row in this panel, which is either full
+   width (the CTA) or flush with the panel's left padding edge (every
+   label, chip and preference button). Kept visually secondary through
+   colour and weight, not through not lining up with its neighbours. */
 #find-your-match .browse-all {
-  align-self: center;
+  align-self: stretch;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   height: 40px;
   padding: 0 16px;
@@ -5680,7 +5707,10 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
 #find-your-match .browse-all .link-arrow { font-size: 0.9em; transition: transform 0.2s ease; }
 #find-your-match .browse-all:hover .link-arrow { transform: translateX(2px); }
 #find-your-match .reset-btn {
-  align-self: center;
+  /* Left-aligned, not centred: every label above it (Selected concerns,
+     Ingredient preferences) sits flush with the panel's left padding edge,
+     and a centred text link underneath read as unrelated to that column. */
+  align-self: flex-start;
   margin: 0;
   padding: 0;
   background: none;
