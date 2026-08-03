@@ -2,6 +2,12 @@
    Vanilla JS, no build step. Talks to a TriplyDB SPARQL endpoint and renders
    the concern selector, the featured-product story, and the More Matches grid. */
 
+// index.html's inline <head> script already sets history.scrollRestoration
+// to 'manual' as early as possible; this covers the case that alone doesn't
+// (a back/forward-cache restore, e.g. Safari/iOS swipe-back), which fires
+// its own pageshow event rather than a fresh navigation.
+addEventListener('pageshow', () => window.scrollTo(0, 0));
+
 // ---------------------------------------------------------------------------
 // Configuration
 // ---------------------------------------------------------------------------

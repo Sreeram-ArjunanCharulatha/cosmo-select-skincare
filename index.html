@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="COSMO SELECT: skincare recommendations matched to your concern and ingredient preferences.">
   <title>COSMO SELECT · Find your match</title>
+  <script>
+    // Always start at the top on reload, instead of the browser restoring
+    // whatever scroll position the page was at before refreshing. Must run
+    // this early (inline, in <head>) - by the time a bottom-of-body script
+    // runs, the browser has often already applied its own restored position.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -384,7 +391,7 @@
   </div>
 
   <script src="./js/vendor/lenis.min.js"></script>
-  <script src="./js/app.js?v=premium-27"></script>
+  <script src="./js/app.js?v=premium-28"></script>
   <script src="./js/skin-scan.js?v=scan-25"></script>
 </body>
 </html>
