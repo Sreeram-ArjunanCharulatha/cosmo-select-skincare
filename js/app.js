@@ -893,43 +893,95 @@ function syncOptions() {
 // Recommendation rendering
 // ---------------------------------------------------------------------------
 
-// Compact echo of the flip-card's ingredient callouts for the featured
-// story panel — a vertical list (no duplicate product circle, since the
-// image already sits large in .story-stage to the left).
-function buildStoryIngredients(binding, name, ingredientsMap) {
+// Small line-art cues for the spotlight panel — droplet (hydration/moisture),
+// molecule (actives: exfoliants, antioxidants, renewal), cream (barrier,
+// soothing, texture). Single currentColor stroke so CSS controls the tone.
+const SPOTLIGHT_ICONS = {
+  droplet: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5s6.5 7.02 6.5 11.2A6.5 6.5 0 0 1 5.5 14.7C5.5 10.52 12 3.5 12 3.5Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M9 15.2a3 3 0 0 0 3 2.9" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+  molecule: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="7" r="2.1" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="18" cy="8.5" r="2.1" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="10.5" cy="17.5" r="2.4" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M7.8 8.2 9 15.6M16.2 9.6l-4.4 6.4M8 6.6l8-.4" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>',
+  cream: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11c0-3.6 3.1-7 7-7s7 3.4 7 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4.5 11h15c.5 0 .8.5.6 1L18 20.5a1 1 0 0 1-.9.6H6.9a1 1 0 0 1-.9-.6L3.9 12c-.2-.5.1-1 .6-1Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>'
+};
+
+// Benefit label -> spotlight icon + a short, condition-aware "why it suits
+// you" line. Only fires for benefits the ingredient pipeline actually
+// produces (see FUNCTION_BENEFIT / INGREDIENT_INFO above), so nothing here
+// invents a claim the data doesn't support.
+const SPOTLIGHT_BY_BENEFIT = {
+  'Hydration': { icon: 'droplet', why: condition => `Draws moisture into the skin, helping ease ${condition}.` },
+  'Moisture retention': { icon: 'droplet', why: condition => `Locks in moisture through the day, supporting ${condition}.` },
+  'Hydration and softening': { icon: 'droplet', why: condition => `Softens and hydrates, calming ${condition}.` },
+  'Barrier support': { icon: 'cream', why: condition => `Reinforces the skin barrier, easing sensitivity linked to ${condition}.` },
+  'Calming and tone support': { icon: 'molecule', why: condition => `Calms visible redness and evens tone associated with ${condition}.` },
+  'Pore care': { icon: 'molecule', why: condition => `Helps clear congestion that contributes to ${condition}.` },
+  'Soothing': { icon: 'cream', why: condition => `Soothes irritation and visible discomfort from ${condition}.` },
+  'Antioxidant support': { icon: 'molecule', why: condition => `Protects skin from daily stressors while supporting ${condition}.` },
+  'Renewal support': { icon: 'molecule', why: condition => `Encourages skin renewal, helping resurface concerns tied to ${condition}.` },
+  'Gentle exfoliation': { icon: 'molecule', why: condition => `Gently lifts away dulling buildup that worsens ${condition}.` },
+  'Tone support': { icon: 'molecule', why: condition => `Helps even out tone affected by ${condition}.` },
+  'Sun protection': { icon: 'cream', why: () => 'Shields skin from UV exposure, a daily essential for every routine.' }
+};
+const DEFAULT_SPOTLIGHT = { icon: 'droplet', why: condition => `Chosen as part of a formula suited to ${condition}.` };
+
+// Interactive "ingredient spotlight": 3-5 gold-anchored callouts the shopper
+// can hover or click, each updating a detail panel with the ingredient's
+// name, benefit, a condition-aware "why it suits you" line and a small icon
+// cue — in place of a flat, static ingredient list.
+function buildStoryIngredients(binding, name, ingredientsMap, condition) {
   const enriched = getEnrichedIngredients(name, ingredientsMap);
   if (!enriched.length) return null;
-  const keyIngredients = [...enriched].sort((a, b) => a.priority - b.priority).slice(0, 4);
+  const keyIngredients = [...enriched].sort((a, b) => a.priority - b.priority).slice(0, 5);
+  const conditionLabel = (condition && condition.length ? conditionText(condition) : 'your skin').toLowerCase();
 
   const wrap = document.createElement('div');
   wrap.className = 'story-ingredients';
   const kicker = document.createElement('span');
   kicker.className = 'back-kicker';
-  kicker.textContent = 'Key ingredients';
+  kicker.textContent = 'Ingredient spotlight';
   wrap.append(kicker);
 
-  const list = document.createElement('div');
-  list.className = 'story-ingredient-list';
-  keyIngredients.forEach(ing => {
-    const callout = document.createElement('div');
-    callout.className = 'callout story-callout';
+  const rail = document.createElement('div');
+  rail.className = 'spotlight-rail';
+  const panel = document.createElement('div');
+  panel.className = 'spotlight-panel';
+  const panelIcon = document.createElement('span');
+  panelIcon.className = 'spotlight-icon';
+  const panelName = document.createElement('strong');
+  panelName.className = 'spotlight-name';
+  const panelBenefit = document.createElement('span');
+  panelBenefit.className = 'spotlight-benefit';
+  const panelWhy = document.createElement('p');
+  panelWhy.className = 'spotlight-why';
+  panel.append(panelIcon, panelName, panelBenefit, panelWhy);
+
+  const anchors = keyIngredients.map(ing => {
+    const meta = (ing.benefit && SPOTLIGHT_BY_BENEFIT[ing.benefit]) || DEFAULT_SPOTLIGHT;
+    const anchor = document.createElement('button');
+    anchor.type = 'button';
+    anchor.className = 'spotlight-anchor';
     const dot = document.createElement('span');
-    dot.className = 'callout-dot';
+    dot.className = 'spotlight-dot';
     dot.setAttribute('aria-hidden', 'true');
-    const text = document.createElement('span');
-    text.className = 'callout-text';
-    const label = document.createElement('strong');
+    const label = document.createElement('span');
+    label.className = 'spotlight-label';
     label.textContent = ing.label;
-    text.append(label);
-    if (ing.benefit) {
-      const benefit = document.createElement('small');
-      benefit.textContent = ing.benefit;
-      text.append(benefit);
-    }
-    callout.append(dot, text);
-    list.append(callout);
+    anchor.append(dot, label);
+
+    const setActive = () => {
+      anchors.forEach(a => a.el.classList.toggle('is-active', a.el === anchor));
+      panelIcon.innerHTML = SPOTLIGHT_ICONS[meta.icon];
+      panelName.textContent = ing.label;
+      panelBenefit.textContent = ing.benefit || 'Key ingredient';
+      panelWhy.textContent = meta.why(conditionLabel);
+    };
+    anchor.addEventListener('mouseenter', setActive);
+    anchor.addEventListener('focus', setActive);
+    anchor.addEventListener('click', setActive);
+    rail.append(anchor);
+    return { el: anchor, setActive };
   });
-  wrap.append(list);
+
+  anchors[0].setActive();
+  wrap.append(rail, panel);
   return wrap;
 }
 
@@ -1014,6 +1066,12 @@ function createCard(binding, condition, allergenValue, ingredientsMap) {
   flipTrigger.title = 'View ingredients';
   flipTrigger.innerHTML = FLIP_ICON;
   front.append(flipTrigger);
+
+  const flipHint = document.createElement('span');
+  flipHint.className = 'flip-hint';
+  flipHint.textContent = 'Flip for ingredients';
+  flipHint.setAttribute('aria-hidden', 'true');
+  front.append(flipHint);
 
   // BACK — the ingredient story.
   const back = buildIngredientBack(binding, name, ingredientsMap, condition, allergenValue);
@@ -1440,7 +1498,7 @@ function renderResults(bindings, condition, allergenValue, ingredientsMap) {
     const detail = document.createElement('article');
     detail.className = 'story-detail';
     addProductInfo(detail, item, condition, allergenValue);
-    const ingredientsBlock = buildStoryIngredients(item, valueOf(item, 'productName', 'Product'), ingredientsMap);
+    const ingredientsBlock = buildStoryIngredients(item, valueOf(item, 'productName', 'Product'), ingredientsMap, condition);
     if (ingredientsBlock) detail.insertBefore(ingredientsBlock, detail.querySelector('.product-footer'));
     details.append(detail);
     detailItems.push(detail);

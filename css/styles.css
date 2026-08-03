@@ -1421,26 +1421,138 @@ legend {
   font-size: 0.88rem;
 }
 .story-ingredients {
-  margin: 4px 0 6px;
+  margin: 6px 0 8px;
+  width: 100%;
+  max-width: 420px;
 }
 .story-ingredients .back-kicker {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
-.story-ingredient-list {
+
+/* Anchor rail: gold-dotted, connected by a thin baseline that reads as a
+   single elegant instrument rather than a list — each anchor is a real
+   button so it is keyboard-reachable, not just hoverable. */
+.spotlight-rail {
+  position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 0;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(199, 165, 102, 0.3);
 }
-.story-callout.callout {
-  align-items: flex-start;
-  gap: 10px;
+.spotlight-anchor {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px 6px 0;
+  margin-right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Manrope', system-ui, sans-serif;
 }
-.story-callout .callout-dot {
-  margin-top: 6px;
+.spotlight-anchor:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 14px;
+  height: 1px;
+  transform: translateY(-50%);
+  background: rgba(104, 127, 110, 0.28);
 }
-.story-callout .callout-text {
-  text-align: left;
-  align-items: flex-start;
+.spotlight-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c8a76a;
+  box-shadow: 0 0 0 4px rgba(200, 167, 106, 0.14);
+  transition: box-shadow 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+.spotlight-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: color 0.25s ease;
+}
+.spotlight-anchor:hover .spotlight-label,
+.spotlight-anchor:focus-visible .spotlight-label {
+  color: var(--ink);
+}
+.spotlight-anchor.is-active .spotlight-dot {
+  background: var(--forest);
+  box-shadow: 0 0 0 5px rgba(31, 61, 46, 0.14);
+  transform: scale(1.15);
+}
+.spotlight-anchor.is-active .spotlight-label {
+  color: var(--forest);
+  font-weight: 700;
+}
+.spotlight-anchor:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Detail panel: name in the serif product voice, benefit as a small gold
+   kicker, the "why it suits you" line in quiet sans-serif prose, and an
+   icon cue that swaps with the active ingredient. Fades content between
+   selections rather than jumping, for the quieter, more considered feel of
+   an in-person consultation. */
+.spotlight-panel {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 14px;
+  row-gap: 4px;
+  align-items: start;
+  min-height: 92px;
+}
+.spotlight-icon {
+  grid-row: 1 / 3;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(199, 165, 102, 0.14);
+  color: #a5813f;
+  animation: spotlightFade 0.3s ease;
+}
+.spotlight-icon svg { width: 20px; height: 20px; }
+.spotlight-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+  animation: spotlightFade 0.3s ease;
+}
+.spotlight-benefit {
+  grid-column: 2;
+  color: #a5813f;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: spotlightFade 0.3s ease;
+}
+.spotlight-why {
+  grid-column: 1 / -1;
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+  max-width: 42ch;
+  animation: spotlightFade 0.3s ease;
+}
+@keyframes spotlightFade {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .badges {
   display: flex;
@@ -5915,6 +6027,53 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   outline-offset: 2px;
 }
 .flip-card.is-flipped .flip-trigger { opacity: 0; }
+
+/* A gentle attention pulse on the icon itself (runs a few times on load,
+   then stops) plus a small tooltip that only appears once the shopper is
+   already looking at the card — together these tell a first-time visitor
+   the card is flippable without needing to discover it by accident. */
+@keyframes flipTriggerPulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(53, 48, 40, 0.12), 0 0 0 0 rgba(200, 167, 106, 0.5); }
+  50% { box-shadow: 0 4px 12px rgba(53, 48, 40, 0.12), 0 0 0 6px rgba(200, 167, 106, 0); }
+}
+.flip-trigger { animation: flipTriggerPulse 2.2s ease-out 2; }
+.flip-hint {
+  position: absolute;
+  top: 14px;
+  right: 52px;
+  z-index: 4;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--forest, #1f3d2e);
+  color: #f6f2e8;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(6px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.flip-hint::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+  transform: translateY(-50%) rotate(45deg);
+  border-radius: 1px;
+}
+.product-card:hover .flip-hint,
+.flip-trigger:focus-visible + .flip-hint {
+  opacity: 1;
+  transform: translateX(0);
+}
+.flip-card.is-flipped .flip-hint,
+.flip-card.is-turning .flip-hint { opacity: 0; pointer-events: none; }
 
 /* The gold corner accent and hover shine sweep only belong on a card lying
    flat facing the viewer. .is-turning covers rotation in both directions
