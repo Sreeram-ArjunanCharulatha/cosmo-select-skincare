@@ -16,7 +16,7 @@
   // Configuration
   // -------------------------------------------------------------------------
   const SKIN_ANALYSIS_API =
-    window.COSMO_SKIN_API_URL || 'http://127.0.0.1:5000/api/analyse-skin';
+    window.COSMO_SKIN_API_URL || 'http://127.0.0.1:5050/api/analyse-skin';
   const REQUEST_TIMEOUT_MS = 12000;
   const MAX_FILE_BYTES = 8 * 1024 * 1024;
   const MIN_IMAGE_SIDE = 480;
@@ -24,7 +24,7 @@
   const COUNTDOWN_SECONDS = 3;
   // Live face tracking is done by the API, not the browser.
   const FACE_POSITION_API =
-    (window.COSMO_SKIN_API_URL || 'http://127.0.0.1:5000/api/analyse-skin')
+    (window.COSMO_SKIN_API_URL || 'http://127.0.0.1:5050/api/analyse-skin')
       .replace('/analyse-skin', '/face-position');
   const TRACK_INTERVAL_MS = 360;   // ~3 checks a second
   const TRACK_FRAME_WIDTH = 320;   // small frames keep tracking cheap

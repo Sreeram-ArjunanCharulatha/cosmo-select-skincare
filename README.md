@@ -57,7 +57,7 @@ cd skin-analysis-api
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install --upgrade pip -r requirements.txt
-python3 app.py            # http://127.0.0.1:5000/api/health
+python3 app.py            # http://127.0.0.1:5050/api/health
 
 # Terminal 2 — frontend
 python3 -m http.server 8080   # open http://localhost:8080

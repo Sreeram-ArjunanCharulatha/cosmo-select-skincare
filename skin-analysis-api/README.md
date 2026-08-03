@@ -29,8 +29,8 @@ python3 -m pip install -r requirements.txt
 python3 app.py
 ```
 
-The API is then available at `http://127.0.0.1:5000`.
-Health check: `http://127.0.0.1:5000/api/health`
+The API is then available at `http://127.0.0.1:5050`.
+Health check: `http://127.0.0.1:5050/api/health`
 
 Run the frontend from the project root in a second terminal:
 
