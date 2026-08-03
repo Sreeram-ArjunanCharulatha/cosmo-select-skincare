@@ -893,6 +893,46 @@ function syncOptions() {
 // Recommendation rendering
 // ---------------------------------------------------------------------------
 
+// Compact echo of the flip-card's ingredient callouts for the featured
+// story panel — a vertical list (no duplicate product circle, since the
+// image already sits large in .story-stage to the left).
+function buildStoryIngredients(binding, name, ingredientsMap) {
+  const enriched = getEnrichedIngredients(name, ingredientsMap);
+  if (!enriched.length) return null;
+  const keyIngredients = [...enriched].sort((a, b) => a.priority - b.priority).slice(0, 4);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'story-ingredients';
+  const kicker = document.createElement('span');
+  kicker.className = 'back-kicker';
+  kicker.textContent = 'Key ingredients';
+  wrap.append(kicker);
+
+  const list = document.createElement('div');
+  list.className = 'story-ingredient-list';
+  keyIngredients.forEach(ing => {
+    const callout = document.createElement('div');
+    callout.className = 'callout story-callout';
+    const dot = document.createElement('span');
+    dot.className = 'callout-dot';
+    dot.setAttribute('aria-hidden', 'true');
+    const text = document.createElement('span');
+    text.className = 'callout-text';
+    const label = document.createElement('strong');
+    label.textContent = ing.label;
+    text.append(label);
+    if (ing.benefit) {
+      const benefit = document.createElement('small');
+      benefit.textContent = ing.benefit;
+      text.append(benefit);
+    }
+    callout.append(dot, text);
+    list.append(callout);
+  });
+  wrap.append(list);
+  return wrap;
+}
+
 function addProductInfo(parent, binding, condition, allergenValue, headingClass = '') {
   const brand = document.createElement('div');
   brand.className = 'brand';
@@ -1400,6 +1440,8 @@ function renderResults(bindings, condition, allergenValue, ingredientsMap) {
     const detail = document.createElement('article');
     detail.className = 'story-detail';
     addProductInfo(detail, item, condition, allergenValue);
+    const ingredientsBlock = buildStoryIngredients(item, valueOf(item, 'productName', 'Product'), ingredientsMap);
+    if (ingredientsBlock) detail.insertBefore(ingredientsBlock, detail.querySelector('.product-footer'));
     details.append(detail);
     detailItems.push(detail);
 
