@@ -5071,7 +5071,10 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   --consult-h: clamp(400px, 38vw, 560px);
   display: grid;
   grid-template-areas: "main stage profile";
-  grid-template-columns: minmax(0, 31fr) minmax(0, 38fr) minmax(0, 31fr);
+  /* Centre column trimmed from 38fr to 33fr (~33% of the row) and handed to
+     the left column instead of the right: the 2x2 concern grid is the first
+     thing a user acts on and was the most cramped of the three. */
+  grid-template-columns: minmax(0, 36fr) minmax(0, 33fr) minmax(0, 31fr);
   gap: clamp(18px, 1.5vw, 24px);
   align-items: start;          /* one shared top edge */
   min-width: 0;
@@ -5186,7 +5189,7 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: none;    /* the old rail pinned four fixed tracks here */
   grid-auto-rows: auto;
-  gap: 12px;
+  gap: 14px;
   margin: 0;
   flex: none;
   height: auto;
@@ -5197,8 +5200,11 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   display: block;
   width: 100%;
   /* Explicit height, NOT aspect-ratio: tying height to a wide column is what
-     grew these into 300px+ portrait posters on large screens. */
-  height: clamp(132px, 11vw, 168px);
+     grew these into 300px+ portrait posters on large screens. Raised from
+     132-168px now that the left column has more width to give it (see
+     .match-layout), so the extra room becomes taller, easier tiles rather
+     than just wider ones. */
+  height: clamp(148px, 12.5vw, 190px);
   min-height: 0;
   aspect-ratio: auto;
   padding: 0;
@@ -5218,7 +5224,36 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: none;              /* no aggressive zoom on hover */
+  /* Dimmed by default so the selected tile reads as unmistakably "chosen"
+     rather than relying on the border alone; brightened back up the instant
+     it's picked (see [aria-checked="true"] below). */
+  filter: brightness(0.74) saturate(0.8);
+  transition: filter 0.26s ease;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"] .concern-card-photo {
+  filter: brightness(1.06) saturate(1.12);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card:hover .concern-card-photo {
+  filter: brightness(0.88) saturate(0.92);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"]:hover .concern-card-photo {
+  filter: brightness(1.1) saturate(1.15);
+}
+/* A subtle dark wash on top of the dimmed photo, separate from the filter,
+   so unselected tiles read as visibly receded even before comparing
+   brightness side-by-side; clears on selection. */
+#find-your-match .concern-rail #skinProblemOpts .option-card::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(16, 26, 21, 0.22);
+  transition: opacity 0.26s ease;
+  pointer-events: none;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"]::before {
+  opacity: 0;
 }
 /* Framed per photograph so the affected skin stays in shot and the crop does
    not land across an eye or cut the chin mid-feature. */
@@ -5232,6 +5267,13 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   display: block !important;
   position: absolute;
   inset: auto 0 0 0;
+  /* Explicit z-index so this stacks predictably above the dim wash
+     (.option-card::before, same z-index but painted first in generated-
+     content order): without it, this and the photo both sit at the
+     implicit stacking level and the wash - added later, with its own
+     explicit z-index to lift it above the photo - would paint over this
+     gradient instead of under it. */
+  z-index: 1;
   height: 56%;
   background: linear-gradient(to top, rgba(20, 32, 26, 0.8), rgba(20, 32, 26, 0.26) 48%, transparent);
   pointer-events: none;
@@ -5357,6 +5399,9 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   object-fit: cover;
   object-position: center 42%;
   border-radius: 26px;
+  /* Lifted exposure: the source clip reads dark/shadowy at its native
+     levels against the ivory panel it sits in. */
+  filter: brightness(1.1) saturate(1.05) contrast(1.02);
 }
 #find-your-match .concern-stage-frame img {
   position: absolute;
@@ -5366,6 +5411,7 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   object-fit: cover;
   object-position: center 30%;
   border-radius: 26px;
+  filter: brightness(1.08) saturate(1.04);
 }
 #find-your-match .concern-stage-glow { opacity: 0.3; }
 /* The clip carries its own cool grey-blue backdrop, and because it fills the
@@ -5395,8 +5441,55 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   text-align: center;
   text-shadow: 0 1px 6px rgba(20, 32, 26, 0.45);
   pointer-events: none;
+  transition: color 0.2s ease;
 }
 #find-your-match .concern-stage.is-neutral .stage-caption { color: rgba(40, 57, 50, 0.6); text-shadow: none; }
+/* Once a concern is being visualised, the caption itself becomes the
+   confirmation that this is an active, specific view rather than the
+   decorative idle loop - a touch brighter and a hair heavier. */
+#find-your-match .stage-caption.is-active {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Top-of-frame context badge: names exactly what is currently being shown,
+   so the large central visual reads as connected to the selection rather
+   than a generic decorative loop. Empty/hidden in the neutral state. */
+#find-your-match .stage-badge {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(20, 32, 26, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  backdrop-filter: blur(6px);
+  transition: opacity 0.24s ease, transform 0.24s ease;
+  pointer-events: none;
+}
+#find-your-match .stage-badge.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+#find-your-match .stage-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c8a76a;
+  box-shadow: 0 0 0 3px rgba(200, 167, 106, 0.35);
+}
 
 /* -- Right column: skin profile -------------------------------------------- */
 
@@ -5646,7 +5739,12 @@ body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
   #find-your-match .concern-rail #skinProblemOpts .option-card { height: clamp(130px, 34vw, 155px); }
 }
 
-@media (max-width: 359px) {
+/* Raised from 359px: the pill's full step labels ("Choose concerns", "View
+   matches") were overlapping their neighbouring circle well above that,
+   since a 0.72rem label plus a connector line doesn't fit three-across in a
+   phone-width pill - numbers-only needs to start much earlier than a single
+   narrow-phone breakpoint suggested. */
+@media (max-width: 480px) {
   #find-your-match .match-steps li:not(:last-child)::after { width: 8px; }
   #find-your-match .match-steps strong { display: none; }
   #find-your-match .concern-grid,

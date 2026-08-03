@@ -85,10 +85,10 @@ const CONCERN_ICONS = {
 };
 
 const CONCERN_PRESENTATION = {
-  Dryness: { image: './images/concerns/dryness.jpeg', description: 'Comfort for skin that feels rough or tight.' },
-  Acne: { image: './images/concerns/acne.jpeg', description: 'Clear care for blemish-prone skin.' },
-  Redness: { image: './images/concerns/redness.jpeg', description: 'Calm visibly reactive-looking skin.' },
-  Dehydration: { image: './images/concerns/dehydration.webp', description: 'Replenish skin with moisture-focused care.' }
+  Dryness: { image: './images/concerns/dryness.jpeg', description: 'Comfort for skin that feels rough or tight.', visual: 'Dry Skin Texture' },
+  Acne: { image: './images/concerns/acne.jpeg', description: 'Clear care for blemish-prone skin.', visual: 'Blemish-Prone Texture' },
+  Redness: { image: './images/concerns/redness.jpeg', description: 'Calm visibly reactive-looking skin.', visual: 'Reactive Skin Tone' },
+  Dehydration: { image: './images/concerns/dehydration.webp', description: 'Replenish skin with moisture-focused care.', visual: 'Dehydration Signs' }
 };
 
 const LOADING_MESSAGES = [
@@ -222,6 +222,8 @@ const concernNeutralVideos = [
 ];
 const concernMainImage = document.getElementById('concernMainImage');
 const concernNextImage = document.getElementById('concernNextImage');
+const stageBadge = document.getElementById('stageBadge');
+const stageCaption = document.getElementById('stageCaption');
 const activeConcernCopy = document.getElementById('activeConcernCopy');
 const matchStepItems = [...document.querySelectorAll('#matchSteps li')];
 const selectionConcerns = document.getElementById('selectionConcerns');
@@ -690,6 +692,9 @@ function showNeutralConcern() {
   // previewed concern, which is what made the panel read as a shifting label
   // rather than a stable instruction.
   [concernMainImage, concernNextImage].forEach(layer => layer.className = '');
+  stageBadge.textContent = '';
+  stageBadge.classList.remove('is-visible');
+  stageCaption.classList.remove('is-active');
   playNeutralConcern();
   syncOptions();
 }
@@ -713,6 +718,9 @@ function updateConcernPreview(value, animate = true) {
   matchLayout.dataset.concern = option.value;
   concernStage.dataset.concern = option.value;
   document.body.dataset.concern = option.value;
+  stageBadge.textContent = `Visualizing: ${presentation.visual}`;
+  stageBadge.classList.add('is-visible');
+  stageCaption.classList.add('is-active');
 
   // Restart the copy animation by forcing a reflow between class toggles.
   activeConcernCopy.classList.remove('is-switching');
@@ -758,7 +766,13 @@ function selectSkin(value) {
       activeConcern = selectedConditions().at(-1) || '';
     }
   }
-  onboardingStep = selectedConditions().length ? 2 : 1;
+  // Choosing a concern IS step 1 ("Choose concerns") — it must not jump the
+  // stepper to step 2 on the very first click, while the left panel is still
+  // showing "STEP 1" and the user may still be adding more concerns. Step 2
+  // ("Set preferences") only activates once the user actually touches a
+  // preference control (see selectAllergen), so the two stay in sync instead
+  // of the stepper racing ahead of the panel the user is still looking at.
+  onboardingStep = selectedConditions().length ? Math.max(onboardingStep, 1) : 1;
   lastMatchCount = null;
   formMessage.textContent = '';
   updateConcernPreview(activeConcern);
