@@ -2,6 +2,9 @@
 Thumbs.db
 *.log
 
+# Local dev-server launch config (machine-specific paths, not project config)
+.claude/
+
 # Python (skin-analysis-api)
 .venv/
 __pycache__/
