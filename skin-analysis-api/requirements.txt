@@ -1,0 +1,8 @@
+Flask>=3.0,<4
+Flask-Cors>=4.0,<6
+# 0.10.14 is the last release shipping the legacy `solutions` Face Mesh API
+# used by face_detection.py; newer wheels expose only the Tasks API.
+mediapipe==0.10.14
+opencv-python-headless>=4.9,<5
+numpy>=1.26,<2
+gunicorn>=21.2,<24

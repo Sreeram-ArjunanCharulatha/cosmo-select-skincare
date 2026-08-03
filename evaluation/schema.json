@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "COSMO SELECT skin-screening evaluation record",
+  "description": "One record per analysed sample in an OFFLINE evaluation set. This schema is for controlled auditing only. It is never produced by the live application and never contains images or identifying data. Skin-tone group is a label SUPPLIED BY THE DATASET, not estimated by this project, and is used only to stratify reported metrics.",
+  "type": "object",
+  "required": [
+    "sample_id",
+    "ground_truth",
+    "predicted",
+    "algorithm_version"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "sample_id": {
+      "type": "string",
+      "description": "Anonymised dataset identifier. Must not encode identity."
+    },
+    "ground_truth": {
+      "type": "array",
+      "description": "Dermatologist-assigned labels for this sample.",
+      "items": { "enum": ["Acne", "Redness", "Dryness", "Dehydration"] },
+      "uniqueItems": true
+    },
+    "predicted": {
+      "type": "array",
+      "description": "Conditions suggested by the algorithm.",
+      "items": { "enum": ["Acne", "Redness", "Dryness", "Dehydration"] },
+      "uniqueItems": true
+    },
+    "confidence_scores": {
+      "type": "object",
+      "description": "Raw 0-1 engineering scores per condition. NOT probabilities.",
+      "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+    },
+    "skin_tone_group": {
+      "type": ["string", "null"],
+      "description": "Group label PROVIDED BY THE DATASET (for example a Fitzpatrick or Monk Skin Tone value). Never inferred by this project, never treated as ground truth about a person, and never used to alter decision thresholds."
+    },
+    "skin_tone_scale": {
+      "type": ["string", "null"],
+      "description": "Which scale the group label comes from, e.g. 'monk-10', 'fitzpatrick-6'.",
+      "examples": ["monk-10", "fitzpatrick-6"]
+    },
+    "lighting_condition": {
+      "type": ["string", "null"],
+      "description": "Capture lighting, e.g. 'even-daylight', 'directional', 'low-light', 'mixed-colour'."
+    },
+    "lighting_score": {
+      "type": ["number", "null"],
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Automated 0-1 capture-quality score for the photograph."
+    },
+    "image_source": {
+      "type": ["string", "null"],
+      "enum": ["camera", "upload", "dataset", null],
+      "description": "How the image was obtained."
+    },
+    "device": {
+      "type": ["string", "null"],
+      "description": "Capture device class, e.g. 'smartphone-front', 'dslr'. Not a serial number."
+    },
+    "algorithm_version": {
+      "type": "string",
+      "description": "Version string reported by the API, e.g. '0.4.0-relative-baseline'."
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "description": "Free-text annotator notes. Must not contain identifying information."
+    }
+  }
+}

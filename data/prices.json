@@ -1,0 +1,246 @@
+{
+  "_comment": "Retailer prices verified against LookFantastic schema.org offers, matched on the SKU in each productURL. The TriplyDB dataset holds an older Kaggle snapshot; these values override it at render time. Regenerate periodically - retail prices drift.",
+  "checked": "2026-07-28",
+  "currency": "GBP",
+  "source": "lookfantastic.com",
+  "prices": {
+    "https://www.lookfantastic.com/cerave-moisturising-cream-50ml/11798694.html": {
+      "name": "CeraVe Moisturising Cream 50ml",
+      "price": 5.25
+    },
+    "https://www.lookfantastic.com/avene-cold-cream-ultra-rich-cleansing-bar/11571232.html": {
+      "name": "Avene Cold Cream Ultra Rich Cleansing Bar",
+      "price": 5.0
+    },
+    "https://www.lookfantastic.com/the-ordinary-natural-moisturising-factors-ha-30ml/11396687.html": {
+      "name": "The Ordinary Natural Moisturising Factors + HA 30ml",
+      "price": 6.1
+    },
+    "https://www.lookfantastic.com/the-ordinary-10-agireline-solution-30ml/11416769.html": {
+      "name": "The Ordinary 10% Agireline Solution 30ml",
+      "price": 9.2
+    },
+    "https://www.lookfantastic.com/the-ordinary-squalane-cleanser-50ml/12056630.html": {
+      "name": "The Ordinary Squalane Cleanser 50ml",
+      "price": 8.3
+    },
+    "https://www.lookfantastic.com/the-ordinary-amino-acids-b5/11933182.html": {
+      "name": "The Ordinary Amino Acids + B5",
+      "price": 8.8
+    },
+    "https://www.lookfantastic.com/the-ordinary-marine-hyaluronics-30ml/11751840.html": {
+      "name": "The Ordinary Marine Hyaluronics 30ml",
+      "price": 8.8
+    },
+    "https://www.lookfantastic.com/the-ordinary-natural-moisturizing-factors-ha-100ml/11638505.html#": {
+      "name": "The Ordinary Natural Moisturizing Factors + HA 100ml",
+      "price": 10.26
+    },
+    "https://www.lookfantastic.com/the-ordinary-100-pycnogenol-5-15ml/12049287.html": {
+      "name": "The Ordinary 100% Pycnogenol 5% 15ml",
+      "price": 10.9
+    },
+    "https://www.lookfantastic.com/cerave-moisturising-cream-177ml/11798693.html": {
+      "name": "CeraVe Moisturising Cream 177ml",
+      "price": 9.0
+    },
+    "https://www.lookfantastic.com/cerave-hydrating-cleanser-236ml/11798700.html": {
+      "name": "CeraVe Hydrating Cleanser 236ml",
+      "price": 9.38
+    },
+    "https://www.lookfantastic.com/la-roche-posay-effaclar-h-moisturiser-40ml/11091824.html": {
+      "name": "La Roche-Posay Effaclar H Moisturiser 40ml",
+      "price": 17.0
+    },
+    "https://www.lookfantastic.com/la-roche-posay-cicaplast-b5-anti-bacterial-cleansing-wash-200ml/12021435.html": {
+      "name": "La Roche-Posay Cicaplast B5 Anti-Bacterial Cleansing Wash 200ml",
+      "price": 13.2
+    },
+    "https://www.lookfantastic.com/cerave-smoothing-cream-177ml/12207665.html": {
+      "name": "CeraVe Smoothing Cream 177ml",
+      "price": 12.0
+    },
+    "https://www.lookfantastic.com/cerave-smoothing-cleanser-236ml/12207663.html": {
+      "name": "CeraVe Smoothing Cleanser 236ml",
+      "price": 10.88
+    },
+    "https://www.lookfantastic.com/la-roche-posay-effaclar-h-hydrating-cleansing-cream-200ml/11227837.html": {
+      "name": "La Roche-Posay Effaclar H Hydrating Cleansing Cream (200ml)",
+      "price": 16.0
+    },
+    "https://www.lookfantastic.com/la-roche-posay-effaclar-purifying-cleansing-gel-200ml/11091822.html": {
+      "name": "La Roche-Posay Effaclar Purifying Cleansing Gel 200ml",
+      "price": 13.2
+    },
+    "https://www.lookfantastic.com/la-roche-posay-toleriane-dermo-cleanser-200ml/11091885.html": {
+      "name": "La Roche-Posay Toleriane Dermo-Cleanser 200ml",
+      "price": 13.2
+    },
+    "https://www.lookfantastic.com/la-roche-posay-effaclar-micellar-water-200ml/11091827.html": {
+      "name": "La Roche-Posay Effaclar Micellar Water 200ml",
+      "price": 12.5
+    },
+    "https://www.lookfantastic.com/la-roche-posay-toleriane-foaming-gel-cleanser-150ml/11091890.html": {
+      "name": "La Roche-Posay Toleriane Foaming Gel Cleanser 150ml",
+      "price": 15.5
+    },
+    "https://www.lookfantastic.com/cerave-facial-moisturising-lotion-spf-25-52ml/11798689.html": {
+      "name": "CeraVe Facial Moisturising Lotion SPF 25 52ml",
+      "price": 16.5
+    },
+    "https://www.lookfantastic.com/cerave-facial-moisturising-lotion-no-spf-52ml/11798688.html": {
+      "name": "CeraVe Facial Moisturising Lotion No SPF 52ml",
+      "price": 12.75
+    },
+    "https://www.lookfantastic.com/cerave-moisturising-cream-340g/11798692.html": {
+      "name": "CeraVe Moisturising Cream 340g",
+      "price": 11.63
+    },
+    "https://www.lookfantastic.com/avene-face-essentials-cleansing-foam-150ml/11571236.html": {
+      "name": "Avene Face Essentials Cleansing Foam 150ml",
+      "price": 8.0
+    },
+    "https://www.lookfantastic.com/avene-very-high-protection-b-protect-spf-50-30ml/12090923.html": {
+      "name": "Avene Very High Protection B-Protect SPF 50+ 30ml",
+      "price": 14.4
+    },
+    "https://www.lookfantastic.com/the-ordinary-squalane-cleanser-supersize-exclusive-150ml/12236022.html": {
+      "name": "The Ordinary Squalane Cleanser Supersize Exclusive 150ml",
+      "price": 13.9
+    },
+    "https://www.lookfantastic.com/avene-antirougeurs-clean-cleanser-200ml/11568829.html": {
+      "name": "Avene Antirougeurs Clean Cleanser 200ml",
+      "price": 17.5
+    },
+    "https://www.lookfantastic.com/cerave-moisturising-lotion-473ml/11798695.html": {
+      "name": "CeraVe Moisturising Lotion 473ml",
+      "price": 13.13
+    },
+    "https://www.lookfantastic.com/cerave-hydrating-cleanser-473ml/11798699.html": {
+      "name": "CeraVe Hydrating Cleanser 473ml",
+      "price": 13.88
+    },
+    "https://www.lookfantastic.com/cerave-foaming-facial-cleanser-473ml/11798697.html": {
+      "name": "CeraVe Foaming Facial Cleanser 473ml",
+      "price": 13.88
+    },
+    "https://www.lookfantastic.com/avene-hydrance-hydrating-cream-40ml/11638678.html": {
+      "name": "Avene Hydrance Hydrating Cream 40ml",
+      "price": 15.2
+    },
+    "https://www.lookfantastic.com/cerave-moisturising-cream-454g/11798691.html": {
+      "name": "CeraVe Moisturising Cream 454g",
+      "price": 13.13
+    },
+    "https://www.lookfantastic.com/la-roche-posay-toleriane-sensitive-fluid-moisturiser-40ml/11855110.html": {
+      "name": "La Roche-Posay Toleriane Sensitive Fluid Moisturiser 40ml",
+      "price": 18.4
+    },
+    "https://www.lookfantastic.com/la-roche-posay-toleriane-sensitive-moisturiser-40ml/11855111.html": {
+      "name": "La Roche-Posay Toleriane Sensitive Moisturiser 40ml",
+      "price": 18.4
+    },
+    "https://www.lookfantastic.com/la-roche-posay-effaclar-k-anti-blackhead-moisturiser-40ml/11134733.html": {
+      "name": "La Roche-Posay Effaclar K(+) Anti-Blackhead Moisturiser 40ml",
+      "price": 16.72
+    },
+    "https://www.lookfantastic.com/la-roche-posay-effaclar-mat-40ml/11091826.html": {
+      "name": "La Roche-Posay Effaclar MAT+ 40ml",
+      "price": 16.72
+    },
+    "https://www.lookfantastic.com/la-roche-posay-effaclar-duo-spf30-40ml/11434756.html": {
+      "name": "La Roche-Posay Effaclar Duo+ SPF30 40ml",
+      "price": 18.0
+    },
+    "https://www.lookfantastic.com/la-roche-posay-nutritic-intense-rich-50ml/11091859.html": {
+      "name": "La Roche-Posay Nutritic Intense Rich 50ml",
+      "price": 20.0
+    },
+    "https://www.lookfantastic.com/pixi-glow-tonic-cleansing-gel-135ml/12040119.html": {
+      "name": "PIXI Glow Tonic Cleansing Gel 135ml",
+      "price": 18.0
+    },
+    "https://www.lookfantastic.com/pixi-vitamin-c-juice-cleanser-150ml/12040123.html": {
+      "name": "PIXI Vitamin-C Juice Cleanser 150ml",
+      "price": 18.0
+    },
+    "https://www.lookfantastic.com/pixi-glow-mud-cleanser-135ml/11200039.html": {
+      "name": "PIXI Glow Mud Cleanser 135ml",
+      "price": 18.0
+    },
+    "https://www.lookfantastic.com/la-roche-posay-effaclar-cleansing-gel-400ml/11434754.html": {
+      "name": "La Roche-Posay Effaclar Cleansing Gel 400ml",
+      "price": 20.0
+    },
+    "https://www.lookfantastic.com/la-roche-posay-toleriane-ultra-overnight-moisturiser-40ml/11259356.html": {
+      "name": "La Roche-Posay Toleriane Ultra Overnight Moisturiser 40ml",
+      "price": 21.0
+    },
+    "https://www.lookfantastic.com/la-roche-posay-rosaliac-ar-intense-serum-40ml/11091876.html": {
+      "name": "La Roche-Posay Rosaliac AR Intense Serum 40ml",
+      "price": 25.0
+    },
+    "https://www.lookfantastic.com/avene-hydrance-intense-serum-30ml/11568827.html": {
+      "name": "Avene Hydrance Intense Serum 30ml",
+      "price": 25.5
+    },
+    "https://www.lookfantastic.com/la-roche-posay-hydraphase-intense-serum-30ml/11091831.html": {
+      "name": "La Roche-Posay Hydraphase Intense Serum (30ml)",
+      "price": 24.8
+    },
+    "https://www.lookfantastic.com/the-ordinary-buffet-supersize-serum-60ml/12243646.html": {
+      "name": "The Ordinary Buffet Supersize Serum 60ml",
+      "price": 25.9
+    },
+    "https://www.lookfantastic.com/pixi-overnight-glow-serum/11200045.html": {
+      "name": "PIXI Overnight Glow Serum",
+      "price": 26.0
+    },
+    "https://www.lookfantastic.com/pixi-collagen-and-retinol-serum-30ml/12040130.html": {
+      "name": "PIXI Collagen and Retinol Serum 30ml",
+      "price": 26.0
+    },
+    "https://www.lookfantastic.com/pixi-glow-tonic-serum-30ml/12040121.html": {
+      "name": "PIXI Glow Tonic Serum 30ml",
+      "price": 26.0
+    },
+    "https://www.lookfantastic.com/pixi-hydrating-milky-serum-30ml/11200046.html": {
+      "name": "PIXI Hydrating Milky Serum 30ml",
+      "price": 26.0
+    },
+    "https://www.lookfantastic.com/la-roche-posay-pure-vitamin-c10-serum-30ml/12049143.html": {
+      "name": "La Roche-Posay Pure Vitamin C10 Serum 30ml",
+      "price": 45.0
+    }
+  },
+  "unavailable": {
+    "https://www.lookfantastic.com/the-ordinary-vitamin-c-suspension-cream-30-in-silicone-30ml/11638504.html": {
+      "name": "The Ordinary Vitamin C Suspension Cream 30% in Silicone 30ml",
+      "reason": "Page returns 404; discontinued."
+    },
+    "https://www.lookfantastic.com/the-ordinary-hyaluronic-acid-2-b5-hydration-support-formula-30ml/11363395.html": {
+      "name": "The Ordinary Hyaluronic Acid 2% + B5 Hydration Support Formula 30ml",
+      "reason": "Page lists two in-stock variants at different prices (GBP 8.80 and GBP 15.50); ambiguous."
+    },
+    "https://www.lookfantastic.com/pixi-makeup-melting-cleansing-cloths-40-wipes/11200050.html": {
+      "name": "PIXI Makeup Melting Cleansing Cloths (40 Wipes)",
+      "reason": "Page returns 404; discontinued."
+    },
+    "https://www.lookfantastic.com/the-ordinary-hyaluronic-acid-2-b5-supersize-serum-60ml/12243647.html": {
+      "name": "The Ordinary Hyaluronic Acid 2% + B5 Supersize Serum 60ml",
+      "reason": "URL now serves the HA 2% + B5 Duo, a different product."
+    },
+    "https://www.lookfantastic.com/la-roche-posay-toleriane-ultra-fluid-40ml/11196312.html": {
+      "name": "La Roche-Posay Toleriane Ultra Fluid 40ml",
+      "reason": "Reformulated and renamed to Toleriane Dermallergo Fluid; not price-comparable."
+    },
+    "https://www.lookfantastic.com/la-roche-posay-toleriane-ultra-cream/11094703.html": {
+      "name": "La Roche-Posay Toleriane Ultra Cream",
+      "reason": "URL now serves Toleriane Ultra Eyes 20ml, a different product."
+    },
+    "https://www.lookfantastic.com/la-roche-posay-pigmentclar-serum-30ml/11091881.html": {
+      "name": "La Roche-Posay Pigmentclar Serum 30ml",
+      "reason": "URL redirects to the brand listing; discontinued."
+    }
+  }
+}

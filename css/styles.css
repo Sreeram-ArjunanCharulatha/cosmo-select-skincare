@@ -1134,8 +1134,8 @@ legend {
   position: relative;
   display: none;
   min-height: calc(100svh - var(--nav-h));
-  margin-top: 52px;
-  padding: 30px clamp(20px, 3.2vw, 44px) 46px;
+  margin-top: 18px;
+  padding: 16px clamp(20px, 3.2vw, 44px) 32px;
   overflow: clip;
   background: #f6f3ec;
   border: 1px solid rgba(69, 91, 77, 0.1);
@@ -1151,8 +1151,8 @@ legend {
 }
 .results-header h2 {
   margin: 0;
-  font-size: clamp(3rem, 5vw, 5rem);
-  line-height: 0.94;
+  font-size: clamp(2.2rem, 3.6vw, 3.4rem);
+  line-height: 0.96;
 }
 .results-count {
   flex: 0 0 auto;
@@ -1165,10 +1165,18 @@ legend {
   font-weight: 700;
 }
 .results-meta {
-  margin: 8px 0 14px;
+  margin: 4px 0 8px;
   color: var(--muted);
   font-size: 0.8rem;
   line-height: 1.4;
+}
+/* Price provenance: quiet, but always present next to the figures. */
+.results-price-note {
+  margin: -8px 0 16px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.45;
+  opacity: 0.85;
 }
 .loading,
 .empty-box,
@@ -1222,7 +1230,13 @@ legend {
 .results-story-frame {
   position: sticky;
   top: calc(var(--nav-h) + 12px);
-  height: calc(100svh - var(--nav-h) - 24px);
+  /* Capped: on tall viewports (1920x1080+) the fixed-size product photo and
+     detail text don't grow to fill the full available height, so letting
+     the frame stretch to it just leaves a large empty cream panel below the
+     content. Capping keeps the frame content-sized on tall screens while
+     still using the full available height on the shorter ones that actually
+     need it (1366x768, 1440x900). */
+  height: min(calc(100svh - var(--nav-h) - 24px), 800px);
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr);
   overflow: hidden;
@@ -1297,7 +1311,7 @@ legend {
 .story-product {
   position: absolute;
   z-index: 2;
-  inset: 4% 7% 7%;
+  inset: 6% 7%;
   display: grid;
   place-items: center;
   opacity: 0;
@@ -1343,7 +1357,7 @@ legend {
 .story-product .product-image-wrap {
   width: 100%;
   height: 100%;
-  padding: 54px 44px 68px;
+  padding: 58px 46px;
   border-radius: 50%;
 }
 .story-product .product-image-wrap img {
@@ -1366,8 +1380,15 @@ legend {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  justify-content: center;
+  overflow: hidden;
   text-align: left;
+  /* Top-anchored, not vertically centred: centring pushed the whole block
+     down by half its leftover space, which is exactly the "excessive top
+     gap above the heading" and the footer sitting too close to the frame's
+     bottom edge that this pass fixes - anchoring from the top keeps both
+     ends predictable regardless of how tall a given product's content is. */
+  justify-content: flex-start;
+  padding-top: clamp(4px, 2vh, 22px);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1394,7 +1415,7 @@ legend {
 }
 .story-detail h3 {
   max-width: 11ch;
-  margin: 12px 0 16px;
+  margin: 8px 0 10px;
   color: var(--ink);
   font-size: clamp(2.2rem, 3.3vw, 4rem);
   line-height: 0.96;
@@ -1411,6 +1432,140 @@ legend {
   margin: 0;
   color: var(--muted);
   font-size: 0.88rem;
+}
+.story-ingredients {
+  margin: 4px 0 6px;
+  width: 100%;
+  max-width: 420px;
+}
+.story-ingredients .back-kicker {
+  margin: 0 0 8px;
+}
+
+/* Anchor rail: gold-dotted, connected by a thin baseline that reads as a
+   single elegant instrument rather than a list — each anchor is a real
+   button so it is keyboard-reachable, not just hoverable. */
+.spotlight-rail {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 0;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(199, 165, 102, 0.3);
+}
+.spotlight-anchor {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px 6px 0;
+  margin-right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Manrope', system-ui, sans-serif;
+}
+.spotlight-anchor:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 14px;
+  height: 1px;
+  transform: translateY(-50%);
+  background: rgba(104, 127, 110, 0.28);
+}
+.spotlight-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #c8a76a;
+  box-shadow: 0 0 0 4px rgba(200, 167, 106, 0.14);
+  transition: box-shadow 0.25s ease, background 0.25s ease, transform 0.25s ease;
+}
+.spotlight-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: color 0.25s ease;
+}
+.spotlight-anchor:hover .spotlight-label,
+.spotlight-anchor:focus-visible .spotlight-label {
+  color: var(--ink);
+}
+.spotlight-anchor.is-active .spotlight-dot {
+  background: var(--forest);
+  box-shadow: 0 0 0 5px rgba(31, 61, 46, 0.14);
+  transform: scale(1.15);
+}
+.spotlight-anchor.is-active .spotlight-label {
+  color: var(--forest);
+  font-weight: 700;
+}
+.spotlight-anchor:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Detail panel: name in the serif product voice, benefit as a small gold
+   kicker, the "why it suits you" line in quiet sans-serif prose, and an
+   icon cue that swaps with the active ingredient. Fades content between
+   selections rather than jumping, for the quieter, more considered feel of
+   an in-person consultation. */
+.spotlight-panel {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 14px;
+  row-gap: 3px;
+  align-items: start;
+  min-height: 0;
+}
+.spotlight-icon {
+  grid-row: 1 / 3;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(199, 165, 102, 0.14);
+  color: #a5813f;
+  animation: spotlightFade 0.3s ease;
+}
+.spotlight-icon svg { width: 20px; height: 20px; }
+.spotlight-name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+  animation: spotlightFade 0.3s ease;
+}
+.spotlight-benefit {
+  grid-column: 2;
+  color: #a5813f;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  animation: spotlightFade 0.3s ease;
+}
+.spotlight-why {
+  grid-column: 1 / -1;
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+  max-width: 42ch;
+  animation: spotlightFade 0.3s ease;
+}
+@keyframes spotlightFade {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .badges {
   display: flex;
@@ -1443,6 +1598,12 @@ legend {
 .price {
   font-weight: 700;
   font-size: 1.08rem;
+}
+/* Discontinued or replaced at the retailer: reads as an absence, not a figure. */
+.price-unavailable {
+  font-weight: 600;
+  font-size: 0.86rem;
+  color: var(--muted);
 }
 .product-link {
   color: var(--forest);
@@ -1638,7 +1799,9 @@ legend {
   display: flex;
   min-width: 0;
   flex-direction: column;
-  overflow: hidden;
+  /* No overflow:hidden here: it sits above the flip-card-inner's 3D context,
+     and WebKit flattens 3D transforms on any descendant of an overflow:hidden
+     ancestor. Each flip face clips its own corners instead (see below). */
   border: 1px solid rgba(70, 91, 78, 0.11);
   border-radius: 22px;
   background: #fffdf8;
@@ -2753,6 +2916,7 @@ legend {
 }
 .results-header,
 .results-meta,
+.results-price-note,
 #story,
 .more-title,
 .product-grid,
@@ -2768,7 +2932,7 @@ legend {
   display: block;
   width: 54px;
   height: 2px;
-  margin-top: 16px;
+  margin-top: 8px;
   background: linear-gradient(90deg, #b28e4f, #e3ca91);
 }
 .story-sticky {
@@ -2783,8 +2947,15 @@ legend {
   background: transparent;
 }
 .story-detail {
-  padding: 36px;
+  padding: 12px 36px 20px;
   border-left: 1px solid rgba(199, 165, 102, 0.42);
+}
+.story-detail .badges {
+  margin: 8px 0;
+}
+.story-detail .product-footer {
+  margin-top: 10px;
+  padding-top: 10px;
 }
 .story-detail h3 {
   max-width: 11ch;
@@ -2810,7 +2981,7 @@ legend {
 .product-grid {
   gap: 24px;
 }
-.product-card::before {
+.product-card .flip-face-front::before {
   content: "";
   position: absolute;
   z-index: 2;
@@ -2836,15 +3007,13 @@ legend {
    12. Footer
    ============================================================ */
 .site-footer {
-  padding: 54px 0 30px;
+  padding: 34px 0;
   background: var(--deep-forest);
   color: #cbd7d1;
 }
 .footer-inner {
-  display: grid;
-  grid-template-columns: 1fr 1.4fr 1fr;
-  gap: 45px;
-  align-items: start;
+  display: flex;
+  align-items: center;
 }
 .footer-brand {
   font-family: "Cormorant Garamond", serif;
@@ -2852,33 +3021,6 @@ legend {
   font-size: 1.65rem;
   font-weight: 600;
   letter-spacing: 0.08em;
-}
-.footer-title {
-  margin-bottom: 10px;
-  color: var(--gold);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-.footer-copy,
-.footer-list {
-  margin: 0;
-  color: #cbd7d1;
-  font-size: 0.75rem;
-  line-height: 1.75;
-}
-.footer-list {
-  padding: 0;
-  list-style: none;
-}
-.footer-bottom {
-  grid-column: 1/-1;
-  margin-top: 15px;
-  padding-top: 22px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  font-size: 0.7rem;
-  color: #9db0a8;
 }
 
 /* ============================================================
@@ -2921,7 +3063,7 @@ legend {
 #productGrid .product-card {
   isolation: isolate;
 }
-#productGrid .product-card::after {
+#productGrid .product-card .flip-face-front::after {
   content: "";
   position: absolute;
   z-index: 3;
@@ -2942,7 +3084,7 @@ legend {
     0 30px 72px rgba(36, 57, 45, 0.17),
     0 0 0 1px rgba(231, 206, 151, 0.25);
 }
-#productGrid .product-card:hover::after {
+#productGrid .product-card:hover .flip-face-front::after {
   opacity: 1;
   transform: rotate(14deg) translateX(650%);
 }
@@ -3010,7 +3152,7 @@ legend {
   --card-tint: #f0f6f3;
   --accent: #6e988c;
 }
-#productGrid .product-card::before {
+#productGrid .product-card .flip-face-front::before {
   left: 25px;
   width: 78px;
   height: 4px;
@@ -3805,6 +3947,683 @@ legend {
 }
 
 /* ============================================================
+   16b. Premium finish pass
+   (final visual override layer — keep before responsive rules)
+   ============================================================ */
+:root {
+  --champagne: #d8bc82;
+  --bronze: #a5834a;
+  --emerald: #0e352a;
+}
+
+/* — Hero: richer color grade and champagne accents — */
+.home::before {
+  background:
+    radial-gradient(120% 95% at 12% 32%, rgba(250, 253, 246, 0.96) 0%, rgba(240, 248, 236, 0.74) 38%, rgba(232, 244, 228, 0.14) 60%, transparent 78%);
+}
+.hero-nature {
+  color: var(--bronze);
+  letter-spacing: 0.3em;
+}
+.hero-nature::before {
+  content: "";
+  display: inline-block;
+  width: 36px;
+  height: 1px;
+  margin-right: 14px;
+  vertical-align: middle;
+  background: linear-gradient(90deg, #a98245, #dbc180);
+}
+.hero-copy h1 {
+  color: #103329;
+  letter-spacing: -0.045em;
+}
+.hero-copy h1 em,
+.hero-copy h1 .hero-word-accent {
+  font-style: italic;
+  font-weight: 500;
+  text-shadow: none;
+  background: linear-gradient(110deg, #2e6b52 10%, #9c7a3a 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-subtitle {
+  color: #3f6a52;
+  font-style: italic;
+}
+.hero-display-word {
+  --display-opacity: 0.26;
+  color: rgba(255, 245, 216, 0.95);
+  font-size: clamp(6rem, 12.5vw, 11.5rem);
+  letter-spacing: 0.06em;
+}
+.home .btn-primary {
+  background: linear-gradient(140deg, #1c5a47, var(--emerald) 72%);
+  border: 1px solid rgba(216, 188, 130, 0.38);
+  box-shadow:
+    0 18px 40px rgba(14, 53, 42, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+.home .btn-primary:hover {
+  background: linear-gradient(140deg, #17493a, #0a2a21 72%);
+  box-shadow:
+    0 22px 48px rgba(14, 53, 42, 0.32),
+    0 0 0 4px rgba(194, 161, 91, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+.home .btn-ghost {
+  border-color: rgba(20, 62, 50, 0.26);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.home .btn-ghost:hover {
+  border-color: rgba(194, 161, 91, 0.55);
+  box-shadow: 0 14px 32px rgba(24, 45, 35, 0.12);
+}
+
+/* — Match section: porcelain backdrop with champagne and sage glows — */
+.match {
+  background:
+    radial-gradient(90% 60% at 86% 0%, rgba(216, 188, 130, 0.16), transparent 62%),
+    radial-gradient(72% 58% at 6% 88%, rgba(158, 183, 155, 0.2), transparent 66%),
+    linear-gradient(180deg, #f8f5ed, #f2eee3);
+}
+.match .eyebrow {
+  color: var(--bronze);
+}
+.match-intro h2 {
+  color: #14382d;
+  letter-spacing: -0.04em;
+}
+
+/* Consultation panel: soft glass card */
+.match .filter-panel {
+  background: linear-gradient(168deg, rgba(255, 255, 255, 0.94), rgba(250, 246, 238, 0.88));
+  border: 1px solid rgba(24, 33, 29, 0.08);
+  border-radius: 26px;
+  box-shadow:
+    0 30px 70px rgba(24, 45, 35, 0.1),
+    inset 0 1px 0 #fff;
+  backdrop-filter: blur(18px) saturate(1.08);
+  -webkit-backdrop-filter: blur(18px) saturate(1.08);
+}
+
+/* Step indicator: emerald and champagne */
+.match-steps li.is-active span {
+  background: linear-gradient(140deg, #1c5a47, var(--emerald));
+  color: #f4e9d0;
+  box-shadow:
+    0 0 0 3px rgba(194, 161, 91, 0.35),
+    0 10px 22px rgba(14, 53, 42, 0.24);
+}
+.match-steps li.is-active strong {
+  color: #14382d;
+}
+
+/* Ingredient pills */
+#allergenOpts .option-card {
+  border: 1px solid rgba(24, 33, 29, 0.1);
+  background: rgba(255, 255, 255, 0.88);
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease;
+}
+#allergenOpts .option-card:hover {
+  border-color: rgba(194, 161, 91, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(24, 45, 35, 0.08);
+}
+#allergenOpts .option-card[aria-checked="true"] {
+  background: linear-gradient(140deg, #fdf6e7, #f5e7c6);
+  border-color: rgba(201, 163, 92, 0.75);
+  box-shadow:
+    inset 0 0 0 1px rgba(201, 163, 92, 0.3),
+    0 12px 26px rgba(160, 122, 52, 0.14);
+}
+
+/* Selection summary: champagne note card */
+.selection-summary {
+  background: linear-gradient(150deg, #fbf6ea, #f4ecd9);
+  border: 1px solid rgba(201, 163, 92, 0.28);
+  border-radius: 18px;
+}
+
+/* Primary CTA inside the panel */
+.filter-panel .btn-primary {
+  background: linear-gradient(140deg, #1c5a47, var(--emerald) 72%);
+  border: 1px solid rgba(216, 188, 130, 0.38);
+  box-shadow:
+    0 16px 34px rgba(14, 53, 42, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+.filter-panel .btn-primary:hover:not(:disabled) {
+  box-shadow:
+    0 20px 42px rgba(14, 53, 42, 0.3),
+    0 0 0 4px rgba(194, 161, 91, 0.14);
+}
+
+/* Concern preview stage: gallery framing */
+.concern-stage-frame {
+  border-radius: 28px;
+  box-shadow:
+    0 44px 96px rgba(24, 45, 35, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+/* Concern tiles: lifted photography cards */
+#skinProblemOpts .option-card {
+  border-radius: 20px;
+  box-shadow: 0 18px 40px rgba(24, 45, 35, 0.14);
+  transition:
+    transform 0.28s cubic-bezier(0.22, 0.7, 0.2, 1),
+    box-shadow 0.28s ease,
+    outline-color 0.2s ease;
+}
+#skinProblemOpts .option-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 52px rgba(24, 45, 35, 0.2);
+}
+#skinProblemOpts .option-card[aria-checked="true"] {
+  outline: 2px solid rgba(201, 163, 92, 0.85);
+  outline-offset: 3px;
+  box-shadow: 0 26px 54px rgba(24, 45, 35, 0.24);
+}
+
+/* — Headline: roomier reveal window so italics and descenders never clip — */
+.hero-copy h1 {
+  line-height: 0.92;
+}
+.hero-word {
+  padding: 0.08em 0.06em 0.14em;
+  margin-right: 0.1em;
+  clip-path: inset(100% -0.2em -0.3em);
+  animation-name: wordRevealSafe;
+}
+@keyframes wordRevealSafe {
+  to {
+    opacity: 1;
+    clip-path: inset(-0.3em -0.2em -0.3em);
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+/* — Video captions: clearer, richer text card — */
+.video-moment {
+  bottom: 5%;
+  width: min(560px, 68vw);
+  padding: 20px 34px 24px;
+  color: #102f24;
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  border-radius: 24px;
+  background: linear-gradient(155deg, rgba(255, 253, 247, 0.95), rgba(240, 246, 238, 0.88));
+  box-shadow:
+    0 26px 64px rgba(24, 45, 35, 0.2),
+    inset 0 1px 0 #fff;
+  backdrop-filter: blur(20px) saturate(1.12);
+  -webkit-backdrop-filter: blur(20px) saturate(1.12);
+  text-shadow: none;
+}
+.video-moment small {
+  margin-bottom: 8px;
+  color: var(--bronze);
+  font-size: 0.6rem;
+  letter-spacing: 0.26em;
+}
+.video-moment small::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 1px;
+  margin: 8px auto 0;
+  background: linear-gradient(90deg, transparent, #c8a25e, transparent);
+}
+
+/* — Selection feedback: champagne glow pulses — */
+@keyframes tileSelectGlow {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(201, 163, 92, 0.5),
+      0 26px 54px rgba(24, 45, 35, 0.24);
+  }
+  100% {
+    box-shadow:
+      0 0 0 18px rgba(201, 163, 92, 0),
+      0 26px 54px rgba(24, 45, 35, 0.24);
+  }
+}
+#skinProblemOpts .option-card[aria-checked="true"] {
+  animation: tileSelectGlow 0.75s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+#skinProblemOpts .option-card:active {
+  transform: translateY(-1px) scale(0.98);
+}
+@keyframes pillSelectGlow {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(201, 163, 92, 0.45),
+      inset 0 0 0 1px rgba(201, 163, 92, 0.3);
+  }
+  100% {
+    box-shadow:
+      0 0 0 12px rgba(201, 163, 92, 0),
+      inset 0 0 0 1px rgba(201, 163, 92, 0.3);
+  }
+}
+#allergenOpts .option-card[aria-checked="true"] {
+  animation: pillSelectGlow 0.6s ease-out;
+}
+.concern-stage:not(.is-neutral) .concern-stage-frame {
+  box-shadow:
+    0 44px 96px rgba(24, 45, 35, 0.22),
+    0 0 0 1px rgba(201, 163, 92, 0.22),
+    0 0 44px rgba(216, 188, 130, 0.24),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  transition: box-shadow 0.5s ease;
+}
+
+/* — Header: compacts gracefully once scrolling begins — */
+.nav {
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    height 0.38s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.nav.scrolled {
+  height: 52px;
+}
+.logo {
+  transition:
+    font-size 0.38s cubic-bezier(0.22, 0.7, 0.2, 1),
+    letter-spacing 0.38s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.nav.scrolled .logo {
+  font-size: 1.18rem;
+  letter-spacing: 0.13em;
+}
+.nav-links a {
+  transition:
+    color 0.25s ease,
+    opacity 0.25s ease,
+    font-size 0.38s cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+.nav.scrolled .nav-links a {
+  font-size: 0.66rem;
+}
+
+/* — Concern theming: the whole page shifts hue with the chosen concern — */
+body[data-concern="Dryness"] {
+  --concern-accent: #b97f3f;
+}
+body[data-concern="Acne"] {
+  --concern-accent: #2f6e57;
+}
+body[data-concern="Redness"] {
+  --concern-accent: #b25757;
+}
+body[data-concern="Dehydration"] {
+  --concern-accent: #3f7b99;
+}
+.theme-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 44;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+body[data-concern] .theme-veil {
+  opacity: 1;
+}
+body[data-concern="Dryness"] .theme-veil {
+  background:
+    radial-gradient(120% 85% at 82% 8%, rgba(224, 160, 90, 0.17), transparent 60%),
+    radial-gradient(100% 75% at 8% 92%, rgba(240, 205, 150, 0.15), transparent 64%);
+}
+body[data-concern="Acne"] .theme-veil {
+  background:
+    radial-gradient(120% 85% at 82% 8%, rgba(88, 142, 116, 0.16), transparent 60%),
+    radial-gradient(100% 75% at 8% 92%, rgba(150, 196, 172, 0.15), transparent 64%);
+}
+body[data-concern="Redness"] .theme-veil {
+  background:
+    radial-gradient(120% 85% at 82% 8%, rgba(214, 116, 116, 0.15), transparent 60%),
+    radial-gradient(100% 75% at 8% 92%, rgba(236, 172, 160, 0.14), transparent 64%);
+}
+body[data-concern="Dehydration"] .theme-veil {
+  background:
+    radial-gradient(120% 85% at 82% 8%, rgba(96, 150, 178, 0.16), transparent 60%),
+    radial-gradient(100% 75% at 8% 92%, rgba(150, 196, 214, 0.14), transparent 64%);
+}
+/* Accent details follow the concern color */
+body[data-concern] .match .eyebrow,
+body[data-concern] .video-moment small {
+  color: var(--concern-accent);
+}
+body[data-concern] .match-steps li.is-active span {
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--concern-accent) 40%, transparent),
+    0 10px 22px rgba(14, 53, 42, 0.24);
+}
+body[data-concern] .selection-summary {
+  border-color: color-mix(in srgb, var(--concern-accent) 34%, transparent);
+}
+body[data-concern] .concern-stage:not(.is-neutral) .concern-stage-frame {
+  box-shadow:
+    0 44px 96px rgba(24, 45, 35, 0.22),
+    0 0 0 1px color-mix(in srgb, var(--concern-accent) 28%, transparent),
+    0 0 52px color-mix(in srgb, var(--concern-accent) 26%, transparent),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+/* — Video experience: richer gallery framing — */
+.video-sticky {
+  background:
+    radial-gradient(85% 65% at 85% 10%, rgba(216, 188, 130, 0.14), transparent 60%),
+    radial-gradient(70% 60% at 10% 90%, rgba(158, 183, 155, 0.16), transparent 64%),
+    linear-gradient(150deg, #f9f6ee, #edf1e7);
+}
+.video-frame {
+  --video-radius: 34px;
+  border: 1px solid rgba(201, 163, 92, 0.24);
+  box-shadow:
+    0 40px 100px rgba(24, 45, 35, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.video-trio {
+  gap: 16px;
+  padding: 18px;
+  background: linear-gradient(135deg, #eef2e9, #f8f3e9);
+}
+.video-frame .video-trio > video {
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 22px 48px rgba(24, 45, 35, 0.14),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+.video-shade {
+  background: linear-gradient(
+    0deg,
+    rgba(238, 237, 228, 0.82) 0%,
+    rgba(244, 242, 234, 0.3) 32%,
+    transparent 58%
+  );
+}
+
+/* ============================================================
+   16d. More Matches gallery band
+   (final override layer — keep before responsive rules)
+   ============================================================ */
+
+/* Heading: clearly announces the band that follows */
+.results .more-title {
+  margin: 56px 0 22px;
+  color: #12352a;
+  letter-spacing: -0.035em;
+}
+.results .more-title::after {
+  width: 72px;
+  height: 2px;
+  margin-top: 18px;
+  background: linear-gradient(90deg, #c9a35c, rgba(201, 163, 92, 0));
+}
+
+/* The grid sits on a deep emerald "gallery wall" so the pale product cards
+   read as distinct objects instead of blending into the warm page.
+   Uses the ID selector to override the earlier pale-sage panel. */
+#productGrid {
+  padding: clamp(20px, 2.6vw, 36px);
+  border: 1px solid rgba(201, 163, 92, 0.28);
+  border-radius: 30px;
+  background:
+    radial-gradient(85% 60% at 88% 4%, rgba(201, 163, 92, 0.16), transparent 62%),
+    radial-gradient(70% 55% at 6% 96%, rgba(122, 158, 130, 0.2), transparent 66%),
+    linear-gradient(165deg, #16382c 0%, #10291f 100%);
+  box-shadow:
+    0 36px 84px rgba(12, 32, 24, 0.28),
+    inset 0 1px 0 rgba(255, 245, 225, 0.14);
+}
+
+/* Cards: brighter and crisper so they lift off the dark band */
+#productGrid .product-card {
+  border: 1px solid rgba(201, 163, 92, 0.32);
+  border-radius: 20px;
+  background: linear-gradient(168deg, #fffefb 0%, #fdf8ef 78%, #f7efe1 100%);
+  box-shadow:
+    0 20px 44px rgba(6, 20, 14, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 0.7, 0.2, 1),
+    box-shadow 0.32s ease,
+    border-color 0.32s ease;
+}
+#productGrid .product-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(216, 188, 130, 0.7);
+  box-shadow:
+    0 30px 62px rgba(6, 20, 14, 0.42),
+    0 0 0 1px rgba(216, 188, 130, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+/* Product photography sits on a stage that shares the card's own palette.
+   The stage previously kept a sage-green gradient while the card became warm
+   ivory, which showed up as a hard rectangular patch behind every product. */
+#productGrid .product-card .product-image-wrap {
+  margin: 14px 14px 2px;
+  padding: 24px;
+  border-radius: 18px;
+  border: 0;
+  /* Each card carries its own palette (sage, blush, champagne, teal) through
+     --stage-a/b/c. An earlier fix replaced this with a plain white glow to
+     kill a colour-mismatch patch, which also threw the palettes away and
+     left the products floating on near-white. The gradient is back, with a
+     much gentler centre highlight so the middle is not blown out. */
+  background:
+    radial-gradient(
+      circle at 50% 42%,
+      rgba(255, 255, 255, 0.5) 0 20%,
+      rgba(255, 255, 255, 0.16) 46%,
+      transparent 74%
+    ),
+    linear-gradient(152deg,
+      var(--stage-a) 0%,
+      var(--stage-b) 62%,
+      var(--stage-c) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+/* The frame needs a DEFINITE height, otherwise the percentage width/height on
+   the product image has nothing to resolve against: the box was computing to
+   188px inside a 153px frame and `max-height: 100%` could not cap it either,
+   so tall narrow bottles were clipped along the bottom. A fixed square gives
+   percentages a basis and keeps every stage the same shape. */
+#productGrid .product-card .product-image-wrap {
+  aspect-ratio: 1 / 1;
+}
+/* Positioned by insets rather than percentage width/height.
+   Percentage heights on this element do not resolve: it is a grid item inside
+   an aspect-ratio box, so the height stays indefinite and BOTH `height: 75%`
+   and `max-height: 84%` were ignored. The image box computed to 236px inside
+   a 174px frame and tall bottles were sliced off at the bottom.
+   Absolute insets are measured against the frame's padding box directly, so
+   the box is always exactly 82% of the frame, and `object-fit: contain` then
+   guarantees the product fits inside it whatever its aspect ratio. */
+#productGrid .product-card .product-image-wrap img {
+  position: absolute;
+  top: 9%;
+  left: 9%;
+  /* Explicit percentages, not `auto` with insets: for an absolutely
+     positioned REPLACED element `width: auto` resolves to the image's
+     intrinsic size and the insets are then over-constrained and ignored,
+     which blew the box up to 566x1068 inside a 174px frame. Percentages on
+     an absolutely positioned element resolve against the containing block,
+     which is definite here, so this sizes reliably. */
+  width: 82%;
+  height: 82%;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+  object-position: center;
+}
+/* The old glass sheen drew a visible edge around that patch; drop it. */
+#productGrid .product-card .product-image-wrap::after {
+  background: none;
+  box-shadow: none;
+}
+#productGrid .product-card .product-image-wrap::before {
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.92) 0 16%,
+    rgba(255, 250, 235, 0.42) 40%,
+    transparent 72%
+  );
+  box-shadow: none;
+}
+#productGrid .product-card .price {
+  color: #12352a;
+}
+#productGrid .product-card .product-link {
+  color: #1c5a47;
+}
+
+/* Section heading + count read against the band's champagne accents */
+.results .results-count {
+  border-color: rgba(201, 163, 92, 0.4);
+  color: #8a6d3b;
+}
+
+/* ============================================================
+   16e. Consultation clarity pass
+   (reduces how much competes for attention at once —
+   final override layer, keep before responsive rules)
+   ============================================================ */
+
+/* The concern choice IS step one, but it occupied the narrowest column while
+   the decorative preview took the widest. Rebalanced so visual weight
+   follows the actual task order. */
+@media (min-width: 1025px) {
+  #find-your-match .match-layout {
+    grid-template-columns:
+      minmax(300px, 0.86fr)
+      minmax(300px, 0.98fr)
+      minmax(272px, 0.84fr);
+  }
+}
+
+/* Explicit step markers, so the eye is told where to begin rather than
+   having to infer it from the separate progress bar above. */
+.concern-rail::before,
+.match .ingredient-fieldset::before {
+  display: block;
+  margin-bottom: 8px;
+  color: #a5834a;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.concern-rail::before {
+  content: "Step 1 · Choose concerns";
+}
+.match .ingredient-fieldset::before {
+  content: "Step 2 · Refine (optional)";
+}
+.match .ingredient-fieldset legend {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+/* Progressive disclosure: before a concern is picked, the later steps stay
+   visible and usable (browsing the full catalogue is a valid path) but
+   recede so the first decision is unmistakable. */
+.match-layout .ingredient-fieldset,
+.match-layout .selection-summary {
+  transition: opacity 0.45s ease;
+}
+.match-layout[data-concern=""] .ingredient-fieldset,
+.match-layout[data-concern=""] .selection-summary {
+  opacity: 0.72;
+}
+
+/* Concern tiles.
+   These were wide letterbox crops of extreme skin close-ups, which read as
+   clinical rather than editorial and cut the faces awkwardly. Taller frames,
+   a softer crop position and a gentler scrim make them look composed. */
+.concern-rail #skinProblemOpts {
+  gap: 12px;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card {
+  min-height: clamp(96px, 12vh, 132px);
+  border-radius: 20px;
+  background-size: cover;
+  box-shadow:
+    0 14px 30px rgba(24, 45, 35, 0.16),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+  transition:
+    transform 0.32s cubic-bezier(0.22, 0.7, 0.2, 1),
+    box-shadow 0.32s ease,
+    outline-color 0.2s ease;
+}
+/* Pull the crop toward the cheek so each tile shows skin, not an ear or a
+   half-closed eye. The tiles animate their position through --thumb-x/y, so
+   the variables must be set rather than background-position directly. */
+#find-your-match #skinProblemOpts .option-card {
+  background-size: 128%;
+}
+#find-your-match #skinProblemOpts .option-card[data-value="Dryness"] {
+  --thumb-x: 44%;
+  --thumb-y: 54%;
+}
+#find-your-match #skinProblemOpts .option-card[data-value="Acne"] {
+  --thumb-x: 40%;
+  --thumb-y: 58%;
+}
+#find-your-match #skinProblemOpts .option-card[data-value="Redness"] {
+  --thumb-x: 50%;
+  --thumb-y: 56%;
+}
+#find-your-match #skinProblemOpts .option-card[data-value="Dehydration"] {
+  --thumb-x: 46%;
+  --thumb-y: 60%;
+}
+/* Scrim only where the label sits, so the photography stays visible. */
+.concern-rail #skinProblemOpts .option-card::before {
+  background: linear-gradient(
+    180deg,
+    rgba(12, 30, 24, 0) 34%,
+    rgba(12, 30, 24, 0.55) 74%,
+    rgba(10, 26, 21, 0.88) 100%
+  );
+}
+.concern-rail #skinProblemOpts .option-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 22px 42px rgba(24, 45, 35, 0.24),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card strong {
+  font-size: 0.94rem;
+  letter-spacing: -0.01em;
+  text-shadow: 0 2px 10px rgba(8, 22, 17, 0.7);
+}
+
+/* The "Start here" hint is now redundant: the Step 1 label above the tiles
+   says the same thing in the same place. One instruction, not two. */
+.concern-start-hint {
+  display: none;
+}
+
+/* ============================================================
    17. Responsive rules
    ============================================================ */
 @media (max-width: 1024px) {
@@ -3841,12 +4660,6 @@ legend {
   }
   .product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .footer-inner {
-    grid-template-columns: 1fr 1fr;
-  }
-  .footer-brand {
-    grid-column: 1/-1;
   }
 }
 @media (max-width: 768px) {
@@ -4072,14 +4885,6 @@ legend {
     padding: 14px;
     border-radius: 22px;
   }
-  .footer-inner {
-    grid-template-columns: 1fr;
-    gap: 28px;
-  }
-  .footer-brand,
-  .footer-bottom {
-    grid-column: auto;
-  }
 }
 @media (max-width: 480px) {
   .hero-bg,
@@ -4301,4 +5106,1488 @@ legend {
   .more-title {
     display: block !important;
   }
+}
+
+/* ===========================================================================
+   FIND YOUR MATCH — three-column consultation layout
+   ---------------------------------------------------------------------------
+   ONE authoritative definition per component. This block is the last word on
+   the section; it exists because the area accumulated several generations of
+   overrides (a three-column rail, then a two-column rework) whose leftovers
+   fought each other.
+
+   Three faults it removes rather than patches over:
+
+   1. FOOTER OVERLAP. `.match-head` carried `min-height: calc(100svh - nav)`,
+      pinning the block to exactly one viewport while its content grew past it,
+      so the tiles painted down into the footer. Height is content-driven here.
+   2. GIANT TILES. Card height came from `aspect-ratio` against a very wide
+      column, so the wider the screen the taller the tiles grew (411px wide
+      became 308px tall). Height is now an explicit, bounded value.
+   3. BANNER FACE. The visual sat inside the profile panel at ~172px tall and
+      was pillarboxed by `object-fit: contain`. It now owns the centre column.
+   =========================================================================== */
+
+/* -- Section shell: height follows content --------------------------------- */
+
+#find-your-match .match-head {
+  display: block;
+  min-height: 0;              /* was 100svh: the cause of the footer overlap */
+  height: auto;
+  padding-bottom: clamp(28px, 3vw, 44px);
+}
+#find-your-match .container { max-width: 1560px; }
+.match { padding-top: clamp(38px, 4vw, 56px); }
+
+/* -- Header row: title left, compact steps right --------------------------- */
+
+#find-your-match .match-topbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 28px;
+  /* Tightened from clamp(18,2.2vw,28): this gap sits above BOTH the left
+     column's heading and the step pill's own bottom edge, so it was
+     responsible for the section reading as "loose above" on the left AND
+     for the pill feeling disconnected from the profile panel it sits over -
+     one number, two symptoms. */
+  margin-bottom: clamp(14px, 1.6vw, 22px);
+}
+#find-your-match .match-intro {
+  flex: 1 1 380px;
+  max-width: none;
+  margin: 0;
+  text-align: left;
+}
+#find-your-match .match-portrait { display: none; }
+#find-your-match .match-intro h2 {
+  margin: 0 0 6px;
+  font-size: clamp(1.75rem, 2.5vw, 2.35rem);
+  line-height: 1.08;
+}
+#find-your-match .match-intro p { margin: 0; font-size: 0.88rem; color: var(--muted); }
+#find-your-match .match-intro .eyebrow { display: none; }
+
+#find-your-match .match-steps {
+  flex: 0 1 auto;
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.1vw, 16px);
+  width: auto;
+  max-width: 600px;
+  min-height: 48px;
+  margin: 0;
+  padding: 6px 16px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(31, 61, 46, 0.07);
+  border-radius: 999px;
+}
+#find-your-match .match-steps li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  opacity: 1;
+  color: var(--muted);
+}
+#find-your-match .match-steps li:not(:last-child)::after {
+  content: "";
+  display: block;
+  width: clamp(12px, 1.6vw, 26px);
+  height: 1px;
+  margin-left: 4px;
+  background: rgba(31, 61, 46, 0.16);
+}
+#find-your-match .match-steps span {
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  background: rgba(31, 61, 46, 0.08);
+  color: var(--muted);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: none;
+  font-size: 0.71rem;
+  font-weight: 700;
+}
+#find-your-match .match-steps strong {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+#find-your-match .match-steps li.is-active span,
+#find-your-match .match-steps li.is-complete span { background: var(--forest); color: #fff; }
+#find-your-match .match-steps li.is-active strong { color: var(--forest); font-weight: 700; }
+
+/* -- The three columns ----------------------------------------------------- */
+
+#find-your-match .match-layout {
+  /* The centre visual and the profile share one height so the two right-hand
+     columns start and finish together instead of leaving a cream gap.
+     Nudged up from 38vw/560 - measured against the left column's natural
+     content height (heading block + scan entry + 2x2 grid), which ran ~50px
+     taller at common widths, making the three columns feel like three
+     unrelated blocks rather than one row. Meeting closer to the middle
+     (this bump plus the left-column spacing trims below) reads as one grid
+     instead of forcing an exact tie, which would need fragile flex tricks
+     tried and reverted earlier in this file. */
+  --consult-h: clamp(400px, 39vw, 575px);
+  display: grid;
+  grid-template-areas: "main stage profile";
+  /* Centre column trimmed from 38fr to 33fr (~33% of the row) and handed to
+     the left column instead of the right: the 2x2 concern grid is the first
+     thing a user acts on and was the most cramped of the three. */
+  grid-template-columns: minmax(0, 36fr) minmax(0, 33fr) minmax(0, 31fr);
+  gap: clamp(18px, 1.5vw, 24px);
+  align-items: start;          /* one shared top edge */
+  min-width: 0;
+  height: auto;
+}
+#find-your-match .match-main {
+  grid-area: main;
+  display: block;              /* not flex: flex stretched the tile grid */
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  position: static;
+  max-width: none;
+}
+#find-your-match .stage-col { grid-area: stage; min-width: 0; }
+#find-your-match .profile-panel { grid-area: profile; min-width: 0; }
+
+/* Retire the decorative pseudo-labels and guidance ring from the old rail. */
+#find-your-match .concern-rail::before,
+#find-your-match .concern-rail::after,
+#find-your-match .concern-rail.needs-guidance::after,
+#find-your-match .concern-rail.needs-guidance.is-visible::after,
+#find-your-match .match .ingredient-fieldset::before { content: none; display: none; }
+
+/* -- Left column: heading -------------------------------------------------- */
+
+#find-your-match .active-concern-copy {
+  min-height: 0;
+  /* Same 14px used between scan-entry and the concern grid below it, so the
+     left column reads as one consistent rhythm rather than two different
+     gap sizes (16px, then 14px) that read as arbitrary. */
+  margin: 0 0 14px;
+  padding: 0;
+  background: none;
+  border: 0;
+}
+#find-your-match .active-concern-copy::after { content: none; display: none; }
+#find-your-match .step-eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: #a5834a;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+#find-your-match .active-concern-copy h3 {
+  margin: 0 0 7px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.45rem, 1.9vw, 1.85rem);
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--forest);
+}
+#find-your-match .active-concern-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.83rem;
+  line-height: 1.5;
+}
+
+/* Compact screening control: whole area stays around 100px. */
+#find-your-match .scan-entry {
+  display: block;
+  margin: 0 0 14px;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+#find-your-match .scan-entry-lead {
+  margin: 0 0 5px;
+  color: var(--forest);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+#find-your-match .scan-open-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 46px;
+  padding: 11px 18px;
+  background: rgba(31, 61, 46, 0.05);
+  color: var(--forest);
+  border: 1px solid rgba(31, 61, 46, 0.16);
+  border-radius: 14px;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.84rem;
+  font-weight: 600;
+  transition: background 0.22s ease, border-color 0.22s ease;
+}
+#find-your-match .scan-open-btn:hover {
+  background: rgba(31, 61, 46, 0.1);
+  border-color: rgba(31, 61, 46, 0.28);
+}
+#find-your-match .scan-entry-note {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+#find-your-match .concern-start-hint { display: none; }
+
+/* -- Concern tiles: compact 2 x 2, height is explicit ---------------------- */
+
+#find-your-match .concern-grid,
+#find-your-match .concern-rail #skinProblemOpts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: none;    /* the old rail pinned four fixed tracks here */
+  grid-auto-rows: auto;
+  gap: 12px;
+  margin: 0;
+  flex: none;
+  height: auto;
+  min-height: 0;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  /* Explicit height, NOT aspect-ratio: tying height to a wide column is what
+     grew these into 300px+ portrait posters on large screens. Capped a
+     little lower than before (190px -> 170px) as part of bringing the left
+     column's total height back in line with the centre/right columns,
+     which were running noticeably shorter. */
+  height: clamp(148px, 12vw, 170px);
+  min-height: 0;
+  aspect-ratio: auto;
+  padding: 0;
+  overflow: hidden;
+  background: #ded3c2;
+  border: 1px solid rgba(31, 61, 46, 0.08);
+  border-radius: 17px;
+  box-shadow: 0 2px 8px rgba(31, 61, 46, 0.05);
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card::before { content: none; display: none; }
+
+#find-your-match .concern-card-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Dimmed by default so the selected tile reads as unmistakably "chosen"
+     rather than relying on the border alone; brightened back up the instant
+     it's picked (see [aria-checked="true"] below). */
+  filter: brightness(0.74) saturate(0.8);
+  transition: filter 0.26s ease;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"] .concern-card-photo {
+  filter: brightness(1.06) saturate(1.12);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card:hover .concern-card-photo {
+  filter: brightness(0.88) saturate(0.92);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"]:hover .concern-card-photo {
+  filter: brightness(1.1) saturate(1.15);
+}
+/* A subtle dark wash on top of the dimmed photo, separate from the filter,
+   so unselected tiles read as visibly receded even before comparing
+   brightness side-by-side; clears on selection. */
+#find-your-match .concern-rail #skinProblemOpts .option-card::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(16, 26, 21, 0.22);
+  transition: opacity 0.26s ease;
+  pointer-events: none;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"]::before {
+  opacity: 0;
+}
+/* Framed per photograph so the affected skin stays in shot and the crop does
+   not land across an eye or cut the chin mid-feature. */
+#find-your-match .concern-card[data-value="Dryness"] .concern-card-photo { object-position: 54% 34%; }
+#find-your-match .concern-card[data-value="Acne"] .concern-card-photo { object-position: 42% 44%; }
+#find-your-match .concern-card[data-value="Redness"] .concern-card-photo { object-position: 52% 46%; }
+#find-your-match .concern-card[data-value="Dehydration"] .concern-card-photo { object-position: 48% 38%; }
+
+#find-your-match .concern-card::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute;
+  inset: auto 0 0 0;
+  /* Explicit z-index so this stacks predictably above the dim wash
+     (.option-card::before, same z-index but painted first in generated-
+     content order): without it, this and the photo both sit at the
+     implicit stacking level and the wash - added later, with its own
+     explicit z-index to lift it above the photo - would paint over this
+     gradient instead of under it. */
+  z-index: 1;
+  height: 56%;
+  background: linear-gradient(to top, rgba(20, 32, 26, 0.8), rgba(20, 32, 26, 0.26) 48%, transparent);
+  pointer-events: none;
+}
+
+#find-your-match .concern-rail #skinProblemOpts .option-icon {
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.88);
+  border: 0;
+  border-radius: 50%;
+  color: var(--forest);
+  box-shadow: 0 1px 3px rgba(20, 32, 26, 0.16);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-icon svg { width: 14px; height: 14px; }
+
+#find-your-match .concern-card-body {
+  position: absolute;
+  left: 12px;
+  right: 40px;
+  bottom: 10px;
+  z-index: 2;
+  display: block;
+  text-align: left;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card strong {
+  display: block;
+  color: #fff;
+  /* Sans-serif, not the decorative serif: these are controls, not headings. */
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card small { display: none; }
+
+/* The tick exists only when selected — never an X on an unselected card. */
+#find-your-match .concern-rail #skinProblemOpts .option-check {
+  position: absolute;
+  top: 9px;
+  right: 9px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  background: #c8a76a;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 800;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"] {
+  border-color: #c8a76a;
+  box-shadow: 0 0 0 1.5px #c8a76a, 0 5px 14px rgba(31, 61, 46, 0.1);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card[aria-checked="true"] .option-check {
+  opacity: 1;
+  transform: scale(1);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(31, 61, 46, 0.12);
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 3px;
+}
+#find-your-match .concern-rail #skinProblemOpts .option-card.is-preview:not([aria-checked="true"]) {
+  border-color: rgba(31, 61, 46, 0.08);
+  box-shadow: 0 2px 8px rgba(31, 61, 46, 0.05);
+}
+
+/* -- Centre column: the consultation visual -------------------------------- */
+
+#find-your-match .concern-stage {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  /* Shorter than before: the clip is 16:9 inside a portrait panel, so every
+     extra pixel of height magnified the horizontal crop. At this height the
+     head sits in frame with room around the crown and chin. */
+  height: var(--consult-h);
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border-radius: 26px;
+  overflow: hidden;
+  background: linear-gradient(168deg, #f6f2ea 0%, #eef1ee 55%, #eaefe8 100%);
+  border: 1px solid rgba(31, 61, 46, 0.07);
+  box-shadow: 0 10px 34px rgba(31, 61, 46, 0.08);
+  pointer-events: auto;         /* the visual tracks the pointer, as before */
+}
+#find-your-match .concern-stage-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border-radius: 26px;
+  overflow: hidden;
+}
+/* The looping face fills the panel and keeps its proportions: cover would
+   clip the crown, contain at this ratio left pale bars down both sides. */
+#find-your-match .concern-stage .concern-neutral-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  border-radius: 26px;
+  /* Lifted exposure: the source clip reads dark/shadowy at its native
+     levels against the ivory panel it sits in. */
+  filter: brightness(1.1) saturate(1.05) contrast(1.02);
+}
+#find-your-match .concern-stage-frame img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  border-radius: 26px;
+  filter: brightness(1.08) saturate(1.04);
+}
+#find-your-match .concern-stage-glow { opacity: 0.3; }
+/* The clip carries its own cool grey-blue backdrop, and because it fills the
+   panel the CSS background never shows. A warm wash over the top settles it
+   into the ivory/sage palette without touching the asset. */
+#find-your-match .concern-stage-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(180deg, rgba(250, 245, 235, 0.26), rgba(236, 240, 233, 0.2) 60%, rgba(244, 238, 227, 0.3));
+  pointer-events: none;
+}
+#find-your-match .stage-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  /* Lifted from 18px: sitting this close to the card's own rounded bottom
+     edge made it read as an afterthought pinned to the corner rather than a
+     caption placed with intent. */
+  bottom: 24px;
+  z-index: 4;
+  margin: 0;
+  padding: 0 18px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-align: center;
+  text-shadow: 0 1px 6px rgba(20, 32, 26, 0.45);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+#find-your-match .concern-stage.is-neutral .stage-caption { color: rgba(40, 57, 50, 0.6); text-shadow: none; }
+/* Once a concern is being visualised, the caption itself becomes the
+   confirmation that this is an active, specific view rather than the
+   decorative idle loop - a touch brighter and a hair heavier. */
+#find-your-match .stage-caption.is-active {
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Top-of-frame context badge: names exactly what is currently being shown,
+   so the large central visual reads as connected to the selection rather
+   than a generic decorative loop. Empty/hidden in the neutral state. */
+#find-your-match .stage-badge {
+  position: absolute;
+  /* Matched to the caption's own inset (24px) rather than an unrelated
+     16px, so badge and caption read as one deliberate top/bottom pair
+     framing the image instead of two independently placed elements. */
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(20, 32, 26, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  backdrop-filter: blur(6px);
+  transition: opacity 0.24s ease, transform 0.24s ease;
+  pointer-events: none;
+}
+#find-your-match .stage-badge.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+#find-your-match .stage-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c8a76a;
+  box-shadow: 0 0 0 3px rgba(200, 167, 106, 0.35);
+}
+
+/* -- Right column: skin profile -------------------------------------------- */
+
+#find-your-match .profile-sticky {
+  /* Sticky only while it is shorter than the viewport; otherwise static, so it
+     can never be pushed across the footer. */
+  position: sticky;
+  top: calc(var(--nav-h) + 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: var(--consult-h);
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(31, 61, 46, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 6px 24px rgba(31, 61, 46, 0.07);
+}
+#find-your-match .profile-title {
+  margin: 0;
+  color: #a5834a;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+#find-your-match .profile-block { display: flex; flex-direction: column; gap: 8px; }
+#find-your-match .profile-block-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+#find-your-match .profile-label {
+  color: var(--forest);
+  font-size: 0.79rem;
+  font-weight: 600;
+}
+#find-your-match .chip-row { display: flex; flex-wrap: wrap; gap: 7px; }
+#find-your-match .chip-empty { color: var(--muted); font-size: 0.79rem; }
+#find-your-match .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px 6px 12px;
+  background: rgba(31, 61, 46, 0.06);
+  border: 1px solid rgba(31, 61, 46, 0.12);
+  border-radius: 999px;
+  color: var(--forest);
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+#find-your-match .chip:hover { background: rgba(31, 61, 46, 0.11); border-color: rgba(31, 61, 46, 0.24); }
+#find-your-match .chip-x { font-size: 0.95rem; line-height: 1; opacity: 0.55; }
+#find-your-match .chip:hover .chip-x { opacity: 1; }
+
+#find-your-match .pref-grid,
+#find-your-match #allergenOpts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: none;
+  gap: 12px;
+  margin: 0;
+}
+#find-your-match #allergenOpts .option-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  min-height: 0;
+  aspect-ratio: auto;
+  padding: 0 10px;
+  background: #fff;
+  border: 1px solid rgba(31, 61, 46, 0.13);
+  border-radius: 13px;
+  box-shadow: none;
+  text-align: center;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+#find-your-match #allergenOpts .option-card strong {
+  display: block;
+  color: var(--forest);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+#find-your-match #allergenOpts .option-card small,
+#find-your-match #allergenOpts .option-check,
+#find-your-match #allergenOpts .option-icon { display: none; }
+#find-your-match #allergenOpts .option-card:hover {
+  border-color: rgba(31, 61, 46, 0.3);
+  transform: none;
+}
+#find-your-match #allergenOpts .option-card[aria-checked="true"] {
+  background: var(--forest);
+  border-color: var(--forest);
+}
+#find-your-match #allergenOpts .option-card[aria-checked="true"] strong { color: #fff; }
+
+#find-your-match .cta-helper {
+  /* Takes up the slack so the concerns and preferences stay grouped at the
+     top and the status/actions settle at the bottom - no gap in between. */
+  margin: auto 0 0;
+  padding: 11px 13px;
+  background: rgba(31, 61, 46, 0.045);
+  border-radius: 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+  text-align: left;
+}
+#find-your-match .profile-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+#find-your-match .profile-actions .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  height: 56px;
+  padding: 0 22px;
+  background: var(--forest);
+  color: #fff;
+  border: 0;
+  border-radius: 17px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+}
+#find-your-match .profile-actions .btn-primary:hover:not(:disabled) {
+  background: #17402d;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(31, 61, 46, 0.2);
+}
+#find-your-match .profile-actions .btn-primary:disabled {
+  background: #e4dfd2;
+  color: #5f6b63;          /* muted but properly legible */
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+#find-your-match .btn-arrow { transition: transform 0.22s ease; }
+#find-your-match .profile-actions .btn-primary:hover:not(:disabled) .btn-arrow { transform: translateX(3px); }
+
+#find-your-match .link-btn {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font-family: inherit;
+  font-size: 0.77rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+#find-your-match .link-btn:hover { color: var(--forest); }
+/* A refined secondary button, not a browser link. Full width, matching the
+   primary CTA directly beneath it: centred-and-shrunk-to-content read as
+   inconsistent with every other row in this panel, which is either full
+   width (the CTA) or flush with the panel's left padding edge (every
+   label, chip and preference button). Kept visually secondary through
+   colour and weight, not through not lining up with its neighbours. */
+#find-your-match .browse-all {
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  color: var(--forest);
+  border: 1px solid rgba(31, 61, 46, 0.14);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+#find-your-match .browse-all:hover {
+  background: rgba(31, 61, 46, 0.05);
+  border-color: rgba(31, 61, 46, 0.26);
+}
+#find-your-match .browse-all .link-arrow { font-size: 0.9em; transition: transform 0.2s ease; }
+#find-your-match .browse-all:hover .link-arrow { transform: translateX(2px); }
+#find-your-match .reset-btn {
+  /* Left-aligned, not centred: every label above it (Selected concerns,
+     Ingredient preferences) sits flush with the panel's left padding edge,
+     and a centred text link underneath read as unrelated to that column. */
+  align-self: flex-start;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: rgba(90, 104, 96, 0.72);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+#find-your-match .reset-btn:hover { color: var(--forest); background: none; }
+#find-your-match .form-message:empty { display: none; }
+
+/* -- Responsive ------------------------------------------------------------ */
+
+/* Laptop: keep three columns, ease the gaps and the visual height. */
+@media (max-width: 1280px) {
+  #find-your-match .match-layout { gap: 16px; }
+  #find-your-match .match-layout { --consult-h: clamp(380px, 36vw, 500px); }
+  #find-your-match .concern-rail #skinProblemOpts .option-card { height: clamp(120px, 10.5vw, 150px); }
+}
+
+/* Tablet: heading, then the visual, then choosing, then the profile. */
+@media (max-width: 1024px) {
+  #find-your-match .match-layout {
+    grid-template-areas: "stage" "main" "profile";
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+  #find-your-match .match-layout { --consult-h: clamp(360px, 48vw, 470px); }
+  #find-your-match .profile-sticky { min-height: 0; }
+  #find-your-match .concern-rail #skinProblemOpts .option-card { height: clamp(140px, 17vw, 175px); }
+  #find-your-match .profile-sticky { position: static; }
+  #find-your-match .match-steps { max-width: none; }
+  /* Stacked, the controls would otherwise stretch the full page width and the
+     tiles flatten into letterboxes. Hold them to a comfortable measure. */
+  #find-your-match .match-main,
+  #find-your-match .profile-panel { max-width: 640px; margin-inline: auto; width: 100%; }
+  /* Touch from here down: chips and text links need a real 44px target. */
+  #find-your-match .chip { min-height: 44px; padding: 10px 13px 10px 15px; }
+  #find-your-match .link-btn,
+  #find-your-match .reset-btn { min-height: 44px; display: inline-flex; align-items: center; }
+}
+
+@media (max-width: 720px) {
+  #find-your-match .match-topbar { flex-direction: column; align-items: flex-start; gap: 14px; }
+  #find-your-match .match-steps {
+    width: 100%;
+    justify-content: space-between;
+    padding: 6px 12px;
+  }
+  #find-your-match .match-steps strong { font-size: 0.72rem; }
+  #find-your-match .match-layout { --consult-h: clamp(340px, 78vw, 430px); }
+  #find-your-match .concern-rail #skinProblemOpts .option-card { height: clamp(130px, 34vw, 155px); }
+}
+
+/* Raised from 359px: the pill's full step labels ("Choose concerns", "View
+   matches") were overlapping their neighbouring circle well above that,
+   since a 0.72rem label plus a connector line doesn't fit three-across in a
+   phone-width pill - numbers-only needs to start much earlier than a single
+   narrow-phone breakpoint suggested. */
+@media (max-width: 480px) {
+  #find-your-match .match-steps li:not(:last-child)::after { width: 8px; }
+  #find-your-match .match-steps strong { display: none; }
+  #find-your-match .concern-grid,
+  #find-your-match .concern-rail #skinProblemOpts { grid-template-columns: minmax(0, 1fr); }
+  #find-your-match .concern-rail #skinProblemOpts .option-card { height: 150px; }
+  #find-your-match .pref-grid,
+  #find-your-match #allergenOpts { grid-template-columns: minmax(0, 1fr); }
+  #find-your-match .concern-card-body { right: 34px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #find-your-match .concern-rail #skinProblemOpts .option-card,
+  #find-your-match .profile-actions .btn-primary { transition: none; }
+}
+
+/* ===========================================================================
+   PRODUCT CARD FLIP — front/back ingredient reveal
+   ---------------------------------------------------------------------------
+   Every rule here is additive on top of the existing .product-card styling
+   above; nothing in that styling was removed except .product-card's own
+   overflow:hidden (moved onto each flip face — see the note where it used to
+   be) and the front-only pseudo-elements, which were renamed to target
+   .flip-face-front so they keep working exactly as before.
+   =========================================================================== */
+
+.flip-card {
+  perspective: 1700px;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  /* A symmetric ease-in-out reads as a deliberate turn; the previous curve
+     accelerated hard out of the start, which felt closer to a snap than a
+     considered reveal. */
+  transition: transform 640ms cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+.flip-card.is-flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+/* A quiet lift while open, echoing the card's own hover elevation, so the
+   turn reads as the card coming toward the viewer rather than just a
+   texture swap. */
+.product-card.flip-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.product-card.flip-card.is-flipped {
+  box-shadow: 0 26px 56px rgba(31, 61, 46, 0.2);
+}
+.flip-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 22px;
+  overflow: hidden;
+}
+.flip-face-front {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  /* Normal flow, not absolute: this is what gives .flip-card-inner (and so
+     .product-card) its height. The back face is pinned to that height with
+     inset:0 below, so both faces are always identical in size. */
+}
+.flip-face-back {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 20px 22px;
+  /* A product with more key ingredients than usual, stacked on the narrow
+     mobile layout, can need more height than the front face has - the front
+     still has to stay the reference size, so the back scrolls internally
+     rather than the two faces silently overlapping. overflow-x stays clipped
+     via .flip-face; this only opens the vertical axis. */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transform: rotateY(180deg);
+  background: var(--tint-a, #f6f2e8);
+}
+
+/* Flip trigger: small circular icon, top-right of the front, never competing
+   with the product information beneath it. */
+.flip-trigger {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(70, 91, 78, 0.14);
+  border-radius: 50%;
+  color: var(--forest);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(53, 48, 40, 0.12);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.flip-trigger svg { width: 16px; height: 16px; }
+.flip-trigger:hover {
+  background: #fff;
+  transform: scale(1.06);
+  box-shadow: 0 6px 16px rgba(53, 48, 40, 0.18);
+}
+.flip-trigger:focus-visible {
+  outline: 2px solid var(--forest);
+  outline-offset: 2px;
+}
+.flip-card.is-flipped .flip-trigger { opacity: 0; }
+
+/* A gentle attention pulse on the icon itself (runs a few times on load,
+   then stops) plus a small tooltip that only appears once the shopper is
+   already looking at the card — together these tell a first-time visitor
+   the card is flippable without needing to discover it by accident. */
+@keyframes flipTriggerPulse {
+  0%, 100% { box-shadow: 0 4px 12px rgba(53, 48, 40, 0.12), 0 0 0 0 rgba(200, 167, 106, 0.5); }
+  50% { box-shadow: 0 4px 12px rgba(53, 48, 40, 0.12), 0 0 0 6px rgba(200, 167, 106, 0); }
+}
+.flip-trigger { animation: flipTriggerPulse 2.2s ease-out 2; }
+.flip-hint {
+  position: absolute;
+  top: 14px;
+  right: 52px;
+  z-index: 4;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--forest, #1f3d2e);
+  color: #f6f2e8;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(6px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.flip-hint::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+  transform: translateY(-50%) rotate(45deg);
+  border-radius: 1px;
+}
+.product-card:hover .flip-hint,
+.flip-trigger:focus-visible + .flip-hint {
+  opacity: 1;
+  transform: translateX(0);
+}
+.flip-card.is-flipped .flip-hint,
+.flip-card.is-turning .flip-hint { opacity: 0; pointer-events: none; }
+
+/* The gold corner accent and hover shine sweep only belong on a card lying
+   flat facing the viewer. .is-turning covers rotation in both directions
+   (opening AND closing - .is-flipped alone only covers the open half,
+   since it's removed the instant a close begins, before that animation
+   runs); .is-flipped covers holding fully open. Together they suppress
+   these decorative marks for the entire time the face is at any angle
+   other than flat, so their absolutely-positioned box-shadows never render
+   against a 3D-transformed plane, which is what could read as a stray line
+   detached from the card during the turn. */
+.flip-card.is-turning .flip-face-front::before,
+.flip-card.is-turning .flip-face-front::after,
+.flip-card.is-flipped .flip-face-front::before,
+.flip-card.is-flipped .flip-face-front::after {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+/* -- Back face content ------------------------------------------------------ */
+
+.flip-back-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(31, 61, 46, 0.14);
+  border-radius: 50%;
+  color: var(--forest);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.flip-back-btn svg { width: 15px; height: 15px; }
+.flip-back-btn:hover { background: #fff; transform: scale(1.06); }
+.flip-back-btn:focus-visible { outline: 2px solid var(--forest); outline-offset: 2px; }
+
+.back-header {
+  padding-right: 40px;   /* clear of the back-to-front control */
+}
+.back-brand {
+  display: block;
+  color: var(--forest);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.back-name {
+  margin: 5px 0 0;
+  color: var(--ink);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.18rem;
+  font-weight: 600;
+  line-height: 1.16;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.back-kicker {
+  display: block;
+  margin: 16px 0 10px;
+  color: #8a6f3c;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Three zones. Header is natural height; back-centre is the ONLY flexible
+   one and claims whatever a taller grid row adds, centring the ingredient
+   composition within that space so extra height reads as deliberate
+   breathing room around a hero circle rather than a dead gap under it;
+   back-bottom sits at its own natural size below that. */
+.back-top { flex: none; }
+.back-centre {
+  /* min-height intentionally left at its default (auto), NOT 0: auto is what
+     stops a flex item shrinking below its own content's size. With it at 0,
+     a composition taller than the leftover centre space (five ingredients,
+     stacked, on a narrow card) got flex-shrunk smaller than that content
+     regardless, and centring an oversized child inside an undersized box
+     overflows equally both ways - the second half of the last row spilled
+     straight into back-bottom. Now the centre can only ever be as small as
+     its content needs; anything genuinely taller than the card scrolls via
+     flip-face-back's overflow-y, never overlaps a neighbour. */
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.back-bottom {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  padding-top: 14px;
+}
+
+/* Grid, not flex, for the callout columns: a grid track's max size is capped
+   by its own fraction of the row, so a long ingredient name can never push
+   its column past the card edge the way an unconstrained flex child could -
+   that was the exact cause of labels being cropped at the left ("Hyaluronic
+   acid" reading as "valuronic acid"). Text wraps onto a second line instead
+   of being truncated, which the grid track has room to absorb. */
+.ingredient-stage {
+  display: grid;
+  /* A real minimum, not 0: with no floor a track can be squeezed narrower
+     than a single ingredient word needs, and since words no longer break
+     mid-word (see .callout-text strong), an unbreakable word in a
+     zero-minimum track would overflow it instead. 68px comfortably holds
+     the longest single word this data actually contains ("Hyaluronic",
+     "Centella") at this font size.
+     The centre column carries the size directly (clamp, not `auto`), and
+     .ingredient-image is 100% of it - not its own percentage-based clamp.
+     A percentage width on a grid ITEM inside an `auto` TRACK is a circular
+     dependency (the track sizes to the item, the item sizes as a percentage
+     of the track) that engines resolve inconsistently; measured on a real
+     card it produced a 100px circle from a clamp(130px,42%,184px) rule and,
+     at narrower widths, let the circle's resolved size disagree with the
+     column next to it enough to overlap it. A percentage in
+     grid-template-columns resolves against the stage's own width instead,
+     which is always definite - no ambiguity, no overlap. */
+  grid-template-columns: minmax(68px, 1fr) clamp(122px, 34%, 176px) minmax(68px, 1fr);
+  align-items: center;
+  column-gap: clamp(8px, 2.4vw, 16px);
+  width: 100%;
+}
+.ingredient-callouts {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  min-width: 0;
+}
+.ingredient-callouts:empty { display: none; }
+.side-left { grid-column: 1; align-items: flex-end; }
+.side-right { grid-column: 3; align-items: flex-start; }
+.callout {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  min-width: 0;
+  max-width: 100%;
+}
+.side-left .callout { justify-content: flex-end; }
+.callout-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: #c8a76a;
+  box-shadow: 0 0 0 4px rgba(200, 167, 106, 0.16);
+}
+.callout-line {
+  flex: 1 1 10px;
+  min-width: 8px;
+  max-width: 26px;
+  height: 1px;
+  margin-top: 12px;
+  background: rgba(31, 61, 46, 0.3);
+}
+.callout-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  max-width: 100%;
+}
+.side-left .callout-text { text-align: right; align-items: flex-end; }
+.side-right .callout-text { text-align: left; align-items: flex-start; }
+.callout-text strong {
+  color: var(--ink);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.28;
+  /* Wraps rather than truncating: a grid column can only ever be as wide as
+     its own track, so this can never overflow the card - it can only take a
+     second line, which reads as considered rather than cramped.
+     overflow-wrap was break-word, which let a single long word (Allantoin,
+     Centella asiatica) split mid-word onto its own fragment line - looked
+     like corrupted/cut-off text, easy to mistake for missing content. Normal
+     wrapping only ever breaks at a space, so a word is either whole on one
+     line or whole on the next, never in two pieces. */
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+  max-width: 100%;
+}
+.callout-text small {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* The hero: significantly larger than before, always centred, photo filling
+   it with real presence rather than floating small inside empty padding. */
+.ingredient-image {
+  position: relative;
+  grid-column: 2;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;           /* sized by the grid track (see .ingredient-stage) */
+  aspect-ratio: 1;
+  overflow: hidden;      /* clips the photo to the circle it sits in */
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.32) 64%, transparent 80%);
+  box-shadow: 0 18px 36px rgba(31, 61, 46, 0.16), 0 2px 0 rgba(255, 255, 255, 0.6) inset;
+}
+.ingredient-image .product-image-wrap {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  /* Trimmed from 12px: object-fit:contain already leaves its own margin for
+     any packaging that isn't perfectly square, so extra padding on top of
+     that was making the product read small and timid inside a "hero"
+     circle rather than filling it. */
+  padding: 7px;
+  aspect-ratio: auto;
+  background: none;
+}
+.ingredient-image .product-image-wrap img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 8px 10px rgba(31, 61, 46, 0.18));
+}
+
+.ingredient-empty {
+  grid-column: 3;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.back-match-note {
+  margin: 0;
+  padding: 11px 13px;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 12px;
+  color: var(--ink);
+  font-size: 0.74rem;
+  line-height: 1.48;
+  opacity: 0.9;
+}
+
+.back-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+.back-view-full {
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--forest);
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  min-height: 32px;
+}
+.back-view-full:hover { color: var(--deep-forest); }
+.back-visit {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  background: var(--forest);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.back-visit:hover { background: var(--deep-forest); transform: translateY(-1px); }
+
+/* Category tint, chosen per product from its real ingredient/type data.
+   Hydrating was previously a pale mint close enough to acne's sage to read
+   as the same colour on two different concerns; it's now the warm cream the
+   category calls for, distinct from barrier's cooler ivory/oat. */
+.flip-face-back[data-tint="hydrating"] { --tint-a: #f8f0dd; }
+.flip-face-back[data-tint="barrier"] { --tint-a: #f6f0e3; }
+.flip-face-back[data-tint="acne"] { --tint-a: #eaf3ec; }
+.flip-face-back[data-tint="soothing"] { --tint-a: #faeee7; }
+.flip-face-back[data-tint="spf"] { --tint-a: #f8f1e0; }
+
+/* -- Reduced motion: fade/swap instead of a 3D turn ------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .flip-card-inner {
+    transition: none;
+    transform: none !important;
+  }
+  .flip-face-back {
+    position: absolute;
+    inset: 0;
+    transform: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 160ms ease;
+  }
+  .flip-face-front {
+    transition: opacity 160ms ease;
+  }
+  .flip-card.is-flipped .flip-face-back {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .flip-card.is-flipped .flip-face-front {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* -- Full-ingredient modal --------------------------------------------------- */
+
+.ingredient-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(24, 34, 28, 0.42);
+  backdrop-filter: blur(2px);
+}
+.ingredient-modal {
+  position: relative;
+  width: min(420px, 100%);
+  max-height: min(560px, 82vh);
+  overflow-y: auto;
+  padding: 30px 28px 26px;
+  background: #fdfbf5;
+  border-radius: 22px;
+  box-shadow: 0 30px 70px rgba(20, 32, 26, 0.32);
+}
+.ingredient-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: rgba(31, 61, 46, 0.06);
+  border: 0;
+  border-radius: 50%;
+  color: var(--forest);
+  cursor: pointer;
+}
+.ingredient-modal-close svg { width: 14px; height: 14px; }
+.ingredient-modal-close:hover { background: rgba(31, 61, 46, 0.12); }
+.ingredient-modal-brand {
+  margin: 0;
+  padding-right: 30px;
+  color: var(--forest);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.ingredient-modal-title {
+  margin: 5px 0 0;
+  padding-right: 30px;
+  color: var(--ink);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.ingredient-modal-match {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: rgba(31, 61, 46, 0.05);
+  border-radius: 12px;
+  color: var(--ink);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+.ingredient-modal-filter {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+.ingredient-modal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ingredient-modal-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 4px;
+  border-bottom: 1px solid rgba(31, 61, 46, 0.08);
+}
+.ingredient-modal-item:last-child { border-bottom: 0; }
+.ingredient-modal-item-name {
+  color: var(--ink);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.ingredient-modal-item.is-key .ingredient-modal-item-name { color: var(--forest); }
+.ingredient-modal-item-benefit {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+/* -- Responsive -------------------------------------------------------------- */
+
+/* Tablet 2-column grid AND single-column mobile both stack rather than
+   flank. Measured directly: at the product grid's own 2-column breakpoint a
+   card's content box is only ~260-265px wide, but the flanking layout's
+   minimum width (two 68px side floors + the centre circle's own 122px floor
+   + gaps) needs roughly 290px - narrower than that, the grid itself
+   overflows the card and the right-most ingredient gets clipped by the
+   card's own edge. That is a hard floor set by needing real ingredient
+   words (Hyaluronic, Niacinamide, Centella) to stay readable without either
+   breaking mid-word or shrinking illegibly, so the fix is to stop trying to
+   flank below the width that can actually hold it, rather than to keep
+   shrinking the floors - stacking is the correct layout down here, not a
+   fallback for one. This threshold matches .product-grid's own switch to
+   two columns, so "stacks" and "is a card narrow enough to need it" agree. */
+@media (max-width: 1024px) {
+  /* Image first, then every ingredient as one plain list, tight enough that
+     five items still fit most card heights without the back needing to
+     scroll (flip-face-back can, as a fallback, but this keeps that the
+     exception rather than the norm). */
+  .ingredient-stage { grid-template-columns: 1fr; justify-items: center; row-gap: 12px; }
+  .side-left, .side-right { grid-column: 1; align-items: center; width: 100%; }
+  .ingredient-image { grid-column: 1; order: -1; margin: 0 auto; width: clamp(110px, 34%, 148px); }
+  .ingredient-empty { grid-column: 1; text-align: center; }
+  .side-left .callout,
+  .side-right .callout { justify-content: flex-start; }
+  .side-left .callout-text,
+  .side-right .callout-text { text-align: left; align-items: flex-start; }
+}
+
+@media (max-width: 480px) {
+  .ingredient-image { width: clamp(96px, 40%, 132px); }
+  .callout-text strong { font-size: 0.82rem; }
+  .callout-text small { font-size: 0.68rem; }
+  .back-kicker { margin: 8px 0 6px; }
+  .back-name { font-size: 1.05rem; }
+  .back-match-note { padding: 9px 11px; font-size: 0.72rem; }
+  .back-actions { margin-top: 8px; }
+  .ingredient-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .ingredient-modal {
+    width: 100%;
+    max-height: 78vh;
+    border-radius: 22px 22px 0 0;
+    padding: 24px 20px 28px;
+  }
+  /* Larger touch targets: mobile has no hover state to fall back on. */
+  .flip-trigger,
+  .flip-back-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .back-visit { min-height: 44px; padding: 0 16px; }
+  .back-view-full { min-height: 44px; display: inline-flex; align-items: center; }
+  .ingredient-modal-close { width: 40px; height: 40px; }
 }
