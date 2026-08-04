@@ -1208,7 +1208,7 @@ function buildIngredientComposition(keyIngredients, binding, name) {
     imageWrap.append(createProductImage(name, valueOf(binding, 'image')));
     const empty = document.createElement('p');
     empty.className = 'ingredient-empty';
-    empty.textContent = 'Ingredient details are not currently available.';
+    empty.textContent = "Ingredient data for this product isn't in our catalogue yet.";
     stage.append(imageWrap, empty);
     return stage;
   }
