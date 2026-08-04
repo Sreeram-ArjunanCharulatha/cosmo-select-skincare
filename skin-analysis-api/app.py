@@ -15,7 +15,7 @@ import numpy as np
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-from face_detection import detect_face, estimate_yaw
+from face_detection import CONTOUR_LANDMARK_INDICES, detect_face, estimate_yaw
 from image_quality import assess_quality
 from skin_regions import (build_skin_masks, normalise_scale, region_luma_ratio,
                           MAX_REGION_LUMA_RATIO)
@@ -265,6 +265,13 @@ def face_position():
 
     height, width = image.shape[:2]
     x, y, w, h = face["bbox"]
+    landmarks = face["landmarks"]
+    # Normalised (0-1) points for the live dot overlay - same coordinate
+    # space as `box`, so the browser only needs one scaling calculation.
+    points = [
+        [round(landmarks[i][0] / width, 4), round(landmarks[i][1] / height, 4)]
+        for i in CONTOUR_LANDMARK_INDICES
+    ]
     return jsonify({
         "found": True,
         "face_count": 1,
@@ -274,6 +281,7 @@ def face_position():
                 "width": w / width, "height": h / height},
         "yaw": round(estimate_yaw(face["landmarks"]), 3),
         "coverage": round(face["coverage"], 4),
+        "points": points,
     })
 
 

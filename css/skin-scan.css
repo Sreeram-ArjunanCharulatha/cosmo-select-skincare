@@ -222,6 +222,21 @@
 .scan-stage canvas {
   transform: none; /* frozen frame is already mirrored at capture */
 }
+.scan-stage canvas.scan-dots {
+  /* Higher specificity than ".scan-stage canvas" above (needed to win over
+     its "transform: none") - its points come from the same unmirrored frame
+     as the live video, so it mirrors the same way, unlike the frozen-frame
+     canvas, which is already mirrored at capture and must NOT be mirrored
+     again. */
+  transform: scaleX(-1);
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.scan-dots.is-visible {
+  opacity: 1;
+}
 .scan-image-stage {
   cursor: grab;
   touch-action: none;

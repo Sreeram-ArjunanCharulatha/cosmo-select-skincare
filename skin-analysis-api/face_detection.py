@@ -11,6 +11,23 @@ import mediapipe as mp
 # Lazily created singleton — FaceMesh start-up is expensive.
 _face_mesh = None
 
+# A compact subset of the 478 landmarks — oval, eyes, eyebrows, lips, nose,
+# irises — for the live camera dot overlay. Sending all 478 every ~360ms
+# would work but is unnecessary; these ~160 points are enough to read as a
+# face mesh on screen at a fraction of the payload.
+_MESH_GROUPS = (
+    mp.solutions.face_mesh.FACEMESH_FACE_OVAL,
+    mp.solutions.face_mesh.FACEMESH_LEFT_EYE,
+    mp.solutions.face_mesh.FACEMESH_RIGHT_EYE,
+    mp.solutions.face_mesh.FACEMESH_LEFT_EYEBROW,
+    mp.solutions.face_mesh.FACEMESH_RIGHT_EYEBROW,
+    mp.solutions.face_mesh.FACEMESH_LIPS,
+    mp.solutions.face_mesh.FACEMESH_NOSE,
+    mp.solutions.face_mesh.FACEMESH_LEFT_IRIS,
+    mp.solutions.face_mesh.FACEMESH_RIGHT_IRIS,
+)
+CONTOUR_LANDMARK_INDICES = sorted({i for group in _MESH_GROUPS for pair in group for i in pair})
+
 
 def _get_face_mesh():
     global _face_mesh

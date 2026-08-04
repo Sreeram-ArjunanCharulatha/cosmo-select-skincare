@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./css/styles.css?v=premium-57">
-  <link rel="stylesheet" href="./css/skin-scan.css?v=scan-25">
+  <link rel="stylesheet" href="./css/skin-scan.css?v=scan-26">
 </head>
 <body>
 
@@ -296,6 +296,7 @@
           <div class="scan-stage" id="scanCameraStage">
             <video id="scanCameraVideo" autoplay playsinline muted></video>
             <canvas id="scanFreezeCanvas" hidden></canvas>
+            <canvas id="scanFaceDots" class="scan-dots" aria-hidden="true"></canvas>
             <div class="scan-guide" id="scanGuide" aria-hidden="true">
               <svg class="scan-guide-oval" viewBox="0 0 100 132" preserveAspectRatio="none">
                 <ellipse cx="50" cy="66" rx="46" ry="62" />
@@ -392,6 +393,6 @@
 
   <script src="./js/vendor/lenis.min.js"></script>
   <script src="./js/app.js?v=premium-30"></script>
-  <script src="./js/skin-scan.js?v=scan-25"></script>
+  <script src="./js/skin-scan.js?v=scan-26"></script>
 </body>
 </html>

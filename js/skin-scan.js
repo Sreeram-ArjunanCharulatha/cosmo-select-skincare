@@ -109,6 +109,7 @@
     fileInput: $('scanFileInput'),
     cameraVideo: $('scanCameraVideo'),
     freezeCanvas: $('scanFreezeCanvas'),
+    faceDots: $('scanFaceDots'),
     guide: $('scanGuide'),
     guideProgress: $('scanGuideProgress'),
     countdown: $('scanCountdown'),
@@ -153,6 +154,12 @@
   let trackController = null;
   let trackCanvas = null;
   let trackingBusy = false;
+  // Live face-dot overlay: interpolated between the last two polls so it
+  // reads as smooth motion rather than a new mesh snapping in every 360ms.
+  let dotsPrevPoints = null;
+  let dotsTargetPoints = null;
+  let dotsUpdateStart = 0;
+  let dotsRafId = null;
   let firstTurnSign = 0;      // direction of the first turn the sitter made
   let lastCaptureYaw = 0;
   let alignedSince = 0;
@@ -371,6 +378,7 @@
     cameraStream.getTracks().forEach(track => track.stop());
     cameraStream = null;
     el.cameraVideo.srcObject = null;
+    stopFaceDots();
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -405,6 +413,89 @@
     trackingBusy = false;
     el.guide.classList.remove('aligned');
     setHoldProgress(0);
+    stopFaceDots();
+  }
+
+  // ---------------------------------------------------------------------
+  // Live face-dot overlay
+  //
+  // Points arrive with each ~360ms tracking poll (see trackTick), which on
+  // its own would look like the mesh snapping to a new shape every tick.
+  // Instead, each new poll becomes the interpolation TARGET while the
+  // previous poll's points remain the interpolation START, and a rAF loop
+  // eases between them over the same interval, so the dots read as
+  // continuous motion synced to the actual face rather than a stepped
+  // animation.
+  // ---------------------------------------------------------------------
+  function renderFaceDots(data) {
+    if (!data || !data.found || !data.points || !data.points.length) {
+      stopFaceDots();
+      return;
+    }
+    dotsPrevPoints = dotsTargetPoints || data.points;
+    dotsTargetPoints = data.points;
+    dotsUpdateStart = performance.now();
+    el.faceDots.classList.add('is-visible');
+    if (!dotsRafId) dotsRafId = requestAnimationFrame(drawFaceDotsFrame);
+  }
+
+  function stopFaceDots() {
+    if (dotsRafId) { cancelAnimationFrame(dotsRafId); dotsRafId = null; }
+    dotsPrevPoints = null;
+    dotsTargetPoints = null;
+    el.faceDots.classList.remove('is-visible');
+    const ctx = el.faceDots.getContext('2d');
+    if (ctx) ctx.clearRect(0, 0, el.faceDots.width, el.faceDots.height);
+  }
+
+  function drawFaceDotsFrame() {
+    dotsRafId = null;
+    if (!dotsTargetPoints || scanState !== SCAN_STATES.CAMERA) return;
+
+    const canvas = el.faceDots;
+    const video = el.cameraVideo;
+    if (!video.videoWidth) {
+      dotsRafId = requestAnimationFrame(drawFaceDotsFrame);
+      return;
+    }
+
+    const stageW = canvas.clientWidth;
+    const stageH = canvas.clientHeight;
+    if (canvas.width !== stageW || canvas.height !== stageH) {
+      canvas.width = stageW;
+      canvas.height = stageH;
+    }
+
+    // The video is displayed with object-fit: cover, so the same crop math
+    // is needed here to place points on the actual visible pixels rather
+    // than the full uncropped frame.
+    const scale = Math.max(stageW / video.videoWidth, stageH / video.videoHeight);
+    const drawnW = video.videoWidth * scale;
+    const drawnH = video.videoHeight * scale;
+    const offsetX = (stageW - drawnW) / 2;
+    const offsetY = (stageH - drawnH) / 2;
+
+    const t = Math.min(1, (performance.now() - dotsUpdateStart) / TRACK_INTERVAL_MS);
+    const prev = dotsPrevPoints || dotsTargetPoints;
+    const radius = Math.max(1.4, stageW * 0.0035);
+
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, stageW, stageH);
+    ctx.fillStyle = 'rgba(216, 188, 130, 0.88)';
+    ctx.shadowColor = 'rgba(216, 188, 130, 0.6)';
+    ctx.shadowBlur = 3;
+
+    for (let i = 0; i < dotsTargetPoints.length; i++) {
+      const a = prev[i] || dotsTargetPoints[i];
+      const b = dotsTargetPoints[i];
+      const nx = a[0] + (b[0] - a[0]) * t;
+      const ny = a[1] + (b[1] - a[1]) * t;
+      ctx.beginPath();
+      ctx.arc(offsetX + nx * drawnW, offsetY + ny * drawnH, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    dotsRafId = requestAnimationFrame(drawFaceDotsFrame);
   }
 
   // Grabs a small frame and asks the API where the face is.
@@ -434,7 +525,10 @@
         method: 'POST', body: formData, signal: trackController.signal
       });
       const data = await response.json();
-      if (scanState === SCAN_STATES.CAMERA) evaluatePosition(data);
+      if (scanState === SCAN_STATES.CAMERA) {
+        renderFaceDots(data);
+        evaluatePosition(data);
+      }
     } catch (error) {
       if (error.name !== 'AbortError') {
         // A dropped frame is not worth surfacing; the next tick retries.
