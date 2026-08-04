@@ -15,7 +15,7 @@ import numpy as np
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-from face_detection import CONTOUR_LANDMARK_INDICES, detect_face, estimate_yaw
+from face_detection import CONTOUR_EDGES, CONTOUR_LANDMARK_INDICES, detect_face, estimate_yaw
 from image_quality import assess_quality
 from skin_regions import (build_skin_masks, normalise_scale, region_luma_ratio,
                           MAX_REGION_LUMA_RATIO)
@@ -61,6 +61,15 @@ def _error(status, code, message):
 @app.get("/api/health")
 def health():
     return jsonify({"status": "ok"})
+
+
+@app.get("/api/face-mesh-topology")
+def face_mesh_topology():
+    """Which points in /api/face-position's `points` array connect to which,
+    for drawing the live camera overlay as a wireframe instead of floating
+    dots. Pure topology - identical for every face - so the frontend fetches
+    this once and caches it, rather than it being repeated on every poll."""
+    return jsonify({"edges": CONTOUR_EDGES})
 
 
 @app.errorhandler(413)

@@ -28,6 +28,19 @@ _MESH_GROUPS = (
 )
 CONTOUR_LANDMARK_INDICES = sorted({i for group in _MESH_GROUPS for pair in group for i in pair})
 
+# Which points connect to which, for drawing the mesh as a wireframe rather
+# than floating dots. Expressed as POSITIONS within CONTOUR_LANDMARK_INDICES
+# (0-based, matching the order /api/face-position's `points` array is built
+# in), not raw MediaPipe landmark indices, so the frontend can use them
+# directly as points[i]/points[j] with no translation step. Pure topology -
+# identical for every face - so it is served once from its own endpoint
+# instead of repeated on every ~360ms poll.
+_INDEX_POSITION = {landmark_index: position for position, landmark_index in enumerate(CONTOUR_LANDMARK_INDICES)}
+CONTOUR_EDGES = sorted({
+    tuple(sorted((_INDEX_POSITION[a], _INDEX_POSITION[b])))
+    for group in _MESH_GROUPS for a, b in group
+})
+
 
 def _get_face_mesh():
     global _face_mesh

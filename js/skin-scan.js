@@ -26,6 +26,11 @@
   const FACE_POSITION_API =
     (window.COSMO_SKIN_API_URL || 'http://127.0.0.1:5050/api/analyse-skin')
       .replace('/analyse-skin', '/face-position');
+  // Pure topology (which point connects to which) - identical for every
+  // face, so it is fetched once and cached rather than on every poll.
+  const FACE_MESH_TOPOLOGY_API =
+    (window.COSMO_SKIN_API_URL || 'http://127.0.0.1:5050/api/analyse-skin')
+      .replace('/analyse-skin', '/face-mesh-topology');
   const TRACK_INTERVAL_MS = 360;   // ~3 checks a second
   const TRACK_FRAME_WIDTH = 320;   // small frames keep tracking cheap
   const YAW_FRONT_MAX = 0.30;      // counts as facing the camera
@@ -160,6 +165,10 @@
   let dotsTargetPoints = null;
   let dotsUpdateStart = 0;
   let dotsRafId = null;
+  // [[i,j], ...] positions into a points array - fetched once, reused for
+  // every subsequent poll.
+  let meshEdges = null;
+  let meshEdgesPromise = null;
   let firstTurnSign = 0;      // direction of the first turn the sitter made
   let lastCaptureYaw = 0;
   let alignedSince = 0;
@@ -339,10 +348,20 @@
   // -------------------------------------------------------------------------
   // Camera
   // -------------------------------------------------------------------------
+  function ensureMeshEdges() {
+    if (meshEdges || meshEdgesPromise) return meshEdgesPromise;
+    meshEdgesPromise = fetch(FACE_MESH_TOPOLOGY_API)
+      .then(response => (response.ok ? response.json() : null))
+      .then(data => { meshEdges = data?.edges || []; })
+      .catch(() => { meshEdges = []; }); // dots-only fallback if this fetch fails
+    return meshEdgesPromise;
+  }
+
   async function openCamera() {
     if (!navigator.mediaDevices?.getUserMedia) {
       return showError('Camera access is not supported in this browser. Choose an image instead.');
     }
+    ensureMeshEdges();
     setScanState(SCAN_STATES.CAMERA);
     captureStep = capturedBlobs.length;
     updateCaptureProgress();
@@ -477,21 +496,44 @@
 
     const t = Math.min(1, (performance.now() - dotsUpdateStart) / TRACK_INTERVAL_MS);
     const prev = dotsPrevPoints || dotsTargetPoints;
-    const radius = Math.max(1.4, stageW * 0.0035);
+    const radius = Math.max(2, stageW * 0.0045);
 
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, stageW, stageH);
-    ctx.fillStyle = 'rgba(216, 188, 130, 0.88)';
-    ctx.shadowColor = 'rgba(216, 188, 130, 0.6)';
-    ctx.shadowBlur = 3;
-
+    // Interpolated pixel position of every point, computed once and reused
+    // for both the wireframe lines and the dots drawn on top of them.
+    const positions = new Array(dotsTargetPoints.length);
     for (let i = 0; i < dotsTargetPoints.length; i++) {
       const a = prev[i] || dotsTargetPoints[i];
       const b = dotsTargetPoints[i];
       const nx = a[0] + (b[0] - a[0]) * t;
       const ny = a[1] + (b[1] - a[1]) * t;
+      positions[i] = [offsetX + nx * drawnW, offsetY + ny * drawnH];
+    }
+
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, stageW, stageH);
+
+    // Wireframe first, so the dots read as anchor points sitting on top of
+    // the mesh rather than the mesh being drawn over them.
+    if (meshEdges && meshEdges.length) {
+      ctx.strokeStyle = 'rgba(216, 188, 130, 0.45)';
+      ctx.lineWidth = Math.max(0.6, stageW * 0.0012);
       ctx.beginPath();
-      ctx.arc(offsetX + nx * drawnW, offsetY + ny * drawnH, radius, 0, Math.PI * 2);
+      for (const [i, j] of meshEdges) {
+        const p1 = positions[i];
+        const p2 = positions[j];
+        if (!p1 || !p2) continue;
+        ctx.moveTo(p1[0], p1[1]);
+        ctx.lineTo(p2[0], p2[1]);
+      }
+      ctx.stroke();
+    }
+
+    ctx.fillStyle = 'rgba(216, 188, 130, 0.9)';
+    ctx.shadowColor = 'rgba(216, 188, 130, 0.6)';
+    ctx.shadowBlur = 3;
+    for (const [x, y] of positions) {
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
       ctx.fill();
     }
 
