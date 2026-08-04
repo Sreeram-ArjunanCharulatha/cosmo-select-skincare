@@ -4,6 +4,10 @@
   "currency": "GBP",
   "source": "lookfantastic.com",
   "prices": {
+    "https://www.lookfantastic.com/la-roche-posay-toleriane-ultra-fluid-40ml/11196312.html": {
+      "name": "La Roche-Posay Toleriane Ultra Fluid 40ml (now sold as Toleriane Dermallergo Soothing Fluid, same 40ml size)",
+      "price": 19.6
+    },
     "https://www.lookfantastic.com/cerave-moisturising-cream-50ml/11798694.html": {
       "name": "CeraVe Moisturising Cream 50ml",
       "price": 5.25
@@ -229,10 +233,6 @@
     "https://www.lookfantastic.com/the-ordinary-hyaluronic-acid-2-b5-supersize-serum-60ml/12243647.html": {
       "name": "The Ordinary Hyaluronic Acid 2% + B5 Supersize Serum 60ml",
       "reason": "URL now serves the HA 2% + B5 Duo, a different product."
-    },
-    "https://www.lookfantastic.com/la-roche-posay-toleriane-ultra-fluid-40ml/11196312.html": {
-      "name": "La Roche-Posay Toleriane Ultra Fluid 40ml",
-      "reason": "Reformulated and renamed to Toleriane Dermallergo Fluid; not price-comparable."
     },
     "https://www.lookfantastic.com/la-roche-posay-toleriane-ultra-cream/11094703.html": {
       "name": "La Roche-Posay Toleriane Ultra Cream",

@@ -319,7 +319,7 @@ function price(value) {
 // and overrides the snapshot at render time. Products the retailer has
 // discontinued or replaced are marked unavailable rather than shown at a price
 // nobody can actually pay.
-const PRICE_DATA_URL = './data/prices.json?v=1';
+const PRICE_DATA_URL = './data/prices.json?v=2';
 let priceDataPromise = null;
 
 function loadPriceCorrections() {
