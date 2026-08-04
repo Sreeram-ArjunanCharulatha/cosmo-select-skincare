@@ -8,6 +8,11 @@
 // its own pageshow event rather than a fresh navigation.
 addEventListener('pageshow', () => window.scrollTo(0, 0));
 
+// Footer copyright year — kept current automatically rather than a
+// hardcoded value that goes stale every January.
+const footerYear = document.getElementById('footerYear');
+if (footerYear) footerYear.textContent = new Date().getFullYear();
+
 // ---------------------------------------------------------------------------
 // Configuration
 // ---------------------------------------------------------------------------

@@ -3014,6 +3014,9 @@ legend {
 .footer-inner {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 20px;
 }
 .footer-brand {
   font-family: "Cormorant Garamond", serif;
@@ -3021,6 +3024,12 @@ legend {
   font-size: 1.65rem;
   font-weight: 600;
   letter-spacing: 0.08em;
+}
+.footer-legal {
+  margin: 0;
+  color: #a9baaf;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
 }
 
 /* ============================================================
