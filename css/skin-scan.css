@@ -743,6 +743,48 @@
   line-height: 1.55;
 }
 
+/* Collapsed by default: the full per-signal decision record (confidence,
+   why a threshold was or wasn't met), for anyone who wants to see the
+   reasoning behind the result rather than just the verdict. */
+.scan-reasoning {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border: 1px solid rgba(69, 91, 78, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.5);
+}
+.scan-reasoning summary {
+  cursor: pointer;
+  color: #14382d;
+  font-weight: 700;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+}
+.scan-reasoning summary:hover {
+  color: #1c5a47;
+}
+.scan-reasoning-row {
+  padding: 10px 0 0;
+  margin-top: 10px;
+  border-top: 1px solid rgba(69, 91, 78, 0.1);
+}
+.scan-reasoning-row:first-of-type {
+  margin-top: 12px;
+}
+.scan-reasoning-row strong {
+  display: block;
+  color: #14382d;
+  font-size: 0.76rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.scan-reasoning-row p {
+  margin: 0;
+  color: #6d746f;
+  font-size: 0.74rem;
+  line-height: 1.5;
+}
+
 /* Signals that carry no concern weight are visually muted, so confirmed
    concerns are never confused with background measurements. */
 .scan-signal.not_assessable {

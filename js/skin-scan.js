@@ -1126,6 +1126,33 @@
       el.results.append(note);
     });
 
+    // Optional, collapsed by default: the full decision record behind each
+    // signal (confidence, why it did or didn't clear the bar). Nothing here
+    // is new data - concern_mapper.py already computes all of it - this is
+    // just not throwing it away before it reaches the screen.
+    const decisions = payload.decisions || {};
+    if (Object.keys(decisions).length) {
+      const details = document.createElement('details');
+      details.className = 'scan-reasoning';
+      const summary = document.createElement('summary');
+      summary.textContent = 'Why this result? (confidence & thresholds)';
+      details.append(summary);
+
+      Object.entries(decisions).forEach(([key, decision]) => {
+        const row = document.createElement('div');
+        row.className = 'scan-reasoning-row';
+        const name = document.createElement('strong');
+        name.textContent = SIGNAL_LABELS[key] || key;
+        const reason = document.createElement('p');
+        const confidencePct = typeof decision.confidence === 'number'
+          ? `${Math.round(decision.confidence * 100)}% confidence — ` : '';
+        reason.textContent = `${confidencePct}${decision.decision_reason}`;
+        row.append(name, reason);
+        details.append(row);
+      });
+      el.results.append(details);
+    }
+
     setScanState(SCAN_STATES.RESULT);
   }
 
